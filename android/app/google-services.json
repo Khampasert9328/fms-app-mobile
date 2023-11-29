@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "847902402940",
+    "firebase_url": "https://fb-aa-hr.firebaseio.com",
+    "project_id": "fb-aa-hr",
+    "storage_bucket": "fb-aa-hr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847902402940:android:878ba3cf3bf41d36e4dcf9",
+        "android_client_info": {
+          "package_name": "com.archineer.aahr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "847902402940-v1ba7ghj403tou5vrlm5ruh5vd567hdp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBoBVAhDsy8u_cu-FH7EeA596RZyTskXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "847902402940-v1ba7ghj403tou5vrlm5ruh5vd567hdp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "847902402940-078onfnm94h7kh64grehhnuvnleri8ee.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.archineer.aamanagement"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:847902402940:android:04dfa1ede568b7dae4dcf9",
+        "android_client_info": {
+          "package_name": "com.archineer.aamanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "847902402940-v1ba7ghj403tou5vrlm5ruh5vd567hdp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBoBVAhDsy8u_cu-FH7EeA596RZyTskXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "847902402940-v1ba7ghj403tou5vrlm5ruh5vd567hdp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "847902402940-078onfnm94h7kh64grehhnuvnleri8ee.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.archineer.aamanagement"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="105" height="119" viewBox="0 0 105 119">
+<defs>
+  <filter id="Polygon_1" x="0" y="0" width="105" height="119" filterUnits="userSpaceOnUse">
+    <feOffset dy="3" input="SourceAlpha"/>
+    <feGaussianBlur stdDeviation="3" result="blur"/>
+    <feFlood flood-opacity="0.161"/>
+    <feComposite operator="in" in2="blur"/>
+    <feComposite in="SourceGraphic"/>
+  </filter>
+</defs>
+<g id="Group_3811" data-name="Group 3811" transform="translate(-135 -62)">
+  <g transform="matrix(1, 0, 0, 1, 135, 62)" filter="url(#Polygon_1)">
+    <g id="Polygon_1-2" data-name="Polygon 1" transform="translate(9 107) rotate(-90)" fill="none">
+      <path d="M75.75,0,101,43.5,75.75,87H25.25L0,43.5,25.25,0Z" stroke="none"/>
+      <path d="M 27.55319976806641 4 L 4.625038146972656 43.5 L 27.55319976806641 83 L 73.44680786132812 83 L 96.37496185302734 43.5 L 73.44680786132812 4 L 27.55319976806641 4 M 25.25 0 L 75.75 0 L 101 43.5 L 75.75 87 L 25.25 87 L 0 43.5 L 25.25 0 Z" stroke="none" fill="#fff"/>
+    </g>
+  </g>
+  <path id="Path_9" data-name="Path 9" d="M184.193,201.448l81.58-46.273" transform="translate(-37.746 -60.145)" fill="none" stroke="#fff" stroke-width="4"/>
+  <path id="Path_10" data-name="Path 10" d="M207.35,141.7v94.209" transform="translate(-20.114 -70.406)" fill="none" stroke="#fff" stroke-width="4"/>
+  <path id="Path_11" data-name="Path 11" d="M248.1,210.765,207.4,142.94" transform="translate(-20.075 -69.461)" fill="none" stroke="#fff" stroke-width="4"/>
+</g>
+</svg>
