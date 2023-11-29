@@ -976,19 +976,19 @@ class _HomePagesState extends State<HomePages> {
 
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       DisplayTimerUI(
-          time: formatTwoDigits(provitime.duration.inHours),
+          time: formatTwoDigits(provitime.durationOT.inHours),
           header: providerService.langs == 'la' ? "ຊົ່ວໂມງ" : "Hour"),
       const SizedBox(
         width: 8,
       ),
       DisplayTimerUI(
-          time: formatTwoDigits(provitime.duration.inMinutes.remainder(60)),
+          time: formatTwoDigits(provitime.durationOT.inMinutes.remainder(60)),
           header: providerService.langs == 'la' ? "ນາທີ" : "Minute"),
       const SizedBox(
         width: 8,
       ),
       DisplayTimerUI(
-          time: formatTwoDigits(provitime.duration.inSeconds.remainder(60)),
+          time: formatTwoDigits(provitime.durationOT.inSeconds.remainder(60)),
           header: providerService.langs == 'la' ? "ວິນາທີ" : "Second"),
     ]);
   }
