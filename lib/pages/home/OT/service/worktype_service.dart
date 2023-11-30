@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fms_mobile_app/constant/app_api.dart';
+import 'package:fms_mobile_app/pages/home/OT/models/check_ot_model.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/ot_screen_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/projectall_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/workcode_models.dart';
@@ -110,5 +111,19 @@ class WorkTypeService {
     if (res.statusCode == 200) {
       Navigator.pop(context);
     }
+  }
+
+  Future<CheckOtModel?> checkOtTime() async {
+    final user = await FirebaseAuth.instance.currentUser?.getIdToken();
+    final token = user;
+    final res = await http.get(Uri.parse(AppAPI.checkOt),
+       headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token'});
+
+    if (res.statusCode == 200) {
+      return checkOtModelFromJson(res.body);
+    }
+    return null;
   }
 }

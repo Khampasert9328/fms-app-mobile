@@ -44,6 +44,7 @@ class AppAPI {
   //Add OT
   static String addOT = '$apiPath/overtimes/request-start';
   static String stopOT = '$apiPath/overtimes/request-stop';
+  static String checkOt = '$apiPath/overtimes/get-time-start';
 
 
 //HRApproved

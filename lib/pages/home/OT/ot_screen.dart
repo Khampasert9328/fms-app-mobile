@@ -309,8 +309,8 @@ class _OverTimeOTState extends State<OverTimeOT> {
                             );
                           },
                           indicatorBuilder: (_, index) {
-                            var color;
-                            var child;
+                            Color color;
+                            Widget? child;
                             if (index == _processIndex) {
                               color = primary;
                               child = const Padding(
@@ -568,12 +568,7 @@ class _OverTimeOTState extends State<OverTimeOT> {
                                     String project_id = projectId.toString();
                                     String workType_id = workType.toString();
 
-                                    print(detail);
-                                    print(workcode);
-                                    print(project_id);
-                                    print(workType_id);
-                                    print("${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
-                                    final now = new DateTime.now();
+                                    final now = DateTime.now();
 
                                     print(totalh);
 
