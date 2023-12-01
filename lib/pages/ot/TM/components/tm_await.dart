@@ -120,9 +120,20 @@ class _TMAwaitCompoState extends State<TMAwaitCompo> {
                                         // newmodelhr.selectAllCheckBox(value.hrApproved?.data ?? []);
                                         if (checkedIds.isEmpty) {
                                           for (var i in value.leaveFriends!.data!) {
-                                            if (i.lStatusId == 1 ||
-                                                ((i.lStatusId == 2 || i.lStatusId == -1) && i.statusApproved! > 0)) {
-                                              checkedIds.add(i.eLeaveId.toString());
+                                            if (i.levelId != 3 ||
+                                                (i.lStatusId == 1 ||
+                                                        i.lStatusId == -1 ||
+                                                        i.lStatusId == 2 ||
+                                                        (i.approvedBy == null || i.statusApproved! > 0)) &&
+                                                    click == true) {
+                                              if (i.levelId == 3 ||
+                                                  (i.lStatusId != 4 ||
+                                                          (i.statusUser == 2 ||
+                                                              i.statusApproved == 2 ||
+                                                              i.lStatusId == 2)) &&
+                                                      click == true) {
+                                                checkedIds.add(i.eLeaveId.toString());
+                                              }
                                             }
                                           }
                                         } else {
@@ -200,7 +211,7 @@ class _TMAwaitCompoState extends State<TMAwaitCompo> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        data.fullname??"",
+                                        data.fullname ?? "",
                                         style: TextStyle(
                                           fontSize: 18.sp,
                                           fontWeight: FontWeight.bold,
@@ -222,28 +233,37 @@ class _TMAwaitCompoState extends State<TMAwaitCompo> {
                                     ],
                                   ),
                                   const Spacer(),
-                                  if (data.lStatusId == 1 ||
-                                      ((data.lStatusId == 2 || data.lStatusId == -1) && data.statusApproved! > 0) &&
+                                  if (data.levelId != 3 ||
+                                      (data.lStatusId == 1 ||
+                                              data.lStatusId == -1 ||
+                                              data.lStatusId == 2 ||
+                                              (data.approvedBy == null || data.statusApproved! > 0)) &&
                                           click == true)
-                                    click == false
-                                        ? const SizedBox()
-                                        : Checkbox(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(100.r),
-                                            ),
-                                            value: isChecked,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                if (val!) {
-                                                  checkedIds.add(data.eLeaveId.toString());
-                                                } else {
-                                                  checkedIds.remove(data.eLeaveId.toString());
-                                                }
-                                              });
-                                            },
-                                          )
-                                  else
-                                    const SizedBox()
+                                    if (data.levelId == 3 ||
+                                        (data.lStatusId != 4 ||
+                                                (data.statusUser == 2 ||
+                                                    data.statusApproved == 2 ||
+                                                    data.lStatusId == 2)) &&
+                                            click == true)
+                                      click == false
+                                          ? const SizedBox()
+                                          : Checkbox(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(100.r),
+                                              ),
+                                              value: isChecked,
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  if (val!) {
+                                                    checkedIds.add(data.eLeaveId.toString());
+                                                  } else {
+                                                    checkedIds.remove(data.eLeaveId.toString());
+                                                  }
+                                                });
+                                              },
+                                            )
+                                    else
+                                      const SizedBox()
                                 ],
                               ),
                             ),

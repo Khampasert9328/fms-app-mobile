@@ -2,11 +2,15 @@ class AppAPI {
   static String apiPath = "https://fms-api.archiineergroup.la/api";
   static String checkAttend = '$apiPath/attendance/check-attend';
   static String getleavetype = '$apiPath/leaves/leavetype';
-  static String getleave = '$apiPath/leaves?year=2023&l_status_id=-1,1,2,3,4';
+  static String getleave = '$apiPath/leaves?year=2023&l_status_id=1';
   static String getOverTimeProject = '$apiPath/overtimes/project/approve?year=2023';
   static String getOverTimeCount = '$apiPath/overtimes/total-project-approve';
   static String getOverTimeExecult = '$apiPath/overtimes/executive/approve?year=2023';
   static String getOverTimeExecultCount = '$apiPath/overtimes/total-executive-approve';
+
+  //Leave
+  static String addrequestLeave = '$apiPath/leaves/request-new';
+
 
   //HR
   static String getHrApproved = '$apiPath/overtimes/hr/all/approve?year=2023&o_status_id=3';
@@ -52,11 +56,10 @@ class AppAPI {
   static String hrapproveleaverequ = '$apiPath/leaves/approve-hr';
 
   //TM
-  static String leavefriends = '$apiPath/leaves/list/me?year=2023&l_status_id=3';
+  static String leavefriends = '$apiPath/leaves/list/me?year=2023&l_status_id=1';
   static String leavefriendsSuccess = '$apiPath/leaves/list/me?year=2023&l_status_id=-1,4';
   static String tmapproved = '$apiPath/leaves/approval-status';
-
-
+  
   //Years
   static String getyearsall = '$apiPath/organisations/get-year';
 

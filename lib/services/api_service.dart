@@ -628,18 +628,18 @@ class APIService {
   }
 
   Future<bool> AddLeave(
-      String token, String startdart, String enddate, String leavetype, String detail, String employee) async {
-    final http.Response response = await http.post(Uri.parse('${apiPath.toString()}/leaves/request-new'),
+      String? token, String? startdart, String? enddate, String? leavetype, String? detail, String? employee) async {
+    final http.Response response = await http.post(Uri.parse(AppAPI.addrequestLeave),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${token}',
         },
         body: jsonEncode(<String, String>{
-          "start_date": startdart,
-          "end_date": enddate,
-          "leave_type": leavetype,
-          "details": detail,
-          "employee_substitute_id": employee
+          "start_date": startdart!,
+          "end_date": enddate!,
+          "leave_type": leavetype!,
+          "details": detail??"",
+          "employee_substitute_id": employee!
         }));
 
     if (response.statusCode == 200) {

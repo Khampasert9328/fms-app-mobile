@@ -81,7 +81,7 @@ import 'package:fms_mobile_app/shared/mydata.dart';
 import 'package:geolocator/geolocator.dart' as location;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:package_info_plus/package_info_plus.dart' as version;
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ProviderService extends ChangeNotifier {
   bool _checkbuttonot = false;
@@ -97,7 +97,8 @@ class ProviderService extends ChangeNotifier {
   //respone mssessge error Login
   String responeMsg = "";
 
-  String versionApp = "";
+  String? _versionApp;
+  String? get versionApp => _versionApp;
   String versionCodeApp = "";
 
   UserDetail? _userDetail;
@@ -249,12 +250,10 @@ class ProviderService extends ChangeNotifier {
   List<PendingDay> PendingDaysss = [];
 
   setVersion() async {
-    version.PackageInfo packageInfo = await version.PackageInfo.fromPlatform();
-    versionApp = packageInfo.version;
-    MyData.versionApp = "${packageInfo.version.toString()}";
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    _versionApp = packageInfo.version;
     versionCodeApp = packageInfo.buildNumber;
-
-    print(MyData.versionApp);
+    print("version111===${_versionApp}");
 
     notifyListeners();
   }

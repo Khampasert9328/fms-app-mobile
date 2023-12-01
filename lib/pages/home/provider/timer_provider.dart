@@ -1,7 +1,7 @@
-import 'dart:async';
+// ignore_for_file: unused_field
 
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:fms_mobile_app/model/check_attend.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:ntp/ntp.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +42,7 @@ class TimerProvider extends ChangeNotifier {
 
    set setDurationOT(int? val) {
     _durationOT = Duration(seconds: val ?? 0);
-    print(val);
+
     notifyListeners();
   }
 
@@ -85,7 +85,6 @@ class TimerProvider extends ChangeNotifier {
 
   set setDuration(int? val) {
     _duration = Duration(seconds: val ?? 0);
-    print(val);
     notifyListeners();
   }
 

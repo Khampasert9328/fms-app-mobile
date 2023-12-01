@@ -572,10 +572,9 @@ class _OverTimeOTState extends State<OverTimeOT> {
                                     print(workcode);
                                     print(project_id);
                                     print(workType_id);
-                                    print("${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                                    print(
+                                        "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
                                     final now = new DateTime.now();
-
-                                 
 
                                     if (_fromDateStart != null &&
                                         _remark.text != "" &&
@@ -606,7 +605,11 @@ class _OverTimeOTState extends State<OverTimeOT> {
                                   borderRadius: BorderRadius.circular(24),
                                   child: const Text(
                                     'ເພີ່ມ',
-                                    style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               )

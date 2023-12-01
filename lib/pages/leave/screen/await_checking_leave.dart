@@ -72,14 +72,12 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                           '${providerService.langs == 'la' ? DateFormat.yMMMMd('lo').format(startDate!) : DateFormat.yMMMMd('en').format(startDate!)} ';
                       String dateEnd =
                           '${providerService.langs == 'la' ? DateFormat.yMMMMd('lo').format(endDate!) : DateFormat.yMMMMd('en').format(endDate!)}';
-              
 
                       return GestureDetector(
                         onTap: () async {
                           await providerService.SetLeaveId(item!.eLeaveId, 1);
 
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const LeavePageDetail()));
-                      
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -117,14 +115,9 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                 Row(
                                   children: [
                                     Text(
-                                      providerService.langs == 'la' ? 'ມື້ພັກ : ' : 'Start Date : ',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 10.sp, color: black),
-                                    ),
-                                    Text(
                                       "$dateStart ຈົເຖິງ $dateEnd",
                                       style: TextStyle(
-                                        fontSize: 14.sp,
+                                        fontSize: 16.sp,
                                         color: primary,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -142,9 +135,9 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                       children: [
                                         const SizedBox(height: 5),
                                         Text(
-                                          providerService.langs == 'la' ? 'ສະຖານະໃບລາພັກ : ' : 'Sturas : ',
+                                          providerService.langs == 'la' ? 'ມື້ຂໍລາພັກ : ' : 'Date of Leave ',
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 10.sp, color: black),
+                                          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
@@ -155,19 +148,58 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                         children: <Widget>[
                                           const SizedBox(height: 5),
                                           Text(
-                                            item?.isApproved == -1
-                                                ? providerService.langs == 'la'
-                                                    ? 'ບໍ່ອະນຸມັດ'
-                                                    : ' Disapproved '
-                                                : item?.isApproved == 1
-                                                    ? providerService.langs == 'la'
-                                                        ? 'ອະນຸມັດ'
-                                                        : ' Approved '
-                                                    : item?.isApproved == 0
-                                                        ? providerService.langs == 'la'
-                                                            ? "ລໍຖ້າອະນຸມັດ"
-                                                            : 'Pending'
-                                                        : '',
+                                            dateStart,
+                                            style: TextStyle(
+                                                fontSize: 10.sp,
+                                               ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                
+                                 Row(
+                                  children: [
+                                    Text(
+                                      providerService.langs == 'la' ? "ເຫດຜົນຂໍລາພັກ:" : 'ເຫດຜົນຂໍລາພັກ',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: black,
+                                        fontWeight: FontWeight.bold,
+
+                                      ),
+                                    ),
+                                      SizedBox(width: 5.w),
+                                    Text(
+                                    "${item?.details}",
+                                    style: TextStyle(fontSize: 12.sp,),
+                                  ),
+
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          providerService.langs == 'la' ? 'ສະຖານະໃບລາພັກ : ' : 'Sturas : ',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            '${item?.lStatusName}',
                                             style: TextStyle(
                                                 fontSize: 10.sp,
                                                 color: item?.isApproved == -1
@@ -183,27 +215,7 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 20.0,
-                                ),
-                                Text(
-                                  providerService.langs == 'la' ? "ເຫດຜົນຂໍລາພັກ" : 'ເຫດຜົນຂໍລາພັກ',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: black,
-                                    fontWeight: FontWeight.w200,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Text(
-                                    "${item?.details}",
-                                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w300, color: primary),
-                                  ),
-                                ),
+                               
                               ]),
                             ],
                           ),

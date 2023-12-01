@@ -13,6 +13,7 @@ import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 import 'package:fms_mobile_app/services/auth_service.dart';
 
 import 'package:fms_mobile_app/services/provider_service.dart';
+import 'package:fms_mobile_app/services/provider_service_splase.dart';
 import 'package:fms_mobile_app/splash.dart';
 import 'package:fms_mobile_app/theme/color.dart';
 import 'package:fms_mobile_app/utils/easyloading.dart';
@@ -100,7 +101,8 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) =>TimeSheetProvider()),
             ChangeNotifierProvider(create: (_)=>WorkAndProjectProvider()),
             ChangeNotifierProvider(create: (_)=>SetItmem()),
-            ChangeNotifierProvider(create: (_)=>TimerProvider())
+            ChangeNotifierProvider(create: (_)=>TimerProvider()),
+            ChangeNotifierProvider(create: (_)=>ProviderSplase())
           ],
           child: MaterialApp(
             title: 'Flutter Demo',
