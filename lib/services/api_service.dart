@@ -369,12 +369,18 @@ class APIService {
   }
 
   Future<bool> getCheckout(String Token, String checkinlatlng) async {
-    final http.Response response = await http.post(Uri.parse('${apiPath.toString()}/attendance/checkout-new'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer ${Token}',
+    final http.Response response = await http.post(
+      Uri.parse('${apiPath.toString()}/attendance/checkout-new'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${Token}',
+      },
+      body: jsonEncode(
+        <String, String>{
+          'checkout_lat_lng': checkinlatlng,
         },
-        body: jsonEncode(<String, String>{'checkout_lat_lng': checkinlatlng}));
+      ),
+    );
 
     if (response.statusCode == 200) {
       return true;
@@ -418,8 +424,7 @@ class APIService {
 
   Future<List<DataModels>> getWorkType() async {
     List<DataModels> workType = [];
-    final http.Response response =
-        await http.get(Uri.parse(AppAPI.worktype), headers: <String, String>{
+    final http.Response response = await http.get(Uri.parse(AppAPI.worktype), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${MyData.token}',
     });
@@ -638,7 +643,7 @@ class APIService {
           "start_date": startdart!,
           "end_date": enddate!,
           "leave_type": leavetype!,
-          "details": detail??"",
+          "details": detail ?? "",
           "employee_substitute_id": employee!
         }));
 

@@ -1618,8 +1618,11 @@ class ProviderService extends ChangeNotifier {
 
   void checkStatusTM(LeaveFriendsModels? data) {
     for (var i in data!.data!) {
-      if (i.lStatusId == 3 || ((i.lStatusId == 4 || i.lStatusId == -1) && i.statusApproved! > 0)) {
-        _status = true;
+      if (i.levelId != 3 || (i.lStatusId == 1 || i.lStatusId == -1 || i.lStatusId == 2 || (i.approvedBy == null || i.statusApproved! > 0))) {
+        if (i.levelId == 3 || (i.lStatusId != 4 ||(i.statusUser == 2 ||i.statusApproved == 2 ||i.lStatusId == 2))) {
+            _status = true;
+        }
+      
       } else {
         _status = false;
       }

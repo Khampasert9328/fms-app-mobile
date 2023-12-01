@@ -23,8 +23,7 @@ class _TimeSheetListState extends State<TimeSheetList> {
       _loding = true;
     });
 
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     await providerService.setTimesheetListDetial();
 
@@ -32,8 +31,7 @@ class _TimeSheetListState extends State<TimeSheetList> {
     print(providerService.StdEndworkThisDay);
 
     if (providerService.StdEndworkThisDay == 1) {
-      if (providerService.StdEndworkThisDay == 1 &&
-          providerService.timesheetDateDetial?.data?.length == 0) {
+      if (providerService.StdEndworkThisDay == 1 && providerService.timesheetDateDetial?.data?.length == 0) {
         _FuctionNewTap(context);
       }
     }
@@ -44,10 +42,8 @@ class _TimeSheetListState extends State<TimeSheetList> {
   }
 
   _FuctionNewTap(BuildContext context) async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
-    String? refresh = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const TimeSheetNew()));
+    final providerService = Provider.of<ProviderService>(context, listen: false);
+    String? refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => const TimeSheetNew()));
 
     if (refresh == "true") {
       // setDataCalendarWorkRe();
@@ -66,8 +62,7 @@ class _TimeSheetListState extends State<TimeSheetList> {
 
   @override
   Widget build(BuildContext context) {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     final timesheetListDetial = providerService.timesheetListDetial?.ioList;
 
     return Scaffold(
@@ -80,14 +75,14 @@ class _TimeSheetListState extends State<TimeSheetList> {
             color: black,
           ),
           onPressed: () {
-            Navigator.pop(context, "${stdLoad}"
+            Navigator.pop(context, stdLoad
                 // MYHomePage is another page for showcase
                 // replace it with your page name
                 );
           },
         ),
         title: Text(
-         providerService.langs == 'la' ?  "ລາຍການ Timesheet" : "Timesheet",
+          providerService.langs == 'la' ? "ລາຍການ Timesheet" : "Timesheet",
           style: TextStyle(
               fontSize: 16.sp,
               // fontWeight: FontWeight.bold,
@@ -140,31 +135,28 @@ class _TimeSheetListState extends State<TimeSheetList> {
               : Container()
         ],
       ),
-      floatingActionButton: providerService.StdEndworkThisDay == 1 &&
-              providerService.timesheetDateDetial?.data?.length != 0
-          ? Padding(
-              padding: const EdgeInsets.all(10),
-              child: MyElevatedButtonPrimary(
-                  width: MediaQuery.of(context).size.width,
-                  onPressed: () async {
-                    final res = await providerService.checkOutNew(
-                        "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+      floatingActionButton:
+          providerService.StdEndworkThisDay == 1 && providerService.timesheetDateDetial?.data?.length != 0
+              ? Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: MyElevatedButtonPrimary(
+                      width: MediaQuery.of(context).size.width,
+                      onPressed: () async {
+                        final res = await providerService.checkOutNew(
+                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
 
-                    print(res);
-                    if (res == true) {
-                      Navigator.pop(context, "CheckOut");
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(24),
-                  child: const Text(
-                    'ຢືນຢັນການເລິກວຽກ',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
-                  )),
-            )
-          : Container(),
+                        print(res);
+                        if (res == true) {
+                          Navigator.pop(context, "CheckOut");
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(24),
+                      child: const Text(
+                        'ຢືນຢັນການເລິກວຽກ',
+                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                      )),
+                )
+              : Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: _loding == true
           ? const Center(
@@ -173,25 +165,26 @@ class _TimeSheetListState extends State<TimeSheetList> {
           : SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
-                children: [ListTimesheetDetail(), ListTimesheet()],
+                children: [
+                  ListTimesheetDetail(),
+                  ListTimesheet(),
+                ],
               ),
             ),
     );
   }
 
   Widget ListTimesheet() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     print(providerService.timesheetDateDetial?.data?.length);
     providerService.timesheetDateDetial?.data?.length;
 
     String Status = "";
 
-    String? timesheetApproved =
-        providerService.timesheetListDetial?.timesheetApproved;
+    String? timesheetApproved = providerService.timesheetListDetial?.timesheetApproved;
 
     Status =
-        "${timesheetApproved == "-1" ? providerService.langs == 'la' ? "ທາມຊີດລໍຖ້າອະນຸມັດ" : "Pending" : timesheetApproved == "1" ? providerService.langs == 'la' ? "ທາມຊີດຖືກອະນຸມັດແລ້ວ" : " Approved" : timesheetApproved == "0" ?  providerService.langs == 'la' ? "ທາມຊີດບໍຖືກອະນຸມັດແລ້ວ" : "  Disapproved" : ""}";
+        "${timesheetApproved == "-1" ? providerService.langs == 'la' ? "ທາມຊີດລໍຖ້າອະນຸມັດ" : "Pending" : timesheetApproved == "1" ? providerService.langs == 'la' ? "ທາມຊີດຖືກອະນຸມັດແລ້ວ" : " Approved" : timesheetApproved == "0" ? providerService.langs == 'la' ? "ທາມຊີດບໍຖືກອະນຸມັດແລ້ວ" : "  Disapproved" : ""}";
 
     return providerService.timesheetDateDetial?.data?.length == 0
         ? SizedBox(
@@ -210,11 +203,8 @@ class _TimeSheetListState extends State<TimeSheetList> {
                       width: 5,
                     ),
                     Text(
-                     providerService.langs == 'la' ?  "ບໍ່ມີລາຍການ" : "No data",
-                      style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold),
+                      providerService.langs == 'la' ? "ບໍ່ມີລາຍການ" : "No data",
+                      style: const TextStyle(color: Colors.grey, fontSize: 17, fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -242,12 +232,9 @@ class _TimeSheetListState extends State<TimeSheetList> {
                               //             const TimeSheetNew()));
                             },
                             borderRadius: BorderRadius.circular(24),
-                            child:  Text(
-                             providerService.langs == 'la' ? 'ເພີ່ມ Timesheet' : "New Timesheet" ,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
+                            child: Text(
+                              providerService.langs == 'la' ? 'ເພີ່ມ Timesheet' : "New Timesheet",
+                              style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                             )),
                       )
                     ],
@@ -265,158 +252,143 @@ class _TimeSheetListState extends State<TimeSheetList> {
                   itemBuilder: (context, index) {
                     final item = model.timesheetDateDetial?.data?[index];
                     return Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: appBgColor,
-                          borderRadius: BorderRadius.circular(13),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0, 0.1),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0, -0.1),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(-0.1, 0),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0.1, 0),
-                            ),
-                          ]),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      decoration: BoxDecoration(color: appBgColor, borderRadius: BorderRadius.circular(13), boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade200,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(0, 0.1),
+                        ),
+                        BoxShadow(
+                          color: Colors.grey.shade200,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(0, -0.1),
+                        ),
+                        BoxShadow(
+                          color: Colors.grey.shade200,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(-0.1, 0),
+                        ),
+                        BoxShadow(
+                          color: Colors.grey.shade200,
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(0.1, 0),
+                        ),
+                      ]),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(
+                          item?.workType == "B"
+                              ? providerService.langs == 'la'
+                                  ? 'ວຽກໂຄງການ'
+                                  : "Billable Hour"
+                              : item?.workType == "NB"
+                                  ? providerService.langs == 'la'
+                                      ? "ວຽກບໍລິຫານອົງກອນ"
+                                      : "Non-Billable Hour"
+                                  : item?.workType == "Absence"
+                                      ? providerService.langs == 'la'
+                                          ? "ຂາດ"
+                                          : "Absence"
+                                      : "",
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            color: primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              item?.workType == "B"
-                                  ? providerService.langs == 'la' ? 'ວຽກໂຄງການ' : "Billable Hour"
-                                  : item?.workType == "NB"
-                                      ? providerService.langs == 'la' ? "ວຽກບໍລິຫານອົງກອນ" : "Non-Billable Hour"
-                                      : item?.workType == "Absence"
-                                          ? providerService.langs == 'la' ? "ຂາດ" : "Absence"
-                                          : "",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                color: primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      providerService.langs == 'la' ?  'ລະຫັດໜ້າວຽກ:': "Project",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 14.sp, color: black),
-                                    ),
-                                    Text(
-providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວຽກ:' : "Hours",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 10.sp, color: black),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                   providerService.langs == 'la' ?   'ສະຖານະ: ' : "Status",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 10.sp, color: black),
-                                    ),
-                                  ],
+                                Text(
+                                  providerService.langs == 'la' ? 'ລະຫັດໜ້າວຽກ:' : "Project",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 14.sp, color: black),
                                 ),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Text(
-                                        overflow: TextOverflow.ellipsis,
-                                        '${item?.workcode}',
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                       providerService.langs == 'la' ?  '${item?.workHour}  ຊົ້ວໂມງ' :  '${item?.workHour}  h',
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        '${Status}',
-                                        style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: timesheetApproved == "-1"
-                                                ? Color.fromRGBO(255, 153, 0, 1)
-                                                : timesheetApproved == "1"
-                                                    ? Color.fromRGBO(
-                                                        76, 175, 79, 1)
-                                                    : Color.fromRGBO(
-                                                        244, 67, 54, 1)),
-                                      ),
-                                    ],
-                                  ),
+                                Text(
+                                  providerService.langs == 'la' ? 'ໄລຍະເວລາປະຕິບັດວຽກ:' : "Hours",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 10.sp, color: black),
                                 ),
-                                providerService.timesheetListDetial
-                                            ?.timesheetApproved !=
-                                        "1"
-                                    ? providerService.timesheetDateDetial?.data
-                                                ?.length !=
-                                            0
-                                        ? Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              IconButton(
-                                                onPressed: () async {
-                                                  print(item?.eTimesheetId);
-
-                                                  int? itemTimesheet =
-                                                      item?.eTimesheetId;
-                                                  await providerService
-                                                      .SetTimeSheetItemDelete(
-                                                          itemTimesheet);
-
-                                                  _showSuccus();
-                                                },
-                                                icon: const Icon(Icons.delete),
-                                                color: Colors.red,
-                                              ),
-                                            ],
-                                          )
-                                        : SizedBox()
-                                    : SizedBox()
+                                SizedBox(height: 5),
+                                Text(
+                                  providerService.langs == 'la' ? 'ສະຖານະ: ' : "Status",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 10.sp, color: black),
+                                ),
                               ],
                             ),
-                            const SizedBox(
-                              width: 20.0,
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    overflow: TextOverflow.ellipsis,
+                                    '${item?.workcode}',
+                                    style: TextStyle(fontSize: 10.sp, color: black),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    providerService.langs == 'la'
+                                        ? '${item?.workHour}  ຊົ້ວໂມງ'
+                                        : '${item?.workHour}  h',
+                                    style: TextStyle(fontSize: 10.sp, color: black),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    '${Status}',
+                                    style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: timesheetApproved == "-1"
+                                            ? Color.fromRGBO(255, 153, 0, 1)
+                                            : timesheetApproved == "1"
+                                                ? Color.fromRGBO(76, 175, 79, 1)
+                                                : Color.fromRGBO(244, 67, 54, 1)),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ]),
+                            providerService.timesheetListDetial?.timesheetApproved != "1"
+                                ? providerService.timesheetDateDetial?.data?.length != 0
+                                    ? Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () async {
+                                              print(item?.eTimesheetId);
+
+                                              int? itemTimesheet = item?.eTimesheetId;
+                                              await providerService.SetTimeSheetItemDelete(itemTimesheet);
+
+                                              _showSuccus();
+                                            },
+                                            icon: const Icon(Icons.delete),
+                                            color: Colors.red,
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox()
+                                : SizedBox()
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 20.0,
+                        ),
+                      ]),
                     );
                   },
                 );
@@ -425,8 +397,7 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
   }
 
   Widget ListTimesheetDetail() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     String formatcheckinTimes = "-";
     String formatcheckoutTimes = "";
@@ -443,51 +414,30 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
 
     String Status = "";
 
-    String? timesheetApproved =
-        providerService.timesheetListDetial?.timesheetApproved;
+    String? timesheetApproved = providerService.timesheetListDetial?.timesheetApproved;
     Status =
-        "${timesheetApproved == "-1" ? providerService.langs == 'la' ? "ທາມຊີດລໍຖ້າອະນຸມັດ" : "Pending" : timesheetApproved == "1" ? providerService.langs == 'la' ? "ທາມຊີດຖືກອະນຸມັດແລ້ວ" : "Approved"  : timesheetApproved == "0" ? providerService.langs == 'la' ? "ທາມຊີດບໍຖືກອະນຸມັດແລ້ວ" : "Disapproved"  : ""}";
+        "${timesheetApproved == "-1" ? providerService.langs == 'la' ? "ທາມຊີດລໍຖ້າອະນຸມັດ" : "Pending" : timesheetApproved == "1" ? providerService.langs == 'la' ? "ທາມຊີດຖືກອະນຸມັດແລ້ວ" : "Approved" : timesheetApproved == "0" ? providerService.langs == 'la' ? "ທາມຊີດບໍຖືກອະນຸມັດແລ້ວ" : "Disapproved" : ""}";
 
     if (providerService.timesheetListDetial?.ioList?.toList().length == 1) {
-      print(providerService.timesheetListDetial?.ioList
-          ?.toList()[0]
-          .sumTotalMinutes);
+      print(providerService.timesheetListDetial?.ioList?.toList()[0].sumTotalMinutes);
 
-      final Sumtotal = new DateTime(
-          0,
-          0,
-          0,
-          0,
-          providerService.timesheetListDetial?.ioList
-                  ?.toList()[0]
-                  .sumTotalMinutes ??
-              0);
+      final Sumtotal =
+          new DateTime(0, 0, 0, 0, providerService.timesheetListDetial?.ioList?.toList()[0].sumTotalMinutes ?? 0);
 
       Sumhour = int.parse(Sumtotal.hour.toString());
       Summinute = int.parse(Sumtotal.minute.toString());
-      ShowHM =
-         providerService.langs == 'la' ?  "${Sumhour >= 10 ? Sumhour : "0${Sumhour}"}:${Summinute >= 10 ? Summinute : "0${Summinute}"} ຊົ່ວໂມງ " : "${Sumhour >= 10 ? Sumhour : "0${Sumhour}"}:${Summinute >= 10 ? Summinute : "0${Summinute}"}  ";
+      ShowHM = providerService.langs == 'la'
+          ? "${Sumhour >= 10 ? Sumhour : "0${Sumhour}"}:${Summinute >= 10 ? Summinute : "0${Summinute}"} ຊົ່ວໂມງ "
+          : "${Sumhour >= 10 ? Sumhour : "0${Sumhour}"}:${Summinute >= 10 ? Summinute : "0${Summinute}"}  ";
 
-      final checkinTime = providerService.timesheetListDetial?.ioList
-              ?.toList()[0]
-              .checkinTime
-              .toString() ??
-          0;
+      final checkinTime = providerService.timesheetListDetial?.ioList?.toList()[0].checkinTime.toString() ?? 0;
 
       final checkinTimes = DateTime.parse('${checkinTime}');
 
       formatcheckinTimes = DateFormat.Hm().format(checkinTimes);
 
-      if (providerService.timesheetListDetial?.ioList
-              ?.toList()[0]
-              .checkoutTime
-              .toString() !=
-          '0') {
-        final checkoutTime = providerService.timesheetListDetial?.ioList
-                ?.toList()[0]
-                .checkoutTime
-                .toString() ??
-            0;
+      if (providerService.timesheetListDetial?.ioList?.toList()[0].checkoutTime.toString() != '0') {
+        final checkoutTime = providerService.timesheetListDetial?.ioList?.toList()[0].checkoutTime.toString() ?? 0;
         final checkoutTimes = DateTime.parse('${checkoutTime}');
         formatcheckoutTimes = DateFormat.Hm().format(checkoutTimes);
       }
@@ -504,81 +454,66 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
           itemBuilder: (context, index) {
             return Container(
               // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              margin: const EdgeInsets.only(
-                  right: 30, left: 30, top: 20, bottom: 20),
+              margin: const EdgeInsets.only(right: 30, left: 30, top: 20, bottom: 20),
               child: SizedBox(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                providerService.langs == 'la' ? 'ວັນເດື່ອນປີ :' : "Date",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.sp,
-                                    color: black),
-                              ),
-                              Text(
-                                '${Nday >= 10 ? Nday : "0${Nday}"}/${Nmonth >= 10 ? Nmonth : "0${Nmonth}"}/${Nyear}',
-                                style: TextStyle(fontSize: 12.sp, color: black),
-                              ),
-                              Text(
-                                 providerService.langs == 'la' ?  'ລວມເວລາ:' :  'Total :',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.sp,
-                                    color: black),
-                              ),
-                              Text(
-                                '${ShowHM}',
-                                style: TextStyle(fontSize: 12.sp, color: black),
-                              ),
-                            ],
+                          Text(
+                            providerService.langs == 'la' ? 'ວັນເດື່ອນປີ :' : "Date",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                   providerService.langs == 'la' ?   'ເວລາ:':  'Time :',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.sp,
-                                    color: black),
-                              ),
-                              Text(
-                                '${SumInout}',
-                                style: TextStyle(fontSize: 12.sp, color: black),
-                              ),
-                              Text(
-                                  providerService.langs == 'la' ?    'ສະຖານະ: ':  'Stutas :',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.sp,
-                                    color: black),
-                              ),
-                              Text(
-                                '${Status}',
-                                style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: timesheetApproved == "-1"
-                                        ? Color.fromRGBO(255, 153, 0, 1)
-                                        : timesheetApproved == "1"
-                                            ? Color.fromRGBO(76, 175, 79, 1)
-                                            : Color.fromRGBO(244, 67, 54, 1)),
-                              ),
-                            ],
-                          )
+                          Text(
+                            '${Nday >= 10 ? Nday : "0${Nday}"}/${Nmonth >= 10 ? Nmonth : "0${Nmonth}"}/${Nyear}',
+                            style: TextStyle(fontSize: 12.sp, color: black),
+                          ),
+                          Text(
+                            providerService.langs == 'la' ? 'ລວມເວລາ:' : 'Total :',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                          ),
+                          Text(
+                            '${ShowHM}',
+                            style: TextStyle(fontSize: 12.sp, color: black),
+                          ),
                         ],
                       ),
-                      const SizedBox(
-                        width: 20.0,
-                      ),
-                    ]),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            providerService.langs == 'la' ? 'ເວລາ:' : 'Time :',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                          ),
+                          Text(
+                            '${SumInout}',
+                            style: TextStyle(fontSize: 12.sp, color: black),
+                          ),
+                          Text(
+                            providerService.langs == 'la' ? 'ສະຖານະ: ' : 'Stutas :',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                          ),
+                          Text(
+                            '${Status}',
+                            style: TextStyle(
+                                fontSize: 12.sp,
+                                color: timesheetApproved == "-1"
+                                    ? Color.fromRGBO(255, 153, 0, 1)
+                                    : timesheetApproved == "1"
+                                        ? Color.fromRGBO(76, 175, 79, 1)
+                                        : Color.fromRGBO(244, 67, 54, 1)),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 20.0,
+                  ),
+                ]),
               ),
             );
           }),
@@ -586,19 +521,15 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
   }
 
   Future<void> _showSuccus() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Center(
-            child: Text('ຢືນຢັນການລົບ',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold))),
+            child:
+                Text('ຢືນຢັນການລົບ', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold))),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -606,10 +537,7 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
             Expanded(
               child: Text("ທ່ານຕ້ອງການລົບ Timesheet ນິ້ບໍ?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: primary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300)),
+                  style: TextStyle(color: primary, fontSize: 12, fontWeight: FontWeight.w300)),
             )
           ],
         ),
@@ -628,10 +556,7 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
                       borderRadius: BorderRadius.circular(24),
                       child: const Text(
                         'ຍົກເລີກ',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                       )),
                 ),
               ),
@@ -643,8 +568,7 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
                     height: 30,
                     onPressed: () async {
                       _showDialogLoding();
-                      final providerService =
-                          Provider.of<ProviderService>(context, listen: false);
+                      final providerService = Provider.of<ProviderService>(context, listen: false);
                       await providerService.DelectTimesheetBtId();
                       providerService.setStartWorkAll();
                       setState(() {
@@ -661,10 +585,7 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
                     borderRadius: BorderRadius.circular(24),
                     child: const Text(
                       'ຕົກລົງ',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                     )),
               )
             ],
@@ -675,8 +596,7 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
   }
 
   Future<void> _showDialogLoding() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
         context: context,
@@ -684,22 +604,20 @@ providerService.langs == 'la' ?'ໄລຍະເວລາປະຕິບັດວ
         builder: (BuildContext context) {
           return new WillPopScope(
               onWillPop: () async => true,
-              child: SimpleDialog(
-                  backgroundColor: Colors.white,
-                  children: <Widget>[
-                    Center(
-                      child: Column(children: [
-                        CircularProgressIndicator(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                         providerService.langs == 'la' ?      "ກຳລັງໂຫລດ......":   "Loding......",
-                          style: TextStyle(color: primary),
-                        )
-                      ]),
+              child: SimpleDialog(backgroundColor: Colors.white, children: <Widget>[
+                Center(
+                  child: Column(children: [
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      providerService.langs == 'la' ? "ກຳລັງໂຫລດ......" : "Loding......",
+                      style: TextStyle(color: primary),
                     )
-                  ]));
+                  ]),
+                )
+              ]));
         });
   }
 

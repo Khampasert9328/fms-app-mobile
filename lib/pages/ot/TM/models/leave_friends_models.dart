@@ -50,7 +50,7 @@ class Datum {
     int? statusUser;
     int? levelId;
     num? annualLeave;
-    int? sickLeave;
+    num? sickLeave;
     int? lakitLeave;
     num? khrpLeave;
 
