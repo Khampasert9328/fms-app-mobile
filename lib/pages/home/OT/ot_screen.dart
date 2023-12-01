@@ -309,8 +309,8 @@ class _OverTimeOTState extends State<OverTimeOT> {
                             );
                           },
                           indicatorBuilder: (_, index) {
-                            var color;
-                            var child;
+                            Color color;
+                            Widget? child;
                             if (index == _processIndex) {
                               color = primary;
                               child = const Padding(
