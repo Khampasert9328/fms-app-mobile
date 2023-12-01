@@ -233,18 +233,8 @@ class _TMAwaitCompoState extends State<TMAwaitCompo> {
                                     ],
                                   ),
                                   const Spacer(),
-                                  if (data.levelId != 3 ||
-                                      (data.lStatusId == 1 ||
-                                              data.lStatusId == -1 ||
-                                              data.lStatusId == 2 ||
-                                              (data.approvedBy == null || data.statusApproved! > 0)) &&
-                                          click == true)
-                                    if (data.levelId == 3 ||
-                                        (data.lStatusId != 4 ||
-                                                (data.statusUser == 2 ||
-                                                    data.statusApproved == 2 ||
-                                                    data.lStatusId == 2)) &&
-                                            click == true)
+                                  if (data.levelId != 3 || (data.lStatusId == 1 || data.lStatusId == -1 || data.lStatusId == 2 || (data.approvedBy == null || data.statusApproved! > 0)) && click == true)
+                                    if (data.levelId == 3 || (data.lStatusId != 4 ||(data.statusUser == 2 ||data.statusApproved == 2 ||data.lStatusId == 2)) && click == true)
                                       click == false
                                           ? const SizedBox()
                                           : Checkbox(
