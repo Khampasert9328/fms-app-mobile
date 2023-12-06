@@ -19,7 +19,9 @@ import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:timelines/timelines.dart';
 
 class OverTimeOT extends StatefulWidget {
-  const OverTimeOT({Key? key}) : super(key: key);
+  String? latitude;
+  String? longitude;
+  OverTimeOT({super.key, required this.latitude, required this.longitude});
 
   @override
   _OverTimeOTState createState() => _OverTimeOTState();
@@ -478,7 +480,8 @@ class _OverTimeOTState extends State<OverTimeOT> {
                             },
                             itemAsString: (DataModels u) => u.name.toString(),
                             onChanged: (DataModels? data) {
-                              workType = data?.code ?? "";
+                              print(data?.code.toString());
+                              workType = data?.workTypeId.toString();
                             },
                             items: providerService.workType,
                           ),
@@ -563,44 +566,9 @@ class _OverTimeOTState extends State<OverTimeOT> {
                               Expanded(
                                 child: MyElevatedButtonPrimary(
                                   onPressed: () async {
-                                    String detail = _remark.text;
-                                    String workcode = workCodeId.toString();
-                                    String project_id = projectId.toString();
-                                    String workType_id = workType.toString();
-
-                                    print(detail);
-                                    print(workcode);
-                                    print(project_id);
-                                    print(workType_id);
-                                    print(
-                                        "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
-                                    final now = new DateTime.now();
-
-                                    if (_fromDateStart != null &&
-                                        _remark.text != "" &&
-                                        workCodeId != null &&
-                                        projectId != null) {
-                                      // final startNew = DateTime(_fromDateStart!.year, _fromDateStart!.month,
-                                      //     _fromDateStart!.day, timeStart.hour, timeStart.minute);
-                                      // final startEnd = DateTime(_fromDateStart!.year, _fromDateStart!.month,
-                                      //     _fromDateStart!.day, timeEnd.hour, timeEnd.minute);
-
-                                      print(detail);
-                                      print(workcode);
-                                      print(project_id);
-
-                                      await WorkTypeService()
-                                          .startOT(
-                                              context,
-                                              project_id,
-                                              workcode,
-                                              workcode,
-                                              '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}',
-                                              detail)
-                                          .then((value) {
-                                        providerService.setCheckButtonOT(true);
-                                      });
-                                    }
+                                    print("${widget.latitude} ${widget.longitude}");
+                                    await WorkTypeService().startOT(context, workType, projectId, workCodeId,
+                                        "${widget.latitude},${widget.longitude}", _remark.text);
                                   },
                                   borderRadius: BorderRadius.circular(24),
                                   child: const Text(

@@ -9,9 +9,8 @@ import 'package:ntp/ntp.dart';
 import 'package:provider/provider.dart';
 
 class TimerProvider extends ChangeNotifier {
-
   CheckOtModel? _checkOtModel;
- CheckOtModel? get checkOtModel => _checkOtModel;
+  CheckOtModel? get checkOtModel => _checkOtModel;
 
   int _second = 0;
 
@@ -26,10 +25,9 @@ class TimerProvider extends ChangeNotifier {
   bool isLoading = false;
   Timer? timer;
 
-
   //OT
-   int _secondsOT = 0;
-   int? get secondOT => _secondsOT;
+  int _secondsOT = 0;
+  int? get secondOT => _secondsOT;
 
   Duration _durationOT = const Duration();
 
@@ -40,22 +38,22 @@ class TimerProvider extends ChangeNotifier {
   bool isLoadingOT = false;
   Timer? timerOT;
 
-    set setSecondOT(int? val) {
+  set setSecondOT(int? val) {
     _secondsOT = val ?? 0;
     notifyListeners();
   }
 
-   set setDurationOT(int? val) {
+  set setDurationOT(int? val) {
     _durationOT = Duration(seconds: val ?? 0);
     notifyListeners();
   }
 
-    void addTimeOT() {
+  void addTimeOT() {
     setDurationOT = _secondsOT;
     notifyListeners();
   }
 
-/// function nup vela
+  /// function nup vela
   void initTimeOT(context) async {
     final ntpTimes = await NTP.now();
     const laosTimeOffsets = Duration(hours: 0);
@@ -63,12 +61,11 @@ class TimerProvider extends ChangeNotifier {
     // final provider = Provider.of<ProviderService>(context, listen: false);
 
     /// dueng vela khrng Laos jark server
-    _currentLaosTimes = ntpTimes.add(laosTimeOffsets);
+    _currentLaosTimesOT = ntpTimes.add(laosTimeOffsets);
 
     /// check in time man vela t lerm kod khor OT
     final checkInTime = _checkOtModel?.data?.checkinTime;
     if (checkInTime != null) {
-
       /// ao vela khrng Laos trn pah ju bun ma ha khuam harng khrng vi na t jark trn t lerm kod OT
       setSecondOT = ntpTimes.difference(checkInTime).inSeconds;
       addTimeOT();
@@ -76,24 +73,21 @@ class TimerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-   Future<void> startTimerOT(context) async {
-      ///get khor moun jark OT status khrng user
+  Future<void> startTimerOT(context) async {
+    ///get khor moun jark OT status khrng user
     _checkOtModel = await WorkTypeService().checkOtTime();
 
     /// thar hark OT code pen true hai pai lerm function nup vela
     if (_checkOtModel?.code == true) {
-
       /// timer ja update thouk2 1 vi
-      timer = Timer.periodic(const Duration(seconds: 1),
-              (_) => initTimeOT(context));
+      timerOT = Timer.periodic(const Duration(seconds: 1), (_) => initTimeOT(context));
     }
     notifyListeners();
-   }
-
-   void stopTimerOT() {
-    timer?.cancel();
   }
 
+  void stopTimerOT() {
+    timerOT?.cancel();
+  }
 
   set setSecond(int? val) {
     _second = val ?? 0;
@@ -109,10 +103,6 @@ class TimerProvider extends ChangeNotifier {
     setDuration = _second;
   }
 
-  // set setAttendModel(CheckAttend? val) {
-  //   _checkAttendModel = val;
-  //   notifyListeners();
-  // }
 
   void initTime(context) async {
     final ntpTimes = await NTP.now();
@@ -120,15 +110,20 @@ class TimerProvider extends ChangeNotifier {
     // Laos time offset from UTC
     final provider = Provider.of<ProviderService>(context, listen: false);
     _currentLaosTimes = ntpTimes.add(laosTimeOffsets);
-    final checkIn = provider.checkAttend!.data!.checkinTime;
+    final checkIn = provider.checkAttend?.data?.checkinTime;
     if (checkIn != null) {
       setSecond = ntpTimes.difference(checkIn).inSeconds;
       addTime();
     }
+    notifyListeners();
   }
 
-  void stopTimer() {
+  void stopTimer(context) {
+    final provider = Provider.of<ProviderService>(context, listen: false);
+    provider.setCheckAttend();
     timer?.cancel();
+    _duration = Duration(seconds: 0);
+    notifyListeners();
   }
 
   Future<void> startTimer(context) async {

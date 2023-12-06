@@ -1,4 +1,4 @@
-// ignore_for_file: unrelated_type_equality_checks, use_build_context_synchronously
+// ignore_for_file: unrelated_type_equality_checks, use_build_context_synchronously, curly_braces_in_flow_control_structures
 
 import 'dart:async';
 import 'dart:io';
@@ -23,6 +23,7 @@ import 'package:fms_mobile_app/pages/ot/ot_page.dart';
 import 'package:fms_mobile_app/pages/ot/HR/main_hr.dart';
 import 'package:fms_mobile_app/pages/teams/team_work.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_list.dart';
+import 'package:fms_mobile_app/pages/timesheets/timesheet_new.dart';
 import 'package:fms_mobile_app/services/auth_service.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:fms_mobile_app/shared/mydata.dart';
@@ -33,6 +34,7 @@ import 'package:fms_mobile_app/widgets/MyElevatedButton_Gray.dart';
 import 'package:fms_mobile_app/widgets/MyElevatedButton_Primary.dart';
 import 'package:fms_mobile_app/widgets/MyElevatedButton_Secondary.dart';
 import 'package:fms_mobile_app/widgets/custom_image.dart';
+import 'package:fms_mobile_app/widgets/loading/loading_success.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -93,12 +95,10 @@ class _HomePagesState extends State<HomePages> {
   }
 
   _fuctionNewTap(BuildContext context) async {
-    String refresh = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const TimeSheetList()));
+    String refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => const TimeSheetNew()));
 
     if (refresh == "true") {
-      final providerService =
-          Provider.of<ProviderService>(context, listen: false);
+      final providerService = Provider.of<ProviderService>(context, listen: false);
       await providerService.SetStdTimesheet(0);
       setState(() => timeStart = false);
       await checkingWorkRe();
@@ -107,8 +107,7 @@ class _HomePagesState extends State<HomePages> {
       setState(() => stdbtnEnd = true);
       setState(() => timeStart = true);
     } else if (refresh == "") {
-      final providerService =
-          Provider.of<ProviderService>(context, listen: false);
+      final providerService = Provider.of<ProviderService>(context, listen: false);
       await providerService.SetStdTimesheet(0);
       setState(() => timeStart = false);
       // await checkingWork();
@@ -125,8 +124,7 @@ class _HomePagesState extends State<HomePages> {
         duration: Duration(seconds: 4),
       ));
 
-      final providerService =
-          Provider.of<ProviderService>(context, listen: false);
+      final providerService = Provider.of<ProviderService>(context, listen: false);
       await providerService.SetStdTimesheet(0);
       setState(() => timeStart = false);
       await checkingWorkRe();
@@ -139,8 +137,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   Future checkingWork() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     if (providerService.home_std == false) {
       setState(() {
@@ -200,8 +197,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   Future checkingWorkRe() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     setState(() {
       providerService.loadding_home = true;
@@ -233,7 +229,7 @@ class _HomePagesState extends State<HomePages> {
     // print(8);
 
     await startOT();
-    await startWorkAll();
+    //await startWorkAll();
 
     setState(() {
       providerService.loadding_home = false;
@@ -242,8 +238,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   startOT() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     await providerService.SetCheckingStartOT();
     checkingStartOt = providerService.checkingStartOt!.data?.length;
     final CheckingOT = providerService.checkingStartOt!.data;
@@ -251,15 +246,12 @@ class _HomePagesState extends State<HomePages> {
       timerOt?.cancel();
     }
     if (checkingStartOt != 0) {
-      if (CheckingOT?[0].checkinTime != null &&
-          CheckingOT?[0].checkoutTime == null) {
+      if (CheckingOT?[0].checkinTime != null && CheckingOT?[0].checkoutTime == null) {
         int? totalSecond = CheckingOT![0].totalSeconds!;
         myDurationOT = Duration(seconds: totalSecond, minutes: 0, hours: 0);
-        timerOt =
-            Timer.periodic(const Duration(seconds: 1), (_) => addTimeOT());
+        timerOt = Timer.periodic(const Duration(seconds: 1), (_) => addTimeOT());
         print(CheckingOT[0].totalSeconds);
-      } else if (CheckingOT?[0].checkinTime != null &&
-          CheckingOT?[0].checkoutTime != null) {
+      } else if (CheckingOT?[0].checkinTime != null && CheckingOT?[0].checkoutTime != null) {
         int? totalSecond = CheckingOT![0].totalSeconds!;
         myDurationOT = Duration(seconds: totalSecond, minutes: 0, hours: 0);
       }
@@ -267,13 +259,10 @@ class _HomePagesState extends State<HomePages> {
   }
 
   startWorkAll() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     final time = Provider.of<TimerProvider>(context, listen: false);
-    if (providerService.checkAttend?.data?.inWork == true &&
-        providerService.checkAttend?.data?.attendanceId != 0) {
-      int totalSeconds =
-          (providerService.checkAttend?.data?.totalSeconds?.toInt() ?? 0);
+    if (providerService.checkAttend?.data?.inWork == true && providerService.checkAttend?.data?.attendanceId != 0) {
+      int totalSeconds = (providerService.checkAttend?.data?.totalSeconds?.toInt() ?? 0);
 
       // print(totalSeconds);
       // int year = int.parse(providerService.checkAttend?.data?.totalMinutes);
@@ -283,8 +272,7 @@ class _HomePagesState extends State<HomePages> {
       }
     } else if (providerService.checkAttend?.data?.inWork == false &&
         providerService.checkAttend?.data?.attendanceId != 0) {
-      int totalSeconds =
-          (providerService.checkAttend?.data?.totalSeconds?.toInt() ?? 0);
+      int totalSeconds = (providerService.checkAttend?.data?.totalSeconds?.toInt() ?? 0);
       myDuration = Duration(seconds: totalSeconds, minutes: 0, hours: 0);
 
       // print(totalSeconds);
@@ -324,8 +312,7 @@ class _HomePagesState extends State<HomePages> {
 
   @override
   Widget build(BuildContext context) {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     return Scaffold(
         // backgroundColor: appBgColor,
         appBar: AppBar(
@@ -333,8 +320,7 @@ class _HomePagesState extends State<HomePages> {
           systemOverlayStyle: SystemUiOverlayStyle.light,
           title: Center(
               child: Text(providerService.langs == 'la' ? "ໜ້າຫຼັກ" : "Home",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white))),
+                  textAlign: TextAlign.center, style: const TextStyle(color: Colors.white))),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -347,8 +333,7 @@ class _HomePagesState extends State<HomePages> {
         body: Builder(
           builder: (BuildContext context) {
             return OfflineBuilder(
-              connectivityBuilder: (BuildContext context,
-                  ConnectivityResult connectivity, Widget child) {
+              connectivityBuilder: (BuildContext context, ConnectivityResult connectivity, Widget child) {
                 final bool connected = connectivity != ConnectivityResult.none;
                 return Stack(
                   fit: StackFit.expand,
@@ -362,13 +347,10 @@ class _HomePagesState extends State<HomePages> {
                             height: 32.0,
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 300),
-                              color: connected
-                                  ? Colors.green.shade400
-                                  : const Color(0xFFEE4400),
+                              color: connected ? Colors.green.shade400 : const Color(0xFFEE4400),
                               child: connected
                                   ? const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
                                           "ONLINE",
@@ -377,8 +359,7 @@ class _HomePagesState extends State<HomePages> {
                                       ],
                                     )
                                   : const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
                                           "OFFLINE",
@@ -392,9 +373,7 @@ class _HomePagesState extends State<HomePages> {
                                           height: 12.0,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2.0,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.white),
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                           ),
                                         ),
                                       ],
@@ -441,11 +420,9 @@ class _HomePagesState extends State<HomePages> {
   }
 
   getRefreshIndicator() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     return RefreshIndicator(
-      child: providerService.loadding_home == true &&
-              providerService.loadding_homestd == 1
+      child: providerService.loadding_home == true && providerService.loadding_homestd == 1
           ? const Center(
               child: CircularProgressIndicator(),
             )
@@ -520,8 +497,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   getStartOT() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     //final CheckingOT = providerService.checkingStartOt!.data;
     //print(CheckingOT![0].endTime);
@@ -529,8 +505,7 @@ class _HomePagesState extends State<HomePages> {
       padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
       child: AnimatedContainer(
         duration: const Duration(seconds: 2),
-        padding:
-            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
         decoration: BoxDecoration(
           color: appBgColor,
           //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
@@ -555,14 +530,9 @@ class _HomePagesState extends State<HomePages> {
                           alignment: Alignment.center,
                           // ignore: prefer_const_constructors
                           child: Text(
-                            providerService.langs == 'la'
-                                ? " ບັນທຶກ OT "
-                                : "Record OT hours",
+                            providerService.langs == 'la' ? " ບັນທຶກ OT " : "Record OT hours",
                             // ignore: prefer_const_constructors
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: primary),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primary),
                           )),
                       const SizedBox(
                         height: 5,
@@ -590,10 +560,58 @@ class _HomePagesState extends State<HomePages> {
                           ? MyElevatedButtonPrimary(
                               width: double.infinity,
                               onPressed: () async {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => const OverTimeOT()));
+                                providerService.setCheckButtonOT(true);
+                                final time = Provider.of<TimerProvider>(context, listen: false);
+                                if (stdbtnStart == true) {
+                                  setState(() => stdbtnStart = false);
+
+                                  setState(() => _btnStartisLoading = true);
+                                  if (_btnStartisLoading == true) {
+                                    await providerService.setLocation();
+
+                                    if (Geolocator.checkPermission == LocationPermission.denied) {
+                                      providerService.setLocation();
+                                    } else {
+                                      await providerService.SetCheckFieldLocations(
+                                          "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                                      if (providerService.checkFieldLocations?.data.code == 1) {
+                                        final res = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) => OverTimeOT(
+                                                      latitude: '${providerService.userLocation?.latitude}',
+                                                      longitude: '${providerService.userLocation?.longitude}',
+                                                    )));
+
+                                        if (res) {
+                                          if (!mounted)
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              backgroundColor: primary,
+                                              content: Text("ເລິ່ມເຮັດໂອທີສຳເລັດ"),
+                                              duration: Duration(seconds: 2),
+                                            ));
+
+                                          setState(() => _btnStartisLoading = false);
+                                          setState(() => stdbtnStart = true);
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                            backgroundColor: red,
+                                            content: Text("ເຮັດໂອທີບໍ່ສຳເລັດ"),
+                                            duration: Duration(seconds: 2),
+                                          ));
+                                          // providerService.setFileForUpload(null);
+
+                                          setState(() => _btnStartisLoading = false);
+                                          setState(() => stdbtnStart = true);
+                                        }
+                                      } else {
+                                        setState(() => _btnStartisLoading = false);
+                                        setState(() => stdbtnStart = true);
+                                        _showMyDialog();
+                                      }
+                                    }
+                                  }
+                                }
                               },
                               borderRadius: BorderRadius.circular(24),
                               child: const Text(
@@ -631,14 +649,12 @@ class _HomePagesState extends State<HomePages> {
   }
 
   getAppBar() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
       child: Container(
         height: 100,
-        padding:
-            const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
         decoration: BoxDecoration(
             color: appBgColor,
             //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
@@ -694,13 +710,8 @@ class _HomePagesState extends State<HomePages> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      providerService.langs == 'la'
-                          ? MyData.fullnameLa
-                          : MyData.fullname,
-                      style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.bold,
-                          color: primary),
+                      providerService.langs == 'la' ? MyData.fullnameLa : MyData.fullname,
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: primary),
                     ),
                     Text(
                       MyData.level,
@@ -761,8 +772,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   Widget displayItem() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     return Consumer<ProviderService>(
       builder: ((context, value, child) {
         if (value.isloading == true) {
@@ -788,9 +798,7 @@ class _HomePagesState extends State<HomePages> {
                         width: 35,
                       ),
                       title: providerService.langs == 'la' ? "ວຽກ" : "Work",
-                      cout: MyData.pendingday > 99
-                          ? "99+"
-                          : "${MyData.pendingday}",
+                      cout: MyData.pendingday > 99 ? "99+" : "${MyData.pendingday}",
                       onPressed: () async {
                         await Navigator.push(
                           context,
@@ -887,12 +895,8 @@ class _HomePagesState extends State<HomePages> {
                               height: 35,
                               width: 35,
                             ),
-                            title: providerService.langs == 'la'
-                                ? "ອະນຸມັດລາພັກ"
-                                : "Approve OT",
-                            cout: MyData.countOvertime > 99
-                                ? "99+"
-                                : "${MyData.countOvertime}",
+                            title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve OT",
+                            cout: MyData.countOvertime > 99 ? "99+" : "${MyData.countOvertime}",
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -912,12 +916,8 @@ class _HomePagesState extends State<HomePages> {
                             height: 35,
                             width: 35,
                           ),
-                          title: providerService.langs == 'la'
-                              ? "ອະນຸມັດ OT"
-                              : "Approve OT",
-                          cout: MyData.Overtimexecount > 99
-                              ? "99+"
-                              : "${MyData.Overtimexecount}",
+                          title: providerService.langs == 'la' ? "ອະນຸມັດ OT" : "Approve OT",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -938,12 +938,8 @@ class _HomePagesState extends State<HomePages> {
                             height: 35,
                             width: 35,
                           ),
-                          title: providerService.langs == 'la'
-                              ? "ອະນຸມັດ OT"
-                              : "Approve OT",
-                          cout: MyData.Overtimexecount > 99
-                              ? "99+"
-                              : "${MyData.Overtimexecount}",
+                          title: providerService.langs == 'la' ? "ອະນຸມັດ OT" : "Approve OT",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -964,12 +960,8 @@ class _HomePagesState extends State<HomePages> {
                             height: 35,
                             width: 35,
                           ),
-                          title: providerService.langs == 'la'
-                              ? "ອະນຸມັດລາພັກ"
-                              : "Approve OT",
-                          cout: MyData.Overtimexecount > 99
-                              ? "99+"
-                              : "${MyData.Overtimexecount}",
+                          title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve OT",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -990,12 +982,8 @@ class _HomePagesState extends State<HomePages> {
                             height: 35,
                             width: 35,
                           ),
-                          title: providerService.langs == 'la'
-                              ? "ອະນຸມັດ OT"
-                              : "Approve OT",
-                          cout: MyData.Overtimexecount > 99
-                              ? "99+"
-                              : "${MyData.Overtimexecount}",
+                          title: providerService.langs == 'la' ? "ອະນຸມັດ OT" : "Approve OT",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -1016,12 +1004,8 @@ class _HomePagesState extends State<HomePages> {
                             height: 35,
                             width: 35,
                           ),
-                          title: providerService.langs == 'la'
-                              ? "ອະນຸມັດໜ້າວຽກ"
-                              : "Approve OT",
-                          cout: MyData.Overtimexecount > 99
-                              ? "99+"
-                              : "${MyData.Overtimexecount}",
+                          title: providerService.langs == 'la' ? "ອະນຸມັດໜ້າວຽກ" : "Approve OT",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -1041,96 +1025,93 @@ class _HomePagesState extends State<HomePages> {
   }
 
   Widget displayTimerOT() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
-    final provitime = Provider.of<TimerProvider>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      DisplayTimerUI(
-          time: formatTwoDigits(provitime.durationOT.inHours),
-          header: providerService.langs == 'la' ? "ຊົ່ວໂມງ" : "Hour"),
-      const SizedBox(
-        width: 8,
-      ),
-      DisplayTimerUI(
-          time: formatTwoDigits(provitime.durationOT.inMinutes.remainder(60)),
-          header: providerService.langs == 'la' ? "ນາທີ" : "Minute"),
-      const SizedBox(
-        width: 8,
-      ),
-      DisplayTimerUI(
-          time: formatTwoDigits(provitime.durationOT.inSeconds.remainder(60)),
-          header: providerService.langs == 'la' ? "ວິນາທີ" : "Second"),
-    ]);
+    return Consumer<TimerProvider>(builder: (context, provitime, child) {
+      return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        DisplayTimerUI(
+            time: formatTwoDigits(provitime.durationOT.inHours),
+            header: providerService.langs == 'la' ? "ຊົ່ວໂມງ" : "Hour"),
+        const SizedBox(
+          width: 8,
+        ),
+        DisplayTimerUI(
+            time: formatTwoDigits(provitime.durationOT.inMinutes.remainder(60)),
+            header: providerService.langs == 'la' ? "ນາທີ" : "Minute"),
+        const SizedBox(
+          width: 8,
+        ),
+        DisplayTimerUI(
+            time: formatTwoDigits(provitime.durationOT.inSeconds.remainder(60)),
+            header: providerService.langs == 'la' ? "ວິນາທີ" : "Second"),
+      ]);
+    });
   }
 
   Widget displayTimer() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
-    final provitime = Provider.of<TimerProvider>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
+    //final provitime = Provider.of<TimerProvider>(context, listen: false);
 
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      FadeInLeft(
-        animate: true,
-        child: DisplayTimerUI(
-            time: formatTwoDigits(provitime.duration.inHours),
-            header: providerService.langs == 'la' ? "ຊົ່ວໂມງ" : "Hour"),
-      ),
-      const SizedBox(
-        width: 8,
-      ),
-      DisplayTimerUI(
-          time: formatTwoDigits(provitime.duration.inMinutes.remainder(60)),
-          header: providerService.langs == 'la' ? "ນາທີ" : "Minute"),
-      const SizedBox(
-        width: 8,
-      ),
-      FadeInRight(
-        animate: true,
-        child: DisplayTimerUI(
-            time: formatTwoDigits(provitime.duration.inSeconds.remainder(60)),
-            header: providerService.langs == 'la' ? "ວິນາທີ" : "Second"),
-      ),
-    ]);
+    return Consumer<TimerProvider>(builder: (context, provitime, ch) {
+      return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        FadeInLeft(
+          animate: true,
+          child: DisplayTimerUI(
+              time: formatTwoDigits(provitime.duration.inHours),
+              header: providerService.langs == 'la' ? "ຊົ່ວໂມງ" : "Hour"),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        DisplayTimerUI(
+            time: formatTwoDigits(provitime.duration.inMinutes.remainder(60)),
+            header: providerService.langs == 'la' ? "ນາທີ" : "Minute"),
+        const SizedBox(
+          width: 8,
+        ),
+        FadeInRight(
+          animate: true,
+          child: DisplayTimerUI(
+              time: formatTwoDigits(provitime.duration.inSeconds.remainder(60)),
+              header: providerService.langs == 'la' ? "ວິນາທີ" : "Second"),
+        ),
+      ]);
+    });
   }
 
   getStartWork() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return Padding(
       padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
       child: Container(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 0),
-        decoration: BoxDecoration(
-            color: appBgColor,
-            borderRadius: BorderRadius.circular(13),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, 0.1),
-              ),
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, -0.1),
-              ),
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(-0.1, 0),
-              ),
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0.1, 0),
-              ),
-            ]),
+        decoration: BoxDecoration(color: appBgColor, borderRadius: BorderRadius.circular(13), boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0, 0.1),
+          ),
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0, -0.1),
+          ),
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(-0.1, 0),
+          ),
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0.1, 0),
+          ),
+        ]),
         child: SizedBox(
             child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -1147,10 +1128,7 @@ class _HomePagesState extends State<HomePages> {
                                 ? "ບັນທຶກຊົ່ວໂມງເຮັດວຽກປະຈໍາວັນ"
                                 : "Record daily working hours",
                             // ignore: prefer_const_constructors
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: primary),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primary),
                           )),
                     ),
                     const SizedBox(
@@ -1160,13 +1138,9 @@ class _HomePagesState extends State<HomePages> {
                     const SizedBox(
                       height: 10,
                     ),
-                    providerService
-                                .checkSundayAndHoliday?.data?.inDayStartwork ==
-                            true
+                    providerService.checkSundayAndHoliday?.data?.inDayStartwork == true
                         ? providerService.checkAttend?.data?.inWork == true &&
-                                providerService
-                                        .checkAttend?.data?.attendanceId !=
-                                    0
+                                providerService.checkAttend?.data?.attendanceId != 0
                             ? MyElevatedButtonSecondary(
                                 width: double.infinity,
                                 onPressed: () async {
@@ -1177,27 +1151,33 @@ class _HomePagesState extends State<HomePages> {
                                   if (_btnEndisLoading == true) {
                                     await providerService.setLocation();
 
-                                    if (Geolocator.checkPermission ==
-                                        LocationPermission.denied) {
+                                    if (Geolocator.checkPermission == LocationPermission.denied) {
                                       providerService.setLocation();
                                     } else {
                                       await providerService.SetCheckFieldLocations(
                                           "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
-                                      if (providerService
-                                              .checkFieldLocations?.data.code ==
-                                          1) {
+                                      if (providerService.checkFieldLocations?.data.code == 1) {
                                         DateTime now = DateTime.now();
 
-                                        await providerService.SetStdTimesheet(
-                                            1);
-                                        await providerService.SetTimeSheetItem(
-                                            DateTime(
-                                                now.year, now.month, now.day));
-
-                                        _fuctionNewTap(context);
+                                        await providerService.SetStdTimesheet(1);
+                                        await providerService.SetTimeSheetItem(DateTime(now.year, now.month, now.day));
+                                        final res = await providerService.checkOutNew(
+                                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
+                                            context);
+                                        if (res == true) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => LoadingDialog(
+                                              title: "ເລີກວຽກສຳເລັດ",
+                                              onTap: () async {
+                                                Navigator.pop(context);
+                                                await _fuctionNewTap(context);
+                                              },
+                                            ),
+                                          );
+                                        }
                                       } else {
-                                        setState(
-                                            () => _btnEndisLoading = false);
+                                        setState(() => _btnEndisLoading = false);
                                         setState(() => stdbtnEnd = true);
                                         _showMyDialog();
                                       }
@@ -1205,8 +1185,7 @@ class _HomePagesState extends State<HomePages> {
                                   }
                                 },
                                 borderRadius: BorderRadius.circular(24),
-                                child: _btnEndisLoading == true &&
-                                        stdbtnEnd == false
+                                child: _btnEndisLoading == true && stdbtnEnd == false
                                     ? Container(
                                         width: 24,
                                         height: 24,
@@ -1217,106 +1196,75 @@ class _HomePagesState extends State<HomePages> {
                                         ),
                                       )
                                     : Text(
-                                        providerService.langs == 'la'
-                                            ? "ເລິກວຽກ"
-                                            : 'Stop Work',
+                                        providerService.langs == 'la' ? "ເລີກວຽກ" : 'Stop Work',
                                         style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
+                                            color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                                       ))
-                            : providerService.checkAttend?.data?.inWork ==
-                                        false &&
-                                    providerService
-                                            .checkAttend?.data?.attendanceId !=
-                                        0
+                            : providerService.checkAttend?.data?.inWork == false &&
+                                    providerService.checkAttend?.data?.attendanceId != 0
                                 ? MyElevatedButton_Gray(
                                     width: double.infinity,
                                     onPressed: () async {},
                                     borderRadius: BorderRadius.circular(24),
                                     child: Text(
-                                      providerService.langs == 'la'
-                                          ? 'ເຮັດວຽກແລ້ວ'
-                                          : ' Worked ',
+                                      providerService.langs == 'la' ? 'ເຮັດວຽກແລ້ວ' : ' Worked ',
                                       style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
+                                          color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                                     ))
                                 : MyElevatedButtonPrimary(
                                     width: double.infinity,
                                     onPressed: () async {
+                                      final time = Provider.of<TimerProvider>(context, listen: false);
                                       if (stdbtnStart == true) {
                                         setState(() => stdbtnStart = false);
 
-                                        setState(
-                                            () => _btnStartisLoading = true);
+                                        setState(() => _btnStartisLoading = true);
                                         if (_btnStartisLoading == true) {
                                           await providerService.setLocation();
 
-                                          if (Geolocator.checkPermission ==
-                                              LocationPermission.denied) {
+                                          if (Geolocator.checkPermission == LocationPermission.denied) {
                                             providerService.setLocation();
                                           } else {
-                                            await providerService
-                                                .SetCheckFieldLocations(
-                                                    "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
-                                            if (providerService
-                                                    .checkFieldLocations
-                                                    ?.data
-                                                    .code ==
-                                                1) {
+                                            await providerService.SetCheckFieldLocations(
+                                                "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                                            if (providerService.checkFieldLocations?.data.code == 1) {
                                               String? path = '';
 
-                                              final res = await providerService
-                                                  .checkInNew(
-                                                      "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
-                                                      path);
+                                              final res = await providerService.checkInNew(
+                                                  "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
+                                                  path,
+                                                  context);
 
-                                              if (res) {
+                                              if (res == true) {
+                                                print(res);
+                                                time.startTimer(context);
                                                 if (!mounted) return;
 
-                                                await providerService
-                                                    .RefreshHomepahe1();
+                                                await providerService.RefreshHomepahe1();
 
                                                 await startWorkAll();
 
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                        const SnackBar(
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                   backgroundColor: primary,
-                                                  content:
-                                                      Text("ເລິ່ມວຽກສຳເລັດ"),
-                                                  duration:
-                                                      Duration(seconds: 2),
+                                                  content: Text("ເລິ່ມວຽກສຳເລັດ"),
+                                                  duration: Duration(seconds: 2),
                                                 ));
-                                                setState(() =>
-                                                    _btnStartisLoading = false);
-                                                setState(
-                                                    () => stdbtnStart = true);
+                                                setState(() => _btnStartisLoading = false);
+                                                setState(() => stdbtnStart = true);
                                               } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                        const SnackBar(
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                   backgroundColor: red,
-                                                  content:
-                                                      Text("ເລິ່ມວຽກບໍສຳເລັດ"),
-                                                  duration:
-                                                      Duration(seconds: 2),
+                                                  content: Text("ເລິ່ມວຽກບໍ່ສຳເລັດ"),
+                                                  duration: Duration(seconds: 2),
                                                 ));
-                                                providerService
-                                                    .setFileForUpload(null);
+                                                providerService.setFileForUpload(null);
 
-                                                setState(() =>
-                                                    _btnStartisLoading = false);
-                                                setState(
-                                                    () => stdbtnStart = true);
+                                                setState(() => _btnStartisLoading = false);
+                                                setState(() => stdbtnStart = true);
                                               }
                                             } else {
-                                              setState(() =>
-                                                  _btnStartisLoading = false);
-                                              setState(
-                                                  () => stdbtnStart = true);
+                                              setState(() => _btnStartisLoading = false);
+                                              setState(() => stdbtnStart = true);
                                               _showMyDialog();
                                             }
                                           }
@@ -1324,37 +1272,26 @@ class _HomePagesState extends State<HomePages> {
                                       }
                                     },
                                     borderRadius: BorderRadius.circular(24),
-                                    child: _btnStartisLoading == true &&
-                                            stdbtnStart == false
+                                    child: _btnStartisLoading == true && stdbtnStart == false
                                         ? Container(
                                             padding: const EdgeInsets.all(2.0),
-                                            child:
-                                                const CircularProgressIndicator(
+                                            child: const CircularProgressIndicator(
                                               color: Colors.white,
                                               strokeWidth: 3,
                                             ),
                                           )
                                         : Text(
-                                            providerService.langs == 'la'
-                                                ? "ເລີ່ມວຽກ"
-                                                : 'Start Work',
+                                            providerService.langs == 'la' ? "ເລີ່ມວຽກ" : 'Start Work',
                                             style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
+                                                color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                                           ))
                         : MyElevatedButton_Gray(
                             width: double.infinity,
                             onPressed: () async {},
                             borderRadius: BorderRadius.circular(24),
                             child: Text(
-                              providerService.langs == 'la'
-                                  ? "ພັກວຽກ"
-                                  : 'Leave',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
+                              providerService.langs == 'la' ? "ພັກວຽກ" : 'Leave',
+                              style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                             )),
                   ],
                 ))),
@@ -1363,8 +1300,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   getChartdatas() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     final attendance = providerService.attendancehistory;
     final List<ChartData> chartData = [];
     for (var i = 0; i < attendance.length; i++) {
@@ -1381,37 +1317,33 @@ class _HomePagesState extends State<HomePages> {
 
     return Container(
         margin: const EdgeInsets.only(left: 10, right: 10),
-        padding:
-            const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-        decoration: BoxDecoration(
-            color: appBgColor,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, 0.1),
-              ),
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, -0.1),
-              ),
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(-0.1, 0),
-              ),
-              BoxShadow(
-                color: Colors.grey.shade200,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0.1, 0),
-              ),
-            ]),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+        decoration: BoxDecoration(color: appBgColor, borderRadius: BorderRadius.circular(20), boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0, 0.1),
+          ),
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0, -0.1),
+          ),
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(-0.1, 0),
+          ),
+          BoxShadow(
+            color: Colors.grey.shade200,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0.1, 0),
+          ),
+        ]),
         child: Column(
           children: [
             FadeInRight(
@@ -1419,13 +1351,8 @@ class _HomePagesState extends State<HomePages> {
               child: Container(
                   alignment: Alignment.center,
                   child: Text(
-                    providerService.langs == 'la'
-                        ? "ປະຫວັດການມາວຽກ"
-                        : "Attendance History",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: primary),
+                    providerService.langs == 'la' ? "ປະຫວັດການມາວຽກ" : "Attendance History",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primary),
                   )),
             ),
             const SizedBox(
@@ -1476,8 +1403,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   Future<void> _showMyDialog() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
       barrierDismissible: false,
@@ -1496,8 +1422,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   Future<void> _showSuccus() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
       barrierDismissible: false,
@@ -1505,10 +1430,7 @@ class _HomePagesState extends State<HomePages> {
       builder: (BuildContext context) => AlertDialog(
         title: const Center(
             child: Text('ຢືນຢັນການເພີ່ມ',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold))),
+                style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold))),
         content: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1516,10 +1438,7 @@ class _HomePagesState extends State<HomePages> {
             Expanded(
               child: Text("ທ່ານຕ້ອງການເຊົາເຮັດ OT ບໍ?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: primary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300)),
+                  style: TextStyle(color: primary, fontSize: 12, fontWeight: FontWeight.w300)),
             )
           ],
         ),
@@ -1540,10 +1459,7 @@ class _HomePagesState extends State<HomePages> {
                       borderRadius: BorderRadius.circular(24),
                       child: const Text(
                         'ຍົກເລີກ',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                       )),
                 ),
               ),
@@ -1554,52 +1470,48 @@ class _HomePagesState extends State<HomePages> {
                 child: MyElevatedButtonPrimary(
                     height: 30,
                     onPressed: () async {
-                      final startOT =
-                          await providerService.CreateCheckInAndOutOTNew(
-                              "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
-                              providerService
-                                  .checkingStartOt!.data![0].eOvertimeId
-                                  .toString());
-
-                      if (startOT == true) {
-                        Navigator.pop(
-                          context,
-                        );
-                        setState(() => stdrefresh = true);
-
-                        await startOT;
-                        setState(() => stdrefresh = false);
-                        print("EndOT");
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          backgroundColor: primary,
-                          content: Text("ເຊົາເຮັດໂອທີ່ ສຳເລັດ"),
-                          duration: Duration(seconds: 2),
-                        ));
-                        setState(() => _btnStartOTisLoading = false);
-                        setState(() => stdbtnStartOT = true);
-                      } else {
-                        Navigator.pop(
-                          context,
-                        );
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          backgroundColor: red,
-                          content: Text("ເຊົາເຮັດໂອທີ່ ບໍສຳເລັດ"),
-                          duration: Duration(seconds: 2),
-                        ));
-
-                        setState(() => _btnStartOTisLoading = false);
-                        setState(() => stdbtnStartOT = true);
+                      if (stdbtnStartOT == true) {
+                        setState(() => stdbtnStartOT = false);
+                        setState(() => _btnStartOTisLoading = true);
                       }
+
+                      // final startOT = await providerService.CreateCheckInAndOutOTNew(
+                      //     "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
+                      //     providerService.checkingStartOt!.data![0].eOvertimeId.toString());
+
+                      // if (startOT == true) {
+                      //   Navigator.pop(
+                      //     context,
+                      //   );
+                      //   setState(() => stdrefresh = true);
+
+                      //   setState(() => stdrefresh = false);
+                      //   print("EndOT");
+                      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      //     backgroundColor: primary,
+                      //     content: Text("ເຊົາເຮັດໂອທີ່ ສຳເລັດ"),
+                      //     duration: Duration(seconds: 2),
+                      //   ));
+                      //   setState(() => _btnStartOTisLoading = false);
+                      //   setState(() => stdbtnStartOT = true);
+                      // } else {
+                      //   Navigator.pop(
+                      //     context,
+                      //   );
+                      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      //     backgroundColor: red,
+                      //     content: Text("ເຊົາເຮັດໂອທີ່ ບໍ່ສຳເລັດ"),
+                      //     duration: Duration(seconds: 2),
+                      //   ));
+
+                      //   setState(() => _btnStartOTisLoading = false);
+                      //   setState(() => stdbtnStartOT = true);
+                      // }
                     },
                     borderRadius: BorderRadius.circular(24),
                     child: const Text(
                       'ຕົກລົງ',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                     )),
               )
             ],

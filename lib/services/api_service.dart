@@ -499,6 +499,7 @@ class APIService {
 
   Future<bool> AddTimeSheet(String token, String date, String projectid, String worktype, String workcode,
       String workhour, String remark, context) async {
+    print("hours===$workhour");
     LoadingAddTimeSheets().showDialogSuccess(context);
     final http.Response response = await http.post(Uri.parse('${apiPath.toString()}/timesheets/submit/request'),
         headers: <String, String>{
@@ -711,12 +712,13 @@ class APIService {
           'Authorization': 'Bearer ${Token}',
         },
         body: jsonEncode(<String, String>{
-          'date': date,
-          'start_time': start_time,
-          'end_time': end_time,
-          'detail': detail,
-          'project_id': project_id,
-          'workcode': workcode
+         
+    "work_type" : "1" , //work_type == 1 ມີ project_id and workcode || work_type == 2  ມີແຕ່  workcode
+    "project_id" : "79",
+    "workcode" : "30" ,
+    "checkin_lat_lng" : "17.9648929,102.6343919" , 
+    "detail" : "asdasdww"  
+
         }));
 
     if (response.statusCode == 200) {

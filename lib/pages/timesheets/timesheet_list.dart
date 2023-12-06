@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_new.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:fms_mobile_app/theme/color.dart';
@@ -142,11 +143,14 @@ class _TimeSheetListState extends State<TimeSheetList> {
                   child: MyElevatedButtonPrimary(
                       width: MediaQuery.of(context).size.width,
                       onPressed: () async {
+                        final provitime = Provider.of<TimerProvider>(context, listen: false);
                         final res = await providerService.checkOutNew(
-                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}", context);
 
-                        print(res);
+                    
                         if (res == true) {
+                          provitime.stopTimer(context);
+
                           Navigator.pop(context, "CheckOut");
                         }
                       },

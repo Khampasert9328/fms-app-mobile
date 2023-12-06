@@ -7,7 +7,12 @@ import 'package:fms_mobile_app/pages/home/OT/models/check_ot_model.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/ot_screen_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/projectall_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/workcode_models.dart';
+import 'package:fms_mobile_app/pages/home/home_app.dart';
+import 'package:fms_mobile_app/pages/home/home_page.dart';
+import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
+import 'package:fms_mobile_app/widgets/loading/loading_success.dart';
+import 'package:fms_mobile_app/widgets/loading/loading_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -66,16 +71,18 @@ class WorkTypeService {
   }
 
   Future<void> startOT(
-      context, String? worktype, String? projectype, String? workcode, String? checklatlng, String? detail) async {
+      context, String? worktype, String? projectid, String? workcode, String? checklatlng, String? detail) async {
+    showDialog(context: context, builder: (context) => LoadingWidget());
+    final time = Provider.of<TimerProvider>(context, listen: false);
     final user = await FirebaseAuth.instance.currentUser?.getIdToken();
     final token = user;
     String url = AppAPI.addOT;
     Object body = jsonEncode({
-      "work_type": worktype, //work_type == 1 ມີ project_id and workcode || work_type == 2  ມີແຕ່  workcode
-      "project_id": projectype,
+      "work_type": worktype,
+      "project_id": projectid,
       "workcode": workcode,
       "checkin_lat_lng": checklatlng,
-      "detail": detail
+      "detail": detail ?? ""
     });
     final res = await http.post(
       Uri.parse(url),
@@ -85,11 +92,19 @@ class WorkTypeService {
         'Authorization': 'Bearer $token',
       },
     );
-     print('unsuccess===${res.body}');
-    print('unsuccess===${res.statusCode}');
+
     if (res.statusCode == 200) {
-      print('success===${res.statusCode}');
-      Navigator.pop(context);
+     await time.startTimerOT(context);
+      Navigator.of(context);
+      showDialog(
+        context: context,
+        builder: (context) => LoadingDialog(
+          title: "ລໍຖ້າກວດສອບ",
+          onTap: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeApp()));
+          },
+        ),
+      );
     }
   }
 
@@ -117,9 +132,7 @@ class WorkTypeService {
     final user = await FirebaseAuth.instance.currentUser?.getIdToken();
     final token = user;
     final res = await http.get(Uri.parse(AppAPI.checkOt),
-       headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer $token'});
+        headers: {'Content-Type': 'application/json; charset=UTF-8', 'Authorization': 'Bearer $token'});
 
     if (res.statusCode == 200) {
       return checkOtModelFromJson(res.body);

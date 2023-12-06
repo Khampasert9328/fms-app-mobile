@@ -57,6 +57,7 @@ import 'package:fms_mobile_app/pages/home/OT/models/ot_screen_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/projectall_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/workcode_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/service/worktype_service.dart';
+import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/ot/DR/models/dr_await_models.dart';
 import 'package:fms_mobile_app/pages/ot/DR/models/dr_success_models.dart';
 import 'package:fms_mobile_app/pages/ot/DR/service/dr_service.dart';
@@ -79,6 +80,7 @@ import 'package:fms_mobile_app/pages/ot/service/get_hr_approved.dart';
 import 'package:fms_mobile_app/services/api_service.dart';
 import 'package:fms_mobile_app/shared/mydata.dart';
 import 'package:geolocator/geolocator.dart' as location;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
@@ -897,11 +899,15 @@ class ProviderService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> checkInNew(String checkinlatlng, String path) async {
+  Future<bool> checkInNew(String checkinlatlng, String path, context) async {
+    final timer = Provider.of<TimerProvider>(context, listen: false);
     print(checkinlatlng);
     final response = await APIService().checkIn(checkinlatlng, path);
 
     if (response == 'OK') {
+    
+      timer.startTimer(context);
+
       setCheckAttend();
 
       return true;
@@ -910,13 +916,16 @@ class ProviderService extends ChangeNotifier {
     }
   }
 
-  Future<bool> checkOutNew(String checkinlatlng) async {
+  Future<bool> checkOutNew(String checkinlatlng, context) async {
+    final timer = Provider.of<TimerProvider>(context, listen: false);
     final user = FirebaseAuth.instance.currentUser!;
     String? idTokens = await user.getIdToken();
 
     final isSuccess = await APIService().getCheckout(idTokens!, checkinlatlng);
 
     if (isSuccess == true) {
+      timer.stopTimer(context);
+
       // EtimesheetId == null ;
       // SetStdTimesheet(0);
       return true;
@@ -1618,11 +1627,14 @@ class ProviderService extends ChangeNotifier {
 
   void checkStatusTM(LeaveFriendsModels? data) {
     for (var i in data!.data!) {
-      if (i.levelId != 3 || (i.lStatusId == 1 || i.lStatusId == -1 || i.lStatusId == 2 || (i.approvedBy == null || i.statusApproved! > 0))) {
-        if (i.levelId == 3 || (i.lStatusId != 4 ||(i.statusUser == 2 ||i.statusApproved == 2 ||i.lStatusId == 2))) {
-            _status = true;
+      if (i.levelId != 3 ||
+          (i.lStatusId == 1 ||
+              i.lStatusId == -1 ||
+              i.lStatusId == 2 ||
+              (i.approvedBy == null || i.statusApproved! > 0))) {
+        if (i.levelId == 3 || (i.lStatusId != 4 || (i.statusUser == 2 || i.statusApproved == 2 || i.lStatusId == 2))) {
+          _status = true;
         }
-      
       } else {
         _status = false;
       }

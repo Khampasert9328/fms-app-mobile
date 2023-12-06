@@ -4,6 +4,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fms_mobile_app/model/projectall.dart';
+import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 
 import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:fms_mobile_app/theme/color.dart';
@@ -52,14 +53,12 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
       setState(() {
         timeStart = newTime;
 
-        final now = new DateTime.now();
-        final startNew = new DateTime(
-            now.year, now.month, now.day, timeStart.hour, timeStart.minute);
-        final startEnd = new DateTime(
-            now.year, now.month, now.day, timeEnd.hour, timeEnd.minute);
+        final now = DateTime.now();
+        final startNew = DateTime(now.year, now.month, now.day, timeStart.hour, timeStart.minute);
+        final startEnd = DateTime(now.year, now.month, now.day, timeEnd.hour, timeEnd.minute);
 
         if (startNew.isAfter(startEnd)) {
-          startEnd.add(Duration(days: 1));
+          startEnd.add(const Duration(days: 1));
           Duration diff = startEnd.difference(startNew);
           final hours = diff.inHours;
           final minutes = diff.inMinutes % 60;
@@ -74,7 +73,6 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
           final minutes = diff.inMinutes % 60;
 
           totalhShow = '$hours ຊົ່ວໂມງ $minutes ນາທີ';
-          print('$hours.$minutes');
           totalh = double.parse('$hours.$minutes');
         }
       });
@@ -90,14 +88,12 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
       setState(() {
         timeEnd = newTime;
 
-        final now = new DateTime.now();
-        final startNew = new DateTime(
-            now.year, now.month, now.day, timeStart.hour, timeStart.minute);
-        final startEnd = new DateTime(
-            now.year, now.month, now.day, timeEnd.hour, timeEnd.minute);
+        final now = DateTime.now();
+        final startNew = DateTime(now.year, now.month, now.day, timeStart.hour, timeStart.minute);
+        final startEnd = DateTime(now.year, now.month, now.day, timeEnd.hour, timeEnd.minute);
 
         if (startNew.isAfter(startEnd)) {
-          startEnd.add(Duration(days: 1));
+          startEnd.add(const Duration(days: 1));
           Duration diff = startEnd.difference(startNew);
           final hours = diff.inHours;
           final minutes = diff.inMinutes % 60;
@@ -126,8 +122,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
       _loding = true;
     });
 
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     await providerService.setTimesheet();
     final workType = providerService.workType;
     final workCode = providerService.workcode;
@@ -136,11 +131,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
     for (var i = 0; i < workType.length; i++) {
       //  print(1);
       WorkTypeItem.add(
-        {
-          "work_type_id": workType[i].workTypeId,
-          "name": workType[i].name,
-          "code": workType[i].code
-        },
+        {"work_type_id": workType[i].workTypeId, "name": workType[i].name, "code": workType[i].code},
       );
     }
 
@@ -166,14 +157,14 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
 
   @override
   void initState() {
-         setData();
+    setData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
+    final timer = Provider.of<TimerProvider>(context, listen: false);
     //final workType = providerService.workType;
 
     return Scaffold(
@@ -181,7 +172,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
         elevation: 10,
         // systemOverlayStyle: SystemUiOverlayStyle.dark,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: black,
           ),
@@ -194,7 +185,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
           },
         ),
         title: Text(
-        providerService.langs == 'la' ?   "ການປ້ອນ Timesheet":   " Timesheet ",
+          providerService.langs == 'la' ? "ການປ້ອນ Timesheet" : " Timesheet ",
           style: TextStyle(
               fontSize: 16.sp,
               // fontWeight: FontWeight.bold,
@@ -246,17 +237,15 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                   children: [
                     FormHelper.dropDownWidgetWithLabel(
                         context,
-                         providerService.langs == 'la' ?   "ປະເພດວຽກ":   " Work Type ",
-                        providerService.langs == 'la' ?    "ເລືອກປະເພດວຽກ":   " Select Work Type ",
+                        providerService.langs == 'la' ? "ປະເພດວຽກ" : " Work Type ",
+                        providerService.langs == 'la' ? "ເລືອກປະເພດວຽກ" : " Select Work Type ",
                         workTypeId,
                         WorkTypeItem, (onChangedVal) {
                       setState(() {
                         workTypeId = onChangedVal.toString();
 
-                        print(onChangedVal.toString());
-                        WorkAllItemAll = WorkCodeItem.where((element) =>
-                            element["work_type_id"].toString() ==
-                            onChangedVal.toString()).toList();
+                        WorkAllItemAll = WorkCodeItem.where(
+                            (element) => element["work_type_id"].toString() == onChangedVal.toString()).toList();
                       });
                     }, (onValidate) {
                       return null;
@@ -278,26 +267,22 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
 
                     workTypeId == "1"
                         ? Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, bottom: 5),
+                            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                             child: Text(
-                             providerService.langs == 'la' ?     "ໂຄງການ":   " Project",
+                              providerService.langs == 'la' ? "ໂຄງການ" : " Project",
                               // ignore: prefer_const_constructors
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                             ),
                           )
                         : Container(),
                     workTypeId == "1"
                         ? Padding(
-                            padding: const EdgeInsets.only(
-                                right: 8, left: 8, top: 3, bottom: 2),
+                            padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
                             child: DropdownSearch<ProjectAll>(
-                              popupProps: PopupProps.modalBottomSheet(
+                              popupProps: const PopupProps.modalBottomSheet(
                                 showSearchBox: true,
                               ),
-                              filterFn: (user, filter) =>
-                                  user.userFilterByCreationDate(filter),
+                              filterFn: (user, filter) => user.userFilterByCreationDate(filter),
                               //  selectedItem: "Brazil",
                               dropdownDecoratorProps: DropDownDecoratorProps(
                                 dropdownSearchDecoration: InputDecoration(
@@ -306,19 +291,17 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                                   ),
 
                                   //border: OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 20.0),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25.0),
                                     borderSide: BorderSide(
-                                      color:
-                                          Color(0xff1C9A7F).withOpacity(0.50),
+                                      color: const Color(0xff1C9A7F).withOpacity(0.50),
                                       width: 2.0,
                                     ),
                                   ),
-                                  fillColor: Color(0xfff3f3f4),
+                                  fillColor: const Color(0xfff3f3f4),
                                   filled: true,
-                                  labelText:    providerService.langs == 'la' ?     'ເລືອກໂຄງການ':   "Select Project",
+                                  labelText: providerService.langs == 'la' ? 'ເລືອກໂຄງການ' : "Select Project",
                                 ),
                               ),
 
@@ -326,10 +309,8 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                                 providerService.setProject(filter);
                                 return providerService.projectAll;
                               },
-                              itemAsString: (ProjectAll u) =>
-                                  u.projectName.toString(),
+                              itemAsString: (ProjectAll u) => u.projectName.toString(),
                               onChanged: (ProjectAll? data) {
-                                print(data?.projectId.toString());
                                 projectId = data?.projectId.toString() ?? "";
                               },
                               items: providerService.projectAll,
@@ -341,8 +322,8 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                     workTypeId != ""
                         ? FormHelper.dropDownWidgetWithLabel(
                             context,
-                            providerService.langs == 'la' ?     "ລະຫັດໜ້າວຽກ":   "Work Code",
-                                   providerService.langs == 'la' ?     "ເລືອກໜ້າວຽກ":   "Select Work Code",
+                            providerService.langs == 'la' ? "ລະຫັດໜ້າວຽກ" : "Work Code",
+                            providerService.langs == 'la' ? "ເລືອກໜ້າວຽກ" : "Select Work Code",
                             workCodeId,
                             WorkAllItemAll, (onChangedVal) {
                             setState(() {
@@ -368,96 +349,16 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                     ),
                     workTypeId != "3" && workTypeId != ""
                         ? Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, bottom: 5),
+                            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                             child: Text(
-                                  providerService.langs == 'la' ?     "ຊົ່ວໂມງເຮັດວຽກ":   "Total" ,
+                              providerService.langs == 'la' ? "ຊົ່ວໂມງເຮັດວຽກ" : "Total",
                               // ignore: prefer_const_constructors
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                             ),
                           )
                         : Container(),
-                    workTypeId != "3" && workTypeId != ""
-                        ? Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    _selectTimeStart();
-                                  },
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: TextField(
-                                      enabled: false,
-                                      decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 15.0,
-                                                  horizontal: 20.0),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                            borderSide: BorderSide(
-                                              color: Color(0xff1C9A7F)
-                                                  .withOpacity(0.50),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          fillColor: Color(0xfff3f3f4),
-                                          filled: true,
-                                          hintText:
-                                              "${timeStart.format(context)}"),
-                                      controller: _timestart,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 30),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    _selectTimeEnd();
-                                  },
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: TextField(
-                                      enabled: false,
-                                      decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 15.0,
-                                                  horizontal: 20.0),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                            borderSide: BorderSide(
-                                              color: Color(0xff1C9A7F)
-                                                  .withOpacity(0.50),
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          fillColor: Color(0xfff3f3f4),
-                                          filled: true,
-                                          hintText:
-                                              "${timeEnd.format(context)}"),
-                                      controller: _timeend,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-                    SizedBox(height: 10),
+
+                    const SizedBox(height: 10),
                     workTypeId != "3" && workTypeId != ""
                         ? SizedBox(
                             height: 50,
@@ -467,19 +368,17 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
                                   ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 20.0),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25.0),
                                     borderSide: BorderSide(
-                                      color:
-                                          Color(0xff1C9A7F).withOpacity(0.50),
+                                      color: const Color(0xff1C9A7F).withOpacity(0.50),
                                       width: 2.0,
                                     ),
                                   ),
-                                  fillColor: Color(0xfff3f3f4),
+                                  fillColor: const Color(0xfff3f3f4),
                                   filled: true,
-                                  hintText: "${totalhShow ?? 0}"),
+                                  hintText: "${timer.duration.inHours}: ${timer.duration.inMinutes.remainder(60)}"),
                               controller: _timeTotal,
                             ),
                           )
@@ -491,12 +390,10 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                           )
                         : Container(),
                     Padding(
-                      padding:
-                          const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                       child: Text(
-                          providerService.langs == 'la' ?       "ໝາຍເຫດ":   "Remark" ,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                        providerService.langs == 'la' ? "ໝາຍເຫດ" : "Remark",
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                     ),
 
@@ -508,16 +405,15 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 20.0),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
                             borderSide: BorderSide(
-                              color: Color(0xff1C9A7F).withOpacity(0.50),
+                              color: const Color(0xff1C9A7F).withOpacity(0.50),
                               width: 2.0,
                             ),
                           ),
-                          fillColor: Color(0xfff3f3f4),
+                          fillColor: const Color(0xfff3f3f4),
                           filled: true,
                           hintText: "ພິມຂໍ້ຄວາມ"),
                     ),
@@ -532,17 +428,11 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                             child: MyElevatedButtonPrimary(
                                 onPressed: () {
                                   if (workTypeId != "") {
-                                    if (workTypeId == '1' &&
-                                        projectId != "" &&
-                                        workCodeId != "" &&
-                                        totalh > 0) {
+                                    if (workTypeId == '1' && projectId != "" && workCodeId != "") {
                                       _showSuccus();
-                                    } else if (workTypeId == '2' &&
-                                        workCodeId != "" &&
-                                        totalh > 0) {
+                                    } else if (workTypeId == '2' && workCodeId != "" ) {
                                       _showSuccus();
-                                    } else if (workTypeId == '3' &&
-                                        workCodeId != "") {
+                                    } else if (workTypeId == '3' && workCodeId != "") {
                                       _showSuccus();
                                     } else {
                                       _showDialogUnsuccus();
@@ -554,10 +444,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                                 borderRadius: BorderRadius.circular(24),
                                 child: const Text(
                                   'ເພີ່ມ',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                                 )),
                           )
                         ],
@@ -571,30 +458,23 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
   }
 
   Future<void> _showSuccus() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Center(
+        title: const Center(
             child: Text('ຢືນຢັນການເພີ່ມ',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold))),
-        content: Row(
+                style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold))),
+        content: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
               child: Text("ທ່ານຕ້ອງການເພີ່ມ Timesheet ບໍ?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: primary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300)),
+                  style: TextStyle(color: primary, fontSize: 12, fontWeight: FontWeight.w300)),
             )
           ],
         ),
@@ -613,28 +493,25 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                       borderRadius: BorderRadius.circular(24),
                       child: const Text(
                         'ຍົກເລີກ',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                       )),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
               Expanded(
                 child: MyElevatedButtonPrimary(
                     height: 30,
                     onPressed: () async {
+                       final timer = Provider.of<TimerProvider>(context, listen: false);
                       // setState(() {
 
                       // //  _loding = true;
 
                       // });
                       _showDialogLoding();
-                      final providerService =
-                          Provider.of<ProviderService>(context, listen: false);
+                      final providerService = Provider.of<ProviderService>(context, listen: false);
 
                       int Nday = providerService.timeSheetList!.day;
                       int Nmonth = providerService.timeSheetList!.month;
@@ -644,47 +521,29 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                       String remark = _remark.text;
                       String work_type = workTypeId;
                       String workcode = workCodeId;
-                      String work_hour =
-                          work_type == '3' ? "0.0" : totalh.toString();
+                      String work_hour = work_type == '3' ? "0.0" : totalh.toString();
                       String project_id = work_type == '1' ? projectId : "";
 
-                      print('date : $date ');
-                      print('remark : $remark ');
-                      print('work_type : $work_type ');
-                      print('workcode : $workcode ');
-                      print('date : $work_hour ');
-                      print('project_id : $project_id ');
 
-                      final AddTimesheeSelect =
-                          await providerService.AddTimesheeSelect(
-                              date,
-                              project_id,
-                              work_type,
-                              workcode,
-                              work_hour,
-                              remark, context);
+                      final AddTimesheeSelect = await providerService.AddTimesheeSelect(
+                          date, project_id, work_type, workcode, '${timer.duration.inHours}.${timer.duration.inMinutes.remainder(60)}', remark, context);
 
                       // await Future.delayed(const Duration(seconds: 3));
 
                       if (AddTimesheeSelect == true) {
-
                         _showDialogLodingAction();
-                          await Future.delayed(Duration(seconds: 1), (() async {
-                        Navigator.pop(context, "true");
-                        Navigator.pop(context, "true");
-                        Navigator.pop(context, "true");
-                        Navigator.pop(context, "true");
-
+                        await Future.delayed(const Duration(seconds: 1), (() async {
+                          Navigator.pop(context, "true");
+                          Navigator.pop(context, "true");
+                          Navigator.pop(context, "true");
+                          Navigator.pop(context, "true");
                         }));
                       }
                     },
                     borderRadius: BorderRadius.circular(24),
                     child: const Text(
                       'ຕົກລົງ',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                     )),
               )
             ],
@@ -695,14 +554,13 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
   }
 
   Future<void> _showDialogUnsuccus() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('ຂໍ້ຄວາມ'),
+      builder: (BuildContext context) => const AlertDialog(
+        title: Text('ຂໍ້ຄວາມ'),
         content: Text("ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບຖ້ວນ"),
         actions: <Widget>[
           // TextButton(
@@ -715,32 +573,28 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
   }
 
   Future<void> _showDialogLoding() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
-      
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
           return new WillPopScope(
               onWillPop: () async => true,
-              child: SimpleDialog(
-                  backgroundColor: Colors.white,
-                  children: <Widget>[
-                    Center(
-                      child: Column(children: [
-                        CircularProgressIndicator(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "ກຳລັງໂຫລດ......",
-                          style: TextStyle(color: primary),
-                        )
-                      ]),
+              child: const SimpleDialog(backgroundColor: Colors.white, children: <Widget>[
+                Center(
+                  child: Column(children: [
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "ກຳລັງໂຫລດ......",
+                      style: TextStyle(color: primary),
                     )
-                  ]));
+                  ]),
+                )
+              ]));
         });
   }
 
@@ -749,7 +603,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return const AlertDialog(
           contentPadding: EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -767,10 +621,10 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                 color: Colors.green,
                 size: 70.0,
               ),
-                 SizedBox(height: 60.0),
+              SizedBox(height: 60.0),
             ],
           ),
-       
+
           // actions: <Widget>[
           //   TextButton(
           //     child: Text('OK'),
