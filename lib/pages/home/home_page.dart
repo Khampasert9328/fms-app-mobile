@@ -625,12 +625,9 @@ class _HomePagesState extends State<HomePages> {
                           : MyElevatedButtonPrimary(
                               width: double.infinity,
                               onPressed: () async {
-                                WorkTypeService()
-                                    .stopOT(context,
-                                        '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}')
-                                    .then((value) {
-                                  providerService.setCheckButtonOT(false);
-                                });
+                                WorkTypeService().stopOT(context,
+                                    '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}');
+                                providerService.setCheckButtonOT(false);
                               },
                               borderRadius: BorderRadius.circular(24),
                               child: const Text(

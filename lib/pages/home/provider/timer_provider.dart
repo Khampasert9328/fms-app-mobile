@@ -85,8 +85,12 @@ class TimerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void stopTimerOT() {
+  void stopTimerOT(context) {
+    final provider = Provider.of<ProviderService>(context, listen: false);
+    provider.setCheckAttend();
     timerOT?.cancel();
+    _durationOT = Duration(seconds: 0);
+    notifyListeners();
   }
 
   set setSecond(int? val) {
@@ -102,7 +106,6 @@ class TimerProvider extends ChangeNotifier {
   void addTime() {
     setDuration = _second;
   }
-
 
   void initTime(context) async {
     final ntpTimes = await NTP.now();

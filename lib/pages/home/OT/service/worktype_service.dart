@@ -94,7 +94,7 @@ class WorkTypeService {
     );
 
     if (res.statusCode == 200) {
-     await time.startTimerOT(context);
+      await time.startTimerOT(context);
       Navigator.of(context);
       showDialog(
         context: context,
@@ -109,6 +109,7 @@ class WorkTypeService {
   }
 
   Future<void> stopOT(context, String? checklatlng) async {
+    final time = Provider.of<TimerProvider>(context, listen: false);
     final user = await FirebaseAuth.instance.currentUser?.getIdToken();
     final token = user;
     String url = AppAPI.stopOT;
@@ -124,6 +125,8 @@ class WorkTypeService {
       },
     );
     if (res.statusCode == 200) {
+      time.stopTimerOT(context);
+
       Navigator.pop(context);
     }
   }

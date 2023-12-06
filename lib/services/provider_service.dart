@@ -905,9 +905,7 @@ class ProviderService extends ChangeNotifier {
     final response = await APIService().checkIn(checkinlatlng, path);
 
     if (response == 'OK') {
-    
-      timer.startTimer(context);
-
+      await timer.startTimer(context);
       setCheckAttend();
 
       return true;
@@ -924,7 +922,7 @@ class ProviderService extends ChangeNotifier {
     final isSuccess = await APIService().getCheckout(idTokens!, checkinlatlng);
 
     if (isSuccess == true) {
-      timer.stopTimer(context);
+     timer.stopTimer(context);
 
       // EtimesheetId == null ;
       // SetStdTimesheet(0);
