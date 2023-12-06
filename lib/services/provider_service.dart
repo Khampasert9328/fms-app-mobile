@@ -77,6 +77,8 @@ import 'package:fms_mobile_app/pages/ot/ot_by_id.dart';
 import 'package:fms_mobile_app/pages/ot/HR/models/hr_checking_success.dart';
 import 'package:fms_mobile_app/pages/ot/HR/service/hr_approved.dart';
 import 'package:fms_mobile_app/pages/ot/service/get_hr_approved.dart';
+import 'package:fms_mobile_app/pages/overtime/models/GetMyOverTime.dart';
+import 'package:fms_mobile_app/pages/overtime/service/ot_service.dart';
 import 'package:fms_mobile_app/services/api_service.dart';
 import 'package:fms_mobile_app/shared/mydata.dart';
 import 'package:geolocator/geolocator.dart' as location;
@@ -922,7 +924,7 @@ class ProviderService extends ChangeNotifier {
     final isSuccess = await APIService().getCheckout(idTokens!, checkinlatlng);
 
     if (isSuccess == true) {
-     timer.stopTimer(context);
+      timer.stopTimer(context);
 
       // EtimesheetId == null ;
       // SetStdTimesheet(0);
@@ -1391,6 +1393,23 @@ class ProviderService extends ChangeNotifier {
 
   LeaveFriendsModels? _leaveFriends;
   LeaveFriendsModels? get leaveFriends => _leaveFriends;
+
+  GetMyOverTimeModels? _overTime;
+  GetMyOverTimeModels? get overTime => _overTime;
+
+  Future<void> getovertimawait() async {
+    _isloading = true;
+    _overTime = await MyOTService().getMyOvertimAwait();
+    _isloading = false;
+    notifyListeners();
+  }
+
+  Future<void> getovertimSuccess() async {
+    _isloading = true;
+    _overTime = await MyOTService().getMyOvertimSuccess();
+    _isloading = false;
+    notifyListeners();
+  }
 
   ////////////////////////////////////////////////////////////////
   Future<void> getLeavePro() async {

@@ -45,10 +45,13 @@ class AppAPI {
   static String worktype = '$apiPath/work-types/me';
   static String project = '$apiPath/projects/me';
   static String workcode = '$apiPath/workcodes/me?work_type_id=';
-  //Add OT
+  // OT
   static String addOT = '$apiPath/overtimes/request-start';
   static String stopOT = '$apiPath/overtimes/request-stop';
   static String checkOt = '$apiPath/overtimes/get-time-start';
+  static String getOTAwait = '$apiPath/overtimes?year=2023&o_status_id=1,2,3';
+  static String getOTSuccess = '$apiPath/overtimes?year=2023&o_status_id=-1,4';
+
 
 
 //HRApproved

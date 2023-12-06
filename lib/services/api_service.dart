@@ -712,13 +712,11 @@ class APIService {
           'Authorization': 'Bearer ${Token}',
         },
         body: jsonEncode(<String, String>{
-         
-    "work_type" : "1" , //work_type == 1 ມີ project_id and workcode || work_type == 2  ມີແຕ່  workcode
-    "project_id" : "79",
-    "workcode" : "30" ,
-    "checkin_lat_lng" : "17.9648929,102.6343919" , 
-    "detail" : "asdasdww"  
-
+          "work_type": "1", //work_type == 1 ມີ project_id and workcode || work_type == 2  ມີແຕ່  workcode
+          "project_id": "79",
+          "workcode": "30",
+          "checkin_lat_lng": "17.9648929,102.6343919",
+          "detail": "asdasdww"
         }));
 
     if (response.statusCode == 200) {
@@ -729,28 +727,26 @@ class APIService {
   }
 
   Future<ListOtSuccess> getListOTSuccess(String idToken) async {
-    final http.Response response =
-        await http.get(Uri.parse('${apiPath.toString()}/overtimes/list-success'), headers: <String, String>{
+    final http.Response response = await http.get(Uri.parse(AppAPI.getOTSuccess), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${idToken}',
     });
 
     if (response.statusCode == 200) {
-      return ListOtSuccess.fromJson(jsonDecode(response.body));
+      return listOtSuccessFromJson(response.body);
     } else {
       throw Exception('Failed to UserToken');
     }
   }
 
   Future<ListOtPading> getListOTPading(String idToken) async {
-    final http.Response response =
-        await http.get(Uri.parse('${apiPath.toString()}/overtimes/list-padding'), headers: <String, String>{
+    final http.Response response = await http.get(Uri.parse(AppAPI.getOTAwait), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer ${idToken}',
     });
 
     if (response.statusCode == 200) {
-      return ListOtPading.fromJson(jsonDecode(response.body));
+      return listOtPadingFromJson(response.body);
     } else {
       throw Exception('Failed to UserToken');
     }

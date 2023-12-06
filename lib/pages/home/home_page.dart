@@ -21,6 +21,7 @@ import 'package:fms_mobile_app/pages/ot/PM/screen/pm_main.dart';
 import 'package:fms_mobile_app/pages/ot/TM/screen/tm_main.dart';
 import 'package:fms_mobile_app/pages/ot/ot_page.dart';
 import 'package:fms_mobile_app/pages/ot/HR/main_hr.dart';
+import 'package:fms_mobile_app/pages/overtime/main_overtime.dart';
 import 'package:fms_mobile_app/pages/teams/team_work.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_list.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_new.dart';
@@ -576,13 +577,14 @@ class _HomePagesState extends State<HomePages> {
                                           "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
                                       if (providerService.checkFieldLocations?.data.code == 1) {
                                         final res = await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => OverTimeOT(
-                                                      latitude: '${providerService.userLocation?.latitude}',
-                                                      longitude: '${providerService.userLocation?.longitude}',
-                                                    )));
-
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => OverTimeOT(
+                                              latitude: '${providerService.userLocation?.latitude}',
+                                              longitude: '${providerService.userLocation?.longitude}',
+                                            ),
+                                          ),
+                                        );
                                         if (res) {
                                           if (!mounted)
                                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -627,7 +629,7 @@ class _HomePagesState extends State<HomePages> {
                               onPressed: () async {
                                 WorkTypeService().stopOT(context,
                                     '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}');
-                                providerService.setCheckButtonOT(false);
+                                providerService.setCheckButtonOT(true);
                               },
                               borderRadius: BorderRadius.circular(24),
                               child: const Text(
@@ -819,7 +821,7 @@ class _HomePagesState extends State<HomePages> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const OTPage(),
+                            builder: (context) => const MainOverTime(),
                           ),
                         );
                         // _showMyDialog();
@@ -1211,7 +1213,6 @@ class _HomePagesState extends State<HomePages> {
                                 : MyElevatedButtonPrimary(
                                     width: double.infinity,
                                     onPressed: () async {
-                                      final time = Provider.of<TimerProvider>(context, listen: false);
                                       if (stdbtnStart == true) {
                                         setState(() => stdbtnStart = false);
 
@@ -1232,9 +1233,7 @@ class _HomePagesState extends State<HomePages> {
                                                   path,
                                                   context);
 
-                                              if (res == true) {
-                                                print(res);
-                                                time.startTimer(context);
+                                              if (res) {
                                                 if (!mounted) return;
 
                                                 await providerService.RefreshHomepahe1();

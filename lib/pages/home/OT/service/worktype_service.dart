@@ -11,6 +11,7 @@ import 'package:fms_mobile_app/pages/home/home_app.dart';
 import 'package:fms_mobile_app/pages/home/home_page.dart';
 import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
+import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_success.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_widget.dart';
 import 'package:http/http.dart' as http;
@@ -72,6 +73,7 @@ class WorkTypeService {
 
   Future<void> startOT(
       context, String? worktype, String? projectid, String? workcode, String? checklatlng, String? detail) async {
+    final provider = Provider.of<ProviderService>(context, listen: false);
     showDialog(context: context, builder: (context) => LoadingWidget());
     final time = Provider.of<TimerProvider>(context, listen: false);
     final user = await FirebaseAuth.instance.currentUser?.getIdToken();
@@ -95,6 +97,7 @@ class WorkTypeService {
 
     if (res.statusCode == 200) {
       await time.startTimerOT(context);
+
       Navigator.of(context);
       showDialog(
         context: context,
@@ -125,6 +128,7 @@ class WorkTypeService {
       },
     );
     if (res.statusCode == 200) {
+      print(res.statusCode);
       time.stopTimerOT(context);
 
       Navigator.pop(context);

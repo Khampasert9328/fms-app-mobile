@@ -28,11 +28,9 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
   String OTstd = "";
 
   _FuctionNewTap(BuildContext context) async {
-    String refresh = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const OTNew()));
+    String refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => const OTNew()));
 
     if (refresh == "true") {
-
       checkingWorksRe();
       OTstd = "true";
     }
@@ -46,15 +44,14 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
   }
 
   Future checkingWorks() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     setState(() {
       _loding = true;
     });
 
     // await Future.delayed(Duration(seconds: 2), (() async {
-     await providerService.CheckingOt();
-     await providerService.setListOT();
+    await providerService.CheckingOt();
+    await providerService.setListOT();
 
     print(providerService.stdCheckingOt?.data?.length);
     //setState(() => _isLoading = false);
@@ -65,8 +62,7 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
   }
 
   Future checkingWorksRe() async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     setState(() {
       _loding = true;
     });
@@ -85,8 +81,7 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-      final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -102,8 +97,7 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
                 );
           },
         ),
-        title:
-            new Text(providerService.langs == 'la' ? "ປ້ອນຂໍ້ມູນຂໍ OT" : "OT", style: const TextStyle(color: black)),
+        title: new Text(providerService.langs == 'la' ? "ປ້ອນຂໍ້ມູນຂໍ OT" : "OT", style: const TextStyle(color: black)),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -141,13 +135,11 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
           TextButton(
             // style: style,
             onPressed: () {
-              final providerService =
-                  Provider.of<ProviderService>(context, listen: false);
+              final providerService = Provider.of<ProviderService>(context, listen: false);
               if (providerService.stdCheckingOt?.data?.length == 0) {
                 _FuctionNewTap(context);
               } else {
-                _showDialogUnsuccus(
-                    "OT Can be requested once a day. Try again the next day!");
+                _showDialogUnsuccus("OT Can be requested once a day. Try again the next day!");
               }
             },
             child: const Icon(Icons.add),
@@ -187,11 +179,10 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
   Widget getChecking() {
     String formattedDate = "";
 
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     //print(providerService.listOtPading?.data?.length);
 
-    return providerService.listOtPading?.data?.length == 0
+    return providerService.listOtPading?.data?.overtimes?.length == 0
         ? Center(
             // ignore: prefer_const_constructors
             child: SizedBox(
@@ -211,10 +202,7 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
                   Center(
                     child: Text(
                       "ບໍ່ມີລາຍການ",
-                      style: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800),
+                      style: TextStyle(color: Colors.grey.shade400, fontSize: 20, fontWeight: FontWeight.w800),
                     ),
                   ),
                   SizedBox(
@@ -229,145 +217,123 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
             child: Consumer<ProviderService>(
               builder: (context, model, child) {
                 return ListView.builder(
-                  itemCount: model.listOtPading?.data?.length,
+                  itemCount: model.listOtPading?.data?.overtimes?.length,
                   itemBuilder: (context, index) {
-                    final item = model.listOtPading?.data?[index];
+                    final item = model.listOtPading?.data?.overtimes?[index];
 
-                    DateTime? startDate = item?.startTime;
+                    String? startDate = item?.startTime;
                     DateTime? endDate = item?.endTime;
                     DateTime? Dates = item?.date;
 
                     String dateRangeString =
-                        '${DateFormat.Hm().format(startDate!)} - ${DateFormat.Hm().format(endDate!)}';
+                        '${DateFormat.Hm().format(startDate as DateTime)} - ${DateFormat.Hm().format(endDate!)}';
                     String dateIn =
-                        '${providerService.langs == 'la' ?  DateFormat.yMMMMd('lo') :  DateFormat.yMMMMd('en').format(Dates!)} ';
+                        '${providerService.langs == 'la' ? DateFormat.yMMMMd('lo') : DateFormat.yMMMMd('en').format(Dates!)} ';
                     //print(dateRangeString);
 
                     return GestureDetector(
                       onTap: () async {
-
-                     
                         await providerService.SetOTId(item!.eOvertimeId, 1);
-                          //  print(item.eOvertimeId);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const OTPageDetail()));
+                        //  print(item.eOvertimeId);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const OTPageDetail()));
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                         margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: appBgColor,
-                            borderRadius: BorderRadius.circular(13),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 0.1),
-                              ),
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, -0.1),
-                              ),
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(-0.1, 0),
-                              ),
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0.1, 0),
-                              ),
-                            ]),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        decoration:
+                            BoxDecoration(color: appBgColor, borderRadius: BorderRadius.circular(13), boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(0, 0.1),
+                          ),
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(0, -0.1),
+                          ),
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(-0.1, 0),
+                          ),
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(0.1, 0),
+                          ),
+                        ]),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(
+                            "${item?.projectName}",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "${item?.projectName}",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 5.0,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 5),
-                                      Text(
-                                        providerService.langs == 'la' ? 'ວັນທິ່ : ' : "Date :",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                           providerService.langs == 'la' ?   'ເວລາ : ' : "Time :",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                         providerService.langs == 'la' ?   'ສະຖານະ : ' : "Stutas :",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                    ],
+                                  SizedBox(height: 5),
+                                  Text(
+                                    providerService.langs == 'la' ? 'ວັນທິ່ : ' : "Date :",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 10.sp, color: black),
                                   ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.4,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        SizedBox(height: 5),
-                                        Text(
-                                          '${dateIn}',
-                                          style: TextStyle(
-                                              fontSize: 10.sp, color: black),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          '${dateRangeString}',
-                                          style: TextStyle(
-                                              fontSize: 10.sp, color: black),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                         providerService.langs == 'la' ? 'ລໍຖ້າອະນຸມັດ' : "Pending" ,
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: Color.fromRGBO(
-                                                  255, 153, 0, 1)),
-                                        ),
-                                      ],
-                                    ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    providerService.langs == 'la' ? 'ເວລາ : ' : "Time :",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 10.sp, color: black),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    providerService.langs == 'la' ? 'ສະຖານະ : ' : "Stutas :",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 10.sp, color: black),
                                   ),
                                 ],
                               ),
-                              const SizedBox(
-                                width: 20.0,
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: 5),
+                                    Text(
+                                      '${dateIn}',
+                                      style: TextStyle(fontSize: 10.sp, color: black),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      '${dateRangeString}',
+                                      style: TextStyle(fontSize: 10.sp, color: black),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      providerService.langs == 'la' ? 'ລໍຖ້າອະນຸມັດ' : "Pending",
+                                      style: TextStyle(fontSize: 10.sp, color: Color.fromRGBO(255, 153, 0, 1)),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ]),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                        ]),
                       ),
                     );
                   },
@@ -377,8 +343,7 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
   }
 
   Widget getCheckingSuccess() {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
     //print(providerService.listOtSuccess?.data?.length);
 
     return providerService.listOtSuccess?.data?.length == 0
@@ -401,10 +366,7 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
                   Center(
                     child: Text(
                       "ບໍ່ມີລາຍການ",
-                      style: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800),
+                      style: TextStyle(color: Colors.grey.shade400, fontSize: 20, fontWeight: FontWeight.w800),
                     ),
                   ),
                   SizedBox(
@@ -430,141 +392,126 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
                     String dateRangeString =
                         '${DateFormat.Hm().format(startDate!)} - ${DateFormat.Hm().format(endDate!)}';
                     String dateIn =
-                        '${providerService.langs == 'la' ?  DateFormat.yMMMMd('lo') :  DateFormat.yMMMMd('en').format(Dates!)} ';
+                        '${providerService.langs == 'la' ? DateFormat.yMMMMd('lo') : DateFormat.yMMMMd('en').format(Dates!)} ';
 
                     //print(dateRangeString);
 
                     return GestureDetector(
                       onTap: () async {
                         await providerService.SetOTId(item!.eOvertimeId, 3);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const OTPageDetail()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const OTPageDetail()));
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                         margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: appBgColor,
-                            borderRadius: BorderRadius.circular(13),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 0.1),
-                              ),
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, -0.1),
-                              ),
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(-0.1, 0),
-                              ),
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0.1, 0),
-                              ),
-                            ]),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        decoration:
+                            BoxDecoration(color: appBgColor, borderRadius: BorderRadius.circular(13), boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(0, 0.1),
+                          ),
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(0, -0.1),
+                          ),
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(-0.1, 0),
+                          ),
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: const Offset(0.1, 0),
+                          ),
+                        ]),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(
+                            "${item?.projectName}",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                "${item?.projectName}",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 5.0,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 5),
-                                      Text(
-                                       providerService.langs == 'la' ?  'ວັນທິ່ : ' : "Date :",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        providerService.langs == 'la' ?   'ເວລາ : ' : "Time  :",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                          providerService.langs == 'la' ?   'ສະຖານະ : ' : "Status  :",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 10.sp, color: black),
-                                      ),
-                                    ],
+                                  SizedBox(height: 5),
+                                  Text(
+                                    providerService.langs == 'la' ? 'ວັນທິ່ : ' : "Date :",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 10.sp, color: black),
                                   ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.4,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        SizedBox(height: 5),
-                                        Text(
-                                          '${dateIn}',
-                                          style: TextStyle(
-                                              fontSize: 10.sp, color: black),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          '${dateRangeString}',
-                                          style: TextStyle(
-                                              fontSize: 10.sp, color: black),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          item?.isApproved == -1
-                                              ?    providerService.langs == 'la' ?  'ບໍ່ອະນຸມັດ' : "Disapproved   "
-                                              : item?.isApproved == 1
-                                                  ? providerService.langs == 'la' ?  'ອະນຸມັດ' : " Approved  "
-                                                  : '',
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              color: item?.isApproved == -1
-                                                  ? Color.fromRGBO(
-                                                      244, 67, 54, 1)
-                                                  : item?.isApproved == 1
-                                                      ? Color.fromRGBO(
-                                                          76, 175, 79, 1)
-                                                      : primary),
-                                        ),
-                                      ],
-                                    ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    providerService.langs == 'la' ? 'ເວລາ : ' : "Time  :",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 10.sp, color: black),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    providerService.langs == 'la' ? 'ສະຖານະ : ' : "Status  :",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 10.sp, color: black),
                                   ),
                                 ],
                               ),
-                              const SizedBox(
-                                width: 20.0,
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: 5),
+                                    Text(
+                                      '${dateIn}',
+                                      style: TextStyle(fontSize: 10.sp, color: black),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      '${dateRangeString}',
+                                      style: TextStyle(fontSize: 10.sp, color: black),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      item?.isApproved == -1
+                                          ? providerService.langs == 'la'
+                                              ? 'ບໍ່ອະນຸມັດ'
+                                              : "Disapproved   "
+                                          : item?.isApproved == 1
+                                              ? providerService.langs == 'la'
+                                                  ? 'ອະນຸມັດ'
+                                                  : " Approved  "
+                                              : '',
+                                      style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: item?.isApproved == -1
+                                              ? Color.fromRGBO(244, 67, 54, 1)
+                                              : item?.isApproved == 1
+                                                  ? Color.fromRGBO(76, 175, 79, 1)
+                                                  : primary),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ]),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                        ]),
                       ),
                     );
                   },
@@ -574,8 +521,7 @@ class _OTPageState extends State<OTPage> with SingleTickerProviderStateMixin {
   }
 
   Future<void> _showDialogUnsuccus(String? Msg) async {
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     return showDialog(
       barrierDismissible: false,

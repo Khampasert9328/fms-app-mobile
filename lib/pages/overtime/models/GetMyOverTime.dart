@@ -1,23 +1,23 @@
 // To parse this JSON data, do
 //
-//     final listOtPading = listOtPadingFromJson(jsonString);
+//     final getMyOverTimeModels = getMyOverTimeModelsFromJson(jsonString);
 
 import 'dart:convert';
 
-ListOtPading listOtPadingFromJson(String str) => ListOtPading.fromJson(json.decode(str));
+GetMyOverTimeModels getMyOverTimeModelsFromJson(String str) => GetMyOverTimeModels.fromJson(json.decode(str));
 
-String listOtPadingToJson(ListOtPading data) => json.encode(data.toJson());
+String getMyOverTimeModelsToJson(GetMyOverTimeModels data) => json.encode(data.toJson());
 
-class ListOtPading {
+class GetMyOverTimeModels {
     int? status;
     Data? data;
 
-    ListOtPading({
+    GetMyOverTimeModels({
         this.status,
         this.data,
     });
 
-    factory ListOtPading.fromJson(Map<String, dynamic> json) => ListOtPading(
+    factory GetMyOverTimeModels.fromJson(Map<String, dynamic> json) => GetMyOverTimeModels(
         status: json["status"],
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
     );
