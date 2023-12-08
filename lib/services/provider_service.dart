@@ -90,6 +90,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 class ProviderService extends ChangeNotifier {
   bool _checkbuttonot = false;
   bool get checkbuttonot => _checkbuttonot;
+  bool _btnStartisLoading= false;
+  bool get btnStartisLoading => _btnStartisLoading;
 
   String tokenUser = "";
 
@@ -239,6 +241,10 @@ class ProviderService extends ChangeNotifier {
 
   setCheckButtonOT(bool value) {
     _checkbuttonot = value;
+    notifyListeners();
+  }
+  setBtStartLoading(bool val){
+    _btnStartisLoading = val;
     notifyListeners();
   }
 

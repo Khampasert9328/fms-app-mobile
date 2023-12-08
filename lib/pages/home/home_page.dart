@@ -562,12 +562,12 @@ class _HomePagesState extends State<HomePages> {
                               width: double.infinity,
                               onPressed: () async {
                                 providerService.setCheckButtonOT(true);
-                                final time = Provider.of<TimerProvider>(context, listen: false);
-                                if (stdbtnStart == true) {
-                                  setState(() => stdbtnStart = false);
 
-                                  setState(() => _btnStartisLoading = true);
-                                  if (_btnStartisLoading == true) {
+                                if (providerService.checkbuttonot == true) {
+                                  providerService.setCheckButtonOT(false);
+
+                                  providerService.setBtStartLoading(true);
+                                  if (providerService.btnStartisLoading == true) {
                                     await providerService.setLocation();
 
                                     if (Geolocator.checkPermission == LocationPermission.denied) {
@@ -593,8 +593,8 @@ class _HomePagesState extends State<HomePages> {
                                               duration: Duration(seconds: 2),
                                             ));
 
-                                          setState(() => _btnStartisLoading = false);
-                                          setState(() => stdbtnStart = true);
+                                          providerService.setBtStartLoading(false);
+                                          providerService.setCheckButtonOT(false);
                                         } else {
                                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                             backgroundColor: red,
@@ -603,12 +603,12 @@ class _HomePagesState extends State<HomePages> {
                                           ));
                                           // providerService.setFileForUpload(null);
 
-                                          setState(() => _btnStartisLoading = false);
-                                          setState(() => stdbtnStart = true);
+                                          providerService.setBtStartLoading(false);
+                                          providerService.setCheckButtonOT(false);
                                         }
                                       } else {
-                                        setState(() => _btnStartisLoading = false);
-                                        setState(() => stdbtnStart = true);
+                                        providerService.setBtStartLoading(false);
+                                        providerService.setCheckButtonOT(true);
                                         _showMyDialog();
                                       }
                                     }
@@ -817,13 +817,61 @@ class _HomePagesState extends State<HomePages> {
                       ),
                       title: providerService.langs == 'la' ? "ໂອທີ" : "OT",
                       cout: '0',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MainOverTime(),
-                          ),
-                        );
+                      onPressed: () async {
+                        providerService.setCheckButtonOT(true);
+
+                        if (providerService.checkbuttonot == true) {
+                          providerService.setCheckButtonOT(false);
+
+                          providerService.setBtStartLoading(true);
+                          if (providerService.btnStartisLoading == true) {
+                            await providerService.setLocation();
+
+                            if (Geolocator.checkPermission == LocationPermission.denied) {
+                              providerService.setLocation();
+                            } else {
+                              await providerService.SetCheckFieldLocations(
+                                  "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                              if (providerService.checkFieldLocations?.data.code == 1) {
+                                final res = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => OverTimeOT(
+                                      latitude: '${providerService.userLocation?.latitude}',
+                                      longitude: '${providerService.userLocation?.longitude}',
+                                    ),
+                                  ),
+                                );
+                                if (res) {
+                                  if (!mounted)
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                      backgroundColor: primary,
+                                      content: Text("ເລິ່ມເຮັດໂອທີສຳເລັດ"),
+                                      duration: Duration(seconds: 2),
+                                    ));
+
+                                  providerService.setBtStartLoading(false);
+                                  providerService.setCheckButtonOT(false);
+                                } else {
+                                  // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  //   backgroundColor: red,
+                                  //   content: Text("ເຮັດໂອທີບໍ່ສຳເລັດ"),
+                                  //   duration: Duration(seconds: 2),
+                                  // ));
+                                  // providerService.setFileForUpload(null);
+
+                                  providerService.setBtStartLoading(false);
+                                  providerService.setCheckButtonOT(false);
+                                }
+                              } else {
+                                providerService.setBtStartLoading(false);
+                                providerService.setCheckButtonOT(true);
+                                _showMyDialog();
+                              }
+                            }
+                          }
+                        }
+
                         // _showMyDialog();
                       }),
                 ),
