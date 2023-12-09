@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fms_mobile_app/model/user_info.dart';
 import 'package:fms_mobile_app/services/auth_service.dart';
+import 'package:fms_mobile_app/theme/color.dart';
 import 'package:fms_mobile_app/widgets/dialog/dialog_error.dart';
 import 'package:fms_mobile_app/wrapper.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +28,18 @@ class ServiceAuth {
   }
 
   Future<void> loginUser(context, email, password) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+              child: Container(
+            height: 50.h,
+            alignment: Alignment.center,
+            child: const CircularProgressIndicator(
+              color: primary,
+            ),
+          ));
+        });
     final auth = Provider.of<AuthService>(context, listen: false);
 
     try {
@@ -40,28 +54,24 @@ class ServiceAuth {
       }
       _userFromFirebase(res.user);
     } on FirebaseAuthException catch (e) {
-      // showDialog(
-      //   context: context,
-      //   builder: (context) {
-      //     return DialogError(
-      //       text: 'ກາລຸນາກວດສອບອີເມລຂອງທ່ານໃຫ້ຖືກຕ້ອງ',
-      //       onTap: () {
-      //         Navigator.pop(context);
-      //       },
-      //     );
-      //   },
-      // );
-
-      print('${e.code}');
-      // pop the loading circle
-      // Navigator.pop(context);
-      // WRONG EMAIL
       if (e.code == 'user-not-found') {
-        // show error to user
+        Navigator.pop(context);
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                  child: DialogError(
+                text: "ກາລຸນາກວດສອບອີເມລຂອງທ່ານ",
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ));
+            });
       }
 
       // WRONG PASSWORD
       else if (e.code == 'wrong-password') {
+        Navigator.pop(context);
         showDialog(
             context: context,
             builder: (context) {
