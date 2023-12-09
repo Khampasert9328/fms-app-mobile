@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fms_mobile_app/model/user_info.dart';
 import 'package:fms_mobile_app/services/auth_service.dart';
+import 'package:fms_mobile_app/widgets/dialog/dialog_error.dart';
 import 'package:fms_mobile_app/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -17,7 +18,7 @@ class ServiceAuth {
       return null;
     }
     //return UserInfo(uid: user.uid, email: user.email);
-     FMSUserInfo(uid: user.uid, email: user.email);
+    FMSUserInfo(uid: user.uid, email: user.email);
   }
 
   Stream<UserInfo?> get user {
@@ -37,47 +38,42 @@ class ServiceAuth {
       if (res.user != null) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Wrapper()));
       }
-       _userFromFirebase(res.user);
+      _userFromFirebase(res.user);
     } on FirebaseAuthException catch (e) {
-      print('no');
+      // showDialog(
+      //   context: context,
+      //   builder: (context) {
+      //     return DialogError(
+      //       text: 'ກາລຸນາກວດສອບອີເມລຂອງທ່ານໃຫ້ຖືກຕ້ອງ',
+      //       onTap: () {
+      //         Navigator.pop(context);
+      //       },
+      //     );
+      //   },
+      // );
+
+      print('${e.code}');
       // pop the loading circle
-      Navigator.pop(context);
+      // Navigator.pop(context);
       // WRONG EMAIL
       if (e.code == 'user-not-found') {
         // show error to user
-        showDialog(
-          context: context,
-          builder: (context) {
-            return const AlertDialog(
-              backgroundColor: Colors.deepPurple,
-              title: Center(
-                child: Text(
-                  'Incorrect Email',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            );
-          },
-        );
       }
 
       // WRONG PASSWORD
       else if (e.code == 'wrong-password') {
-        // show error to user
         showDialog(
-          context: context,
-          builder: (context) {
-            return const AlertDialog(
-              backgroundColor: Colors.deepPurple,
-              title: Center(
-                child: Text(
-                  'Incorrect Password',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            );
-          },
-        );
+            context: context,
+            builder: (context) {
+              return Dialog(
+                  child: DialogError(
+                text: "ກາລຸນາກວດສອບລະຫັດຜ່ານຂອງທ່ານ",
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ));
+            });
+        // show error to user
       }
     }
   }

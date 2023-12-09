@@ -18,6 +18,8 @@ import 'package:fms_mobile_app/model/check_attend.dart';
 import 'package:fms_mobile_app/model/check_field_locations.dart';
 import 'package:fms_mobile_app/model/checking_start_ot.dart';
 import 'package:fms_mobile_app/model/checksundayandholiday.dart';
+import 'package:fms_mobile_app/model/getCountHR.dart';
+import 'package:fms_mobile_app/model/getCountProject.dart';
 import 'package:fms_mobile_app/model/historyinday.dart';
 import 'package:fms_mobile_app/model/holiday_calenda.dart';
 import 'package:fms_mobile_app/model/image_history.dart';
@@ -90,7 +92,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 class ProviderService extends ChangeNotifier {
   bool _checkbuttonot = false;
   bool get checkbuttonot => _checkbuttonot;
-  bool _btnStartisLoading= false;
+  bool _btnStartisLoading = false;
   bool get btnStartisLoading => _btnStartisLoading;
 
   String tokenUser = "";
@@ -130,6 +132,10 @@ class ProviderService extends ChangeNotifier {
 
   PendingDay? _pendingDay;
   PendingDay? get pendingDays => _pendingDay;
+  GetCountOverTimeHrApproveModels? _countHR;
+  GetCountOverTimeHrApproveModels? get countHR => _countHR;
+  GetCountOverTimePrApproveModels? _countPr;
+  GetCountOverTimePrApproveModels? get countPr => _countPr;
 
   TimesheetListDetial? _timesheetListDetial;
   TimesheetListDetial? get timesheetListDetial => _timesheetListDetial;
@@ -243,7 +249,8 @@ class ProviderService extends ChangeNotifier {
     _checkbuttonot = value;
     notifyListeners();
   }
-  setBtStartLoading(bool val){
+
+  setBtStartLoading(bool val) {
     _btnStartisLoading = val;
     notifyListeners();
   }
@@ -458,6 +465,16 @@ class ProviderService extends ChangeNotifier {
     notifyListeners();
   }
 
+  set countHR(val) {
+    _countHR = val;
+    notifyListeners();
+  }
+
+  set prCount1(val) {
+    _countPr = val;
+    notifyListeners();
+  }
+
   setPendingDay() async {
     final user = FirebaseAuth.instance.currentUser!;
     final idTokens = await user.getIdToken();
@@ -470,6 +487,38 @@ class ProviderService extends ChangeNotifier {
       final pendingDay = pendingDays?.data?.pendingDay;
 
       MyData.pendingday = pendingDay ?? 0;
+
+      notifyListeners();
+    }
+  }
+
+  setCountHR() async {
+    final user = FirebaseAuth.instance.currentUser!;
+    final idTokens = await user.getIdToken();
+
+    if (idTokens!.isNotEmpty && idTokens != "") {
+      final res = await APIService().getCountHr(idTokens);
+
+      countHR = res;
+
+      final countHRDay = countHR?.data?.overtimeApprove;
+
+      MyData.countHR = countHRDay ?? 0;
+
+      notifyListeners();
+    }
+  }
+
+  setCountPR() async {
+    final user = FirebaseAuth.instance.currentUser!;
+    final idTokens = await user.getIdToken();
+
+    if (idTokens!.isNotEmpty && idTokens != "") {
+      final res = await APIService().getCountProject(idTokens);
+
+      prCount1 = res;
+
+      MyData.countPRM = res.data!.overtimeApprove ?? 0;
 
       notifyListeners();
     }
@@ -909,12 +958,13 @@ class ProviderService extends ChangeNotifier {
 
   Future<bool> checkInNew(String checkinlatlng, String path, context) async {
     final timer = Provider.of<TimerProvider>(context, listen: false);
+
     print(checkinlatlng);
-    final response = await APIService().checkIn(checkinlatlng, path);
+    final response = await APIService().checkIn(checkinlatlng, path, context);
 
     if (response == 'OK') {
-      await timer.startTimer(context);
-      setCheckAttend();
+      await setCheckAttend();
+      timer.startTimer(context);
 
       return true;
     } else {
@@ -923,15 +973,12 @@ class ProviderService extends ChangeNotifier {
   }
 
   Future<bool> checkOutNew(String checkinlatlng, context) async {
-    final timer = Provider.of<TimerProvider>(context, listen: false);
     final user = FirebaseAuth.instance.currentUser!;
     String? idTokens = await user.getIdToken();
 
-    final isSuccess = await APIService().getCheckout(idTokens!, checkinlatlng);
+    final isSuccess = await APIService().getCheckout(idTokens!, checkinlatlng, context);
 
     if (isSuccess == true) {
-      timer.stopTimer(context);
-
       // EtimesheetId == null ;
       // SetStdTimesheet(0);
       return true;

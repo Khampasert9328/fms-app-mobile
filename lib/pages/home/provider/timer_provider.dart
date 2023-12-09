@@ -133,6 +133,7 @@ class TimerProvider extends ChangeNotifier {
     final provider = Provider.of<ProviderService>(context, listen: false);
     if (provider.checkAttend!.data!.inWork == true) {
       timer = Timer.periodic(const Duration(seconds: 1), (_) => initTime(context));
+      notifyListeners();
     }
   }
 }

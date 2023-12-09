@@ -79,6 +79,8 @@ class _HomePagesState extends State<HomePages> {
     // context.read<ProviderService>().getOverTimeCountPro();
     // context.read<ProviderService>().getOverTimeExecultsCountPro();
     context.read<ProviderService>().getTotalCountPro();
+    context.read<ProviderService>().setCountHR();
+    context.read<ProviderService>().setCountPR();
     context.read<TimerProvider>().startTimer(context);
     context.read<TimerProvider>().startTimerOT(context);
 
@@ -502,149 +504,131 @@ class _HomePagesState extends State<HomePages> {
 
     //final CheckingOT = providerService.checkingStartOt!.data;
     //print(CheckingOT![0].endTime);
-    return Padding(
-      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
-      child: AnimatedContainer(
-        duration: const Duration(seconds: 2),
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-        decoration: BoxDecoration(
-          color: appBgColor,
-          //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
-          borderRadius: BorderRadius.circular(13),
-          //  boxShadow: const[
-          //     BoxShadow(offset: Offset(1,1),blurRadius: 20,color: Colors.black)
-          //   ],
-          gradient: _gradient,
-        ),
-        child: Container(
-          color: Colors.white,
-          child: SizedBox(
-              width: 400,
-              height: 260,
-              child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                          alignment: Alignment.center,
-                          // ignore: prefer_const_constructors
-                          child: Text(
-                            providerService.langs == 'la' ? " ບັນທຶກ OT " : "Record OT hours",
+    return Consumer<ProviderService>(builder: (context, value, child) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
+        child: AnimatedContainer(
+          duration: const Duration(seconds: 2),
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          decoration: BoxDecoration(
+            color: appBgColor,
+            //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
+            borderRadius: BorderRadius.circular(13),
+            //  boxShadow: const[
+            //     BoxShadow(offset: Offset(1,1),blurRadius: 20,color: Colors.black)
+            //   ],
+            gradient: _gradient,
+          ),
+          child: Container(
+            color: Colors.white,
+            child: SizedBox(
+                width: 400,
+                height: 260,
+                child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
                             // ignore: prefer_const_constructors
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primary),
-                          )),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      // Container(
-                      //     alignment: Alignment.center,
-                      //     // ignore: prefer_const_constructors
-                      //     child: Text(
-                      //       providerService.langs == 'la'
-                      //           ? " ແຕ່ ${CheckingOT[0].startTime} ໂມງ  ຫາ  ${CheckingOT[0].endTime} ໂມງ "
-                      //           : " Start  ${CheckingOT[0].startTime}  to  ${CheckingOT[0].endTime}  ",
-                      //       // ignore: prefer_const_constructors
-                      //       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: black),
-                      //     )),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      displayTimerOT(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      // CheckingOT[0].checkinTime == null && CheckingOT[0].checkoutTime == null
-                      //?
-                      providerService.checkbuttonot == false
-                          ? MyElevatedButtonPrimary(
-                              width: double.infinity,
-                              onPressed: () async {
-                                providerService.setCheckButtonOT(true);
+                            child: Text(
+                              providerService.langs == 'la' ? " ບັນທຶກ OT " : "Record OT hours",
+                              // ignore: prefer_const_constructors
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primary),
+                            )),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        // Container(
+                        //     alignment: Alignment.center,
+                        //     // ignore: prefer_const_constructors
+                        //     child: Text(
+                        //       providerService.langs == 'la'
+                        //           ? " ແຕ່ ${CheckingOT[0].startTime} ໂມງ  ຫາ  ${CheckingOT[0].endTime} ໂມງ "
+                        //           : " Start  ${CheckingOT[0].startTime}  to  ${CheckingOT[0].endTime}  ",
+                        //       // ignore: prefer_const_constructors
+                        //       style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: black),
+                        //     )),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        displayTimerOT(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // CheckingOT[0].checkinTime == null && CheckingOT[0].checkoutTime == null
+                        //?
+                        value.checkbuttonot == false
+                            ? MyElevatedButtonPrimary(
+                                width: double.infinity,
+                                onPressed: () async {
+                                  value.setCheckButtonOT(true);
 
-                                if (providerService.checkbuttonot == true) {
-                                  providerService.setCheckButtonOT(false);
+                                  if (providerService.checkbuttonot == true) {
+                                    providerService.setCheckButtonOT(false);
 
-                                  providerService.setBtStartLoading(true);
-                                  if (providerService.btnStartisLoading == true) {
-                                    await providerService.setLocation();
+                                    providerService.setBtStartLoading(true);
+                                    if (providerService.btnStartisLoading == true) {
+                                      await providerService.setLocation();
 
-                                    if (Geolocator.checkPermission == LocationPermission.denied) {
-                                      providerService.setLocation();
-                                    } else {
-                                      await providerService.SetCheckFieldLocations(
-                                          "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
-                                      if (providerService.checkFieldLocations?.data.code == 1) {
-                                        final res = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => OverTimeOT(
-                                              latitude: '${providerService.userLocation?.latitude}',
-                                              longitude: '${providerService.userLocation?.longitude}',
-                                            ),
-                                          ),
-                                        );
-                                        if (res) {
-                                          if (!mounted)
-                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                              backgroundColor: primary,
-                                              content: Text("ເລິ່ມເຮັດໂອທີສຳເລັດ"),
-                                              duration: Duration(seconds: 2),
-                                            ));
-
-                                          providerService.setBtStartLoading(false);
-                                          providerService.setCheckButtonOT(false);
-                                        } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                            backgroundColor: red,
-                                            content: Text("ເຮັດໂອທີບໍ່ສຳເລັດ"),
-                                            duration: Duration(seconds: 2),
-                                          ));
-                                          // providerService.setFileForUpload(null);
-
-                                          providerService.setBtStartLoading(false);
-                                          providerService.setCheckButtonOT(false);
-                                        }
+                                      if (Geolocator.checkPermission == LocationPermission.denied) {
+                                        providerService.setLocation();
                                       } else {
-                                        providerService.setBtStartLoading(false);
-                                        providerService.setCheckButtonOT(true);
-                                        _showMyDialog();
+                                        await providerService.SetCheckFieldLocations(
+                                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                                        if (providerService.checkFieldLocations?.data.code == 1) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => OverTimeOT(
+                                                latitude: '${providerService.userLocation?.latitude}',
+                                                longitude: '${providerService.userLocation?.longitude}',
+                                              ),
+                                            ),
+                                          );
+                                         
+                                        } else {
+                                          providerService.setBtStartLoading(false);
+                                          providerService.setCheckButtonOT(true);
+                                          _showMyDialog();
+                                        }
                                       }
                                     }
                                   }
-                                }
-                              },
-                              borderRadius: BorderRadius.circular(24),
-                              child: const Text(
-                                "ເລີ່ມເຮັດ OT",
-                                style: TextStyle(
-                                  color: white,
-                                  fontWeight: FontWeight.bold,
+                                },
+                                borderRadius: BorderRadius.circular(24),
+                                child: const Text(
+                                  "ເລີ່ມເຮັດ OT",
+                                  style: TextStyle(
+                                    color: white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : MyElevatedButtonPrimary(
-                              width: double.infinity,
-                              onPressed: () async {
-                                WorkTypeService().stopOT(context,
-                                    '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}');
-                                providerService.setCheckButtonOT(true);
-                              },
-                              borderRadius: BorderRadius.circular(24),
-                              child: const Text(
-                                "ເຊົາເຮັດ OT",
-                                style: TextStyle(
-                                  color: white,
-                                  fontWeight: FontWeight.bold,
+                              )
+                            : MyElevatedButtonPrimary(
+                                width: double.infinity,
+                                onPressed: () async {
+                                  WorkTypeService().stopOT(context,
+                                      '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}');
+                                  providerService.setCheckButtonOT(false);
+                                },
+                                borderRadius: BorderRadius.circular(24),
+                                child: const Text(
+                                  "ເຊົາເຮັດ OT",
+                                  style: TextStyle(
+                                    color: white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            )
-                    ],
-                  ))),
+                              )
+                      ],
+                    ))),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   getAppBar() {
@@ -776,7 +760,7 @@ class _HomePagesState extends State<HomePages> {
       builder: ((context, value, child) {
         if (value.isloading == true) {
           return const LoadingWidget();
-        } else if (value.totalCount == null) {
+        } else if (value.totalCount == null || value.countHR == null || value.countPr == null) {
           return const SizedBox();
         }
         return SizedBox(
@@ -817,61 +801,13 @@ class _HomePagesState extends State<HomePages> {
                       ),
                       title: providerService.langs == 'la' ? "ໂອທີ" : "OT",
                       cout: '0',
-                      onPressed: () async {
-                        providerService.setCheckButtonOT(true);
-
-                        if (providerService.checkbuttonot == true) {
-                          providerService.setCheckButtonOT(false);
-
-                          providerService.setBtStartLoading(true);
-                          if (providerService.btnStartisLoading == true) {
-                            await providerService.setLocation();
-
-                            if (Geolocator.checkPermission == LocationPermission.denied) {
-                              providerService.setLocation();
-                            } else {
-                              await providerService.SetCheckFieldLocations(
-                                  "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
-                              if (providerService.checkFieldLocations?.data.code == 1) {
-                                final res = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => OverTimeOT(
-                                      latitude: '${providerService.userLocation?.latitude}',
-                                      longitude: '${providerService.userLocation?.longitude}',
-                                    ),
-                                  ),
-                                );
-                                if (res) {
-                                  if (!mounted)
-                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                      backgroundColor: primary,
-                                      content: Text("ເລິ່ມເຮັດໂອທີສຳເລັດ"),
-                                      duration: Duration(seconds: 2),
-                                    ));
-
-                                  providerService.setBtStartLoading(false);
-                                  providerService.setCheckButtonOT(false);
-                                } else {
-                                  // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                  //   backgroundColor: red,
-                                  //   content: Text("ເຮັດໂອທີບໍ່ສຳເລັດ"),
-                                  //   duration: Duration(seconds: 2),
-                                  // ));
-                                  // providerService.setFileForUpload(null);
-
-                                  providerService.setBtStartLoading(false);
-                                  providerService.setCheckButtonOT(false);
-                                }
-                              } else {
-                                providerService.setBtStartLoading(false);
-                                providerService.setCheckButtonOT(true);
-                                _showMyDialog();
-                              }
-                            }
-                          }
-                        }
-
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MainOverTime(),
+                          ),
+                        );
                         // _showMyDialog();
                       }),
                 ),
@@ -932,28 +868,26 @@ class _HomePagesState extends State<HomePages> {
                         );
                       }),
                 ),
-                value.totalCount!.code != 1
-                    ? const SizedBox()
-                    : FadeInLeft(
-                        animate: true,
-                        child: ItemWorkHome(
-                            icon: Image.asset(
-                              'assets/icons/leave-PM.png',
-                              height: 35,
-                              width: 35,
-                            ),
-                            title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve OT",
-                            cout: MyData.countOvertime > 99 ? "99+" : "${MyData.countOvertime}",
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const TMMain(),
-                                ),
-                              );
-                            }),
+                FadeInLeft(
+                  animate: true,
+                  child: ItemWorkHome(
+                      icon: Image.asset(
+                        'assets/icons/leave-PM.png',
+                        height: 35,
+                        width: 35,
                       ),
-                value.totalCount!.code != 1
+                      title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve OT",
+                      cout: MyData.countOvertime > 99 ? "99+" : "${MyData.countOvertime}",
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TMMain(),
+                          ),
+                        );
+                      }),
+                ),
+                value.countPr!.code == 0
                     ? const SizedBox()
                     : FadeInLeft(
                         animate: true,
@@ -964,7 +898,7 @@ class _HomePagesState extends State<HomePages> {
                             width: 35,
                           ),
                           title: providerService.langs == 'la' ? "ອະນຸມັດ OT" : "Approve OT",
-                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.countPRM}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -975,7 +909,7 @@ class _HomePagesState extends State<HomePages> {
                           },
                         ),
                       ),
-                value.totalCount!.code != 1
+                value.countHR!.code == 0
                     ? const SizedBox()
                     : FadeInLeft(
                         animate: true,
@@ -986,7 +920,7 @@ class _HomePagesState extends State<HomePages> {
                             width: 35,
                           ),
                           title: providerService.langs == 'la' ? "ອະນຸມັດ OT" : "Approve OT",
-                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.countHR}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -997,7 +931,7 @@ class _HomePagesState extends State<HomePages> {
                           },
                         ),
                       ),
-                value.totalCount!.code != 1
+                value.countHR!.code == 0
                     ? const SizedBox()
                     : FadeInLeft(
                         animate: true,
@@ -1008,7 +942,7 @@ class _HomePagesState extends State<HomePages> {
                             width: 35,
                           ),
                           title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve OT",
-                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
+                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.countHR}",
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -1019,50 +953,46 @@ class _HomePagesState extends State<HomePages> {
                           },
                         ),
                       ),
-                value.totalCount!.code != 1
-                    ? const SizedBox()
-                    : FadeInLeft(
-                        animate: true,
-                        child: ItemWorkHome(
-                          icon: Image.asset(
-                            'assets/icons/leave-DR.png',
-                            height: 35,
-                            width: 35,
-                          ),
-                          title: providerService.langs == 'la' ? "ອະນຸມັດ OT" : "Approve OT",
-                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DRMainOT(),
-                              ),
-                            );
-                          },
+                FadeInLeft(
+                  animate: true,
+                  child: ItemWorkHome(
+                    icon: Image.asset(
+                      'assets/icons/leave-DR.png',
+                      height: 35,
+                      width: 35,
+                    ),
+                    title: providerService.langs == 'la' ? "ອະນຸມັດ OT" : "Approve OT",
+                    cout: "0",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DRMainOT(),
                         ),
-                      ),
-                value.totalCount!.code != 1
-                    ? const SizedBox()
-                    : FadeInLeft(
-                        animate: true,
-                        child: ItemWorkHome(
-                          icon: Image.asset(
-                            'assets/icons/Time-DR.png',
-                            height: 35,
-                            width: 35,
-                          ),
-                          title: providerService.langs == 'la' ? "ອະນຸມັດໜ້າວຽກ" : "Approve OT",
-                          cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.Overtimexecount}",
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DRMainApproved(),
-                              ),
-                            );
-                          },
+                      );
+                    },
+                  ),
+                ),
+                FadeInLeft(
+                  animate: true,
+                  child: ItemWorkHome(
+                    icon: Image.asset(
+                      'assets/icons/Time-DR.png',
+                      height: 35,
+                      width: 35,
+                    ),
+                    title: providerService.langs == 'la' ? "ອະນຸມັດໜ້າວຽກ" : "Approve OT",
+                    cout: "0",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DRMainApproved(),
                         ),
-                      ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),

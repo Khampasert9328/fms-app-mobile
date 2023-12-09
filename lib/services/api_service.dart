@@ -19,6 +19,8 @@ import 'package:fms_mobile_app/model/check_attend.dart';
 import 'package:fms_mobile_app/model/check_field_locations.dart';
 import 'package:fms_mobile_app/model/checking_start_ot.dart';
 import 'package:fms_mobile_app/model/checksundayandholiday.dart';
+import 'package:fms_mobile_app/model/getCountHR.dart';
+import 'package:fms_mobile_app/model/getCountProject.dart';
 import 'package:fms_mobile_app/model/historyinday.dart';
 import 'package:fms_mobile_app/model/holiday_calenda.dart';
 import 'package:fms_mobile_app/model/image_history.dart';
@@ -46,6 +48,7 @@ import 'package:fms_mobile_app/model/user_detail_by_id.dart';
 import 'package:fms_mobile_app/model/user_image_list.dart';
 import 'package:fms_mobile_app/model/workcode.dart';
 import 'package:fms_mobile_app/model/worktype.dart';
+import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/leave/models/leave_models.dart';
 import 'package:fms_mobile_app/pages/leave/models/leave_type_models.dart';
 import 'package:fms_mobile_app/pages/ot/models/overtimeexecultive/overtimeexecultive_models.dart';
@@ -56,6 +59,7 @@ import 'package:fms_mobile_app/pages/ot/ot_by_id.dart';
 import 'package:fms_mobile_app/shared/mydata.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_add_timesheet.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class APIService {
   // String apiPath = "http://172.17.78.101:3000/api";
@@ -349,7 +353,7 @@ class APIService {
     }
   }
 
-  Future<String> checkIn(String checkinlatlng, String path) async {
+  Future<String> checkIn(String checkinlatlng, String path, context) async {
     final url = Uri.parse('${apiPath.toString()}/attendance/checkin_newV1/${checkinlatlng}');
     var request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer ${MyData.token}';
@@ -368,7 +372,8 @@ class APIService {
     return jsonDecode(res)['message'];
   }
 
-  Future<bool> getCheckout(String Token, String checkinlatlng) async {
+  Future<bool> getCheckout(String Token, String checkinlatlng, context) async {
+    final timer = Provider.of<TimerProvider>(context, listen: false);
     final http.Response response = await http.post(
       Uri.parse('${apiPath.toString()}/attendance/checkout-new'),
       headers: <String, String>{
@@ -383,6 +388,7 @@ class APIService {
     );
 
     if (response.statusCode == 200) {
+      timer.stopTimer(context);
       return true;
     } else {
       return false;
@@ -417,6 +423,32 @@ class APIService {
 
     if (response.statusCode == 200) {
       return PendingDay.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to UserToken');
+    }
+  }
+
+  Future<GetCountOverTimeHrApproveModels> getCountHr(String idToken) async {
+    final http.Response response = await http.get(Uri.parse('${AppAPI.getCountHr}'), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ${idToken}',
+    });
+
+    if (response.statusCode == 200) {
+      return GetCountOverTimeHrApproveModels.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to UserToken');
+    }
+  }
+
+  Future<GetCountOverTimePrApproveModels> getCountProject(String idToken) async {
+    final http.Response response = await http.get(Uri.parse('${AppAPI.getCountProject}'), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer ${idToken}',
+    });
+
+    if (response.statusCode == 200) {
+      return GetCountOverTimePrApproveModels.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to UserToken');
     }

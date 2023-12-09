@@ -34,13 +34,8 @@ class _AwaitOTState extends State<AwaitOT> {
   }
 
   initData() async {
-    final data = await context.read<ProviderService>().getHrLeaveReq();
-    for (var i in data!.data!) {
-      name.add(i.fullnameSubstitute!);
-      profile.add(i.profile!);
-      statusID.add(i.lStatusId!);
-      statusApproved.add(i.statusApproved!);
-    }
+    context.read<ProviderService>().getHrLeaveReq();
+   
   }
 
   @override

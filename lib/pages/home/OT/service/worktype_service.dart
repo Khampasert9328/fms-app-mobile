@@ -12,6 +12,7 @@ import 'package:fms_mobile_app/pages/home/home_page.dart';
 import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
+import 'package:fms_mobile_app/theme/color.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_success.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_widget.dart';
 import 'package:http/http.dart' as http;
@@ -109,6 +110,13 @@ class WorkTypeService {
         ),
       );
     }
+     Navigator.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      backgroundColor: red,
+      content: Text("ເຮັດໂອທີບໍ່ສຳເລັດ"),
+      duration: Duration(seconds: 2),
+    ));
+     provider.setCheckButtonOT(false);
   }
 
   Future<void> stopOT(context, String? checklatlng) async {
@@ -128,7 +136,6 @@ class WorkTypeService {
       },
     );
     if (res.statusCode == 200) {
-      print(res.statusCode);
       time.stopTimerOT(context);
 
       Navigator.pop(context);

@@ -24,10 +24,15 @@ class MyData {
   static int pendingday = 0;
   static int noticout = 0;
 
+
   static int countOvertime = 0;
   static int Overtimexecount = 0;
 
   static String versionApp = '';
 
   static int timesheetapprove = 0;
+  static int countHR = 0;
+  static int countPRM = 0;
+
+
 }

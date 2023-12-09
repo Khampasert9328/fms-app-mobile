@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
+import 'package:fms_mobile_app/theme/color.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -17,10 +18,11 @@ class _PDFViewerState extends State<PDFViewer> {
     final providerService = Provider.of<ProviderService>(context);
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: white),
         centerTitle: true,
         systemOverlayStyle: SystemUiOverlayStyle.light,
         title: Text(
-          providerService.langs == 'la' ? "ກົດລະບຽບຂອງບໍລິສັດ" : "Setting",
+          providerService.langs == 'la' ? "ກົດລະບຽບຂອງບໍລິສັດ" : "Company rules",
           textAlign: TextAlign.center,
           style: const TextStyle(color: Colors.white),
         ),

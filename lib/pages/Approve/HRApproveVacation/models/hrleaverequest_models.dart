@@ -50,7 +50,7 @@ class Datum {
     String? profileSubstitute;
     String? fullnameApproved;
     num? annualLeave;
-    int? sickLeave;
+    num? sickLeave;
     int? lakitLeave;
     num? khrpLeave;
 

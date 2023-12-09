@@ -55,12 +55,12 @@ class AppAPI {
 
 
 //HRApproved
-  static String getHRLeaveRequest = '$apiPath/leaves/hr-leave-request?year=2023&l_status_id=3';
+  static String getHRLeaveRequest = '$apiPath/leaves/hr-leave-request?year=2023&l_status_id=1,2,3';
   static String getHRLeaveRequestsuceess = '$apiPath/leaves/hr-leave-request?year=2023&l_status_id=-1,4';
   static String hrapproveleaverequ = '$apiPath/leaves/approve-hr';
 
   //TM
-  static String leavefriends = '$apiPath/leaves/list/me?year=2023&l_status_id=1';
+  static String leavefriends = '$apiPath/leaves/list/me?year=2023&l_status_id=1,2,3';
   static String leavefriendsSuccess = '$apiPath/leaves/list/me?year=2023&l_status_id=-1,4';
   static String tmapproved = '$apiPath/leaves/approval-status';
   
@@ -68,6 +68,12 @@ class AppAPI {
   static String getyearsall = '$apiPath/organisations/get-year';
 
 
-  //
+  //count
+   static String getCountHr = '$apiPath/overtimes/total-hr-approve';
+   static String getCountProject = '$apiPath/overtimes/total-project-approve';
+
+
+
+
 
 }
