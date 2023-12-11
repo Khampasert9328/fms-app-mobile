@@ -11,7 +11,8 @@ import 'package:provider/provider.dart';
 class TimerProvider extends ChangeNotifier {
   CheckOtModel? _checkOtModel;
   CheckOtModel? get checkOtModel => _checkOtModel;
-
+  bool _checkbuttonot = false;
+  bool get checkbuttonot => _checkbuttonot;
   int _second = 0;
 
   int? get second => _second;
@@ -53,6 +54,11 @@ class TimerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setCheckButtonOT(bool value) {
+    _checkbuttonot = value;
+    notifyListeners();
+  }
+
   /// function nup vela
   void initTimeOT(context) async {
     final ntpTimes = await NTP.now();
@@ -80,16 +86,19 @@ class TimerProvider extends ChangeNotifier {
     /// thar hark OT code pen true hai pai lerm function nup vela
     if (_checkOtModel?.code == true) {
       /// timer ja update thouk2 1 vi
+      _checkbuttonot = true;
       timerOT = Timer.periodic(const Duration(seconds: 1), (_) => initTimeOT(context));
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  void stopTimerOT(context) {
+  void stopTimerOT(context) async {
     final provider = Provider.of<ProviderService>(context, listen: false);
-    provider.setCheckAttend();
+    await provider.setCheckAttend();
     timerOT?.cancel();
+
     _durationOT = Duration(seconds: 0);
+    _checkbuttonot = false;
     notifyListeners();
   }
 
@@ -124,8 +133,11 @@ class TimerProvider extends ChangeNotifier {
   void stopTimer(context) {
     final provider = Provider.of<ProviderService>(context, listen: false);
     provider.setCheckAttend();
+    print("dura===${_duration.inMinutes}");
     timer?.cancel();
-    _duration = Duration(seconds: 0);
+
+     print("after dura===${_duration.inMinutes}");
+    //_duration = Duration(seconds: 0);
     notifyListeners();
   }
 

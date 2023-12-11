@@ -90,8 +90,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class ProviderService extends ChangeNotifier {
-  bool _checkbuttonot = false;
-  bool get checkbuttonot => _checkbuttonot;
+
   bool _btnStartisLoading = false;
   bool get btnStartisLoading => _btnStartisLoading;
 
@@ -241,14 +240,12 @@ class ProviderService extends ChangeNotifier {
 
 //get Location Now
 
-  location.Position? userLocation;
+  location.Position? _userLocation;
+  location.Position? get userLocation => _userLocation;
 
-  int StdEndworkThisDay = 0;
+int StdEndworkThisDay = 0;
 
-  setCheckButtonOT(bool value) {
-    _checkbuttonot = value;
-    notifyListeners();
-  }
+
 
   setBtStartLoading(bool val) {
     _btnStartisLoading = val;
@@ -905,7 +902,7 @@ class ProviderService extends ChangeNotifier {
   }
 
   setLocation() async {
-    userLocation = await _determinePosition();
+    _userLocation = await _determinePosition();
     // print(userLocation);
     notifyListeners();
     // MyData.checkinlatlng = userLocation.;
@@ -933,7 +930,7 @@ class ProviderService extends ChangeNotifier {
   Future<String?> savePreference(String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('${lang}', '${value}');
+    await prefs.setString(lang, value);
 
     notifyListeners();
 

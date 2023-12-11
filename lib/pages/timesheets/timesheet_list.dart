@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_new.dart';
@@ -10,7 +12,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class TimeSheetList extends StatefulWidget {
-  const TimeSheetList({Key? key}) : super(key: key);
+  const TimeSheetList({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _TimeSheetListState createState() => _TimeSheetListState();
@@ -24,7 +28,8 @@ class _TimeSheetListState extends State<TimeSheetList> {
       _loding = true;
     });
 
-    final providerService = Provider.of<ProviderService>(context, listen: false);
+    final providerService =
+        Provider.of<ProviderService>(context, listen: false);
 
     await providerService.setTimesheetListDetial();
 
@@ -32,7 +37,8 @@ class _TimeSheetListState extends State<TimeSheetList> {
     print(providerService.StdEndworkThisDay);
 
     if (providerService.StdEndworkThisDay == 1) {
-      if (providerService.StdEndworkThisDay == 1 && providerService.timesheetDateDetial?.data?.length == 0) {
+      if (providerService.StdEndworkThisDay == 1 &&
+          providerService.timesheetDateDetial?.data?.length == 0) {
         _FuctionNewTap(context);
       }
     }
@@ -85,9 +91,10 @@ class _TimeSheetListState extends State<TimeSheetList> {
         title: Text(
           providerService.langs == 'la' ? "ລາຍການ Timesheet" : "Timesheet",
           style: TextStyle(
-              fontSize: 16.sp,
-              // fontWeight: FontWeight.bold,
-              color: black),
+            fontSize: 16.sp,
+            // fontWeight: FontWeight.bold,
+            color: black,
+          ),
         ),
         centerTitle: true,
         flexibleSpace: Container(
@@ -145,9 +152,9 @@ class _TimeSheetListState extends State<TimeSheetList> {
                       onPressed: () async {
                         final provitime = Provider.of<TimerProvider>(context, listen: false);
                         final res = await providerService.checkOutNew(
-                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}", context);
+                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
+                            context);
 
-                    
                         if (res == true) {
                           provitime.stopTimer(context);
 
@@ -468,7 +475,7 @@ class _TimeSheetListState extends State<TimeSheetList> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            providerService.langs == 'la' ? 'ວັນເດື່ອນປີ :' : "Date",
+                            providerService.langs == 'la' ? 'ວັນເດືອນປີ :' : "Date",
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
                           ),
                           Text(

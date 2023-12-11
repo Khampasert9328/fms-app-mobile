@@ -37,14 +37,14 @@ class _MainOverTimeState extends State<MainOverTime> with SingleTickerProviderSt
           IconButton(
             onPressed: () async {
               final providerService = Provider.of<ProviderService>(context, listen: false);
-              providerService.setCheckButtonOT(true);
+             // providerService.setCheckButtonOT(true);
 
-              if (providerService.checkbuttonot == true) {
-                providerService.setCheckButtonOT(false);
+              // if (providerService.checkbuttonot == true) {
+                // providerService.setCheckButtonOT(false);
 
-                providerService.setBtStartLoading(true);
-                if (providerService.btnStartisLoading == true) {
-                  await providerService.setLocation();
+                // providerService.setBtStartLoading(true);
+                // if (providerService.btnStartisLoading == true) {
+                //   await providerService.setLocation();
 
                   if (Geolocator.checkPermission == LocationPermission.denied) {
                     providerService.setLocation();
@@ -69,8 +69,8 @@ class _MainOverTimeState extends State<MainOverTime> with SingleTickerProviderSt
                             duration: Duration(seconds: 2),
                           ));
 
-                        providerService.setBtStartLoading(false);
-                        providerService.setCheckButtonOT(false);
+                        // providerService.setBtStartLoading(false);
+                        // providerService.setCheckButtonOT(false);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           backgroundColor: red,
@@ -79,16 +79,17 @@ class _MainOverTimeState extends State<MainOverTime> with SingleTickerProviderSt
                         ));
                         // providerService.setFileForUpload(null);
 
-                        providerService.setBtStartLoading(false);
-                        providerService.setCheckButtonOT(false);
+                        // providerService.setBtStartLoading(false);
+                        // providerService.setCheckButtonOT(false);
                       }
-                    } else {
-                      providerService.setBtStartLoading(false);
-                      providerService.setCheckButtonOT(true);
-                    }
+                    } 
+                    // else {
+                    //   providerService.setBtStartLoading(false);
+                    //   providerService.setCheckButtonOT(true);
+                    // }
                   }
-                }
-              }
+                //}
+              //}
             },
             icon: const Icon(
               Icons.add,

@@ -389,8 +389,8 @@ class _AccountPageState extends State<AccountPage> {
           Center(
             child: Text(
               providerService.langs == 'la'
-                  ? "ເວີຊັ່ນ :  ${MyData.versionApp.toString()}"
-                  : "Version :  ${MyData.versionApp.toString()}",
+                  ? "ເວີຊັ່ນ :  ${providerService.versionApp}"
+                  : "Version :  ${providerService.versionApp}",
               style: const TextStyle(fontSize: 13, color: Colors.grey),
             ),
           )

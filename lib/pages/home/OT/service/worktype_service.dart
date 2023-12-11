@@ -8,7 +8,6 @@ import 'package:fms_mobile_app/pages/home/OT/models/ot_screen_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/projectall_models.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/workcode_models.dart';
 import 'package:fms_mobile_app/pages/home/home_app.dart';
-import 'package:fms_mobile_app/pages/home/home_page.dart';
 import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
@@ -74,7 +73,6 @@ class WorkTypeService {
 
   Future<void> startOT(
       context, String? worktype, String? projectid, String? workcode, String? checklatlng, String? detail) async {
-    final provider = Provider.of<ProviderService>(context, listen: false);
     showDialog(context: context, builder: (context) => LoadingWidget());
     final time = Provider.of<TimerProvider>(context, listen: false);
     final user = await FirebaseAuth.instance.currentUser?.getIdToken();
@@ -95,7 +93,6 @@ class WorkTypeService {
         'Authorization': 'Bearer $token',
       },
     );
-
     if (res.statusCode == 200) {
       await time.startTimerOT(context);
 
@@ -109,14 +106,16 @@ class WorkTypeService {
           },
         ),
       );
+    } else {
+      Navigator.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: red,
+        content: Text("ເຮັດໂອທີບໍ່ສຳເລັດ"),
+        duration: Duration(seconds: 2),
+      ));
     }
-     Navigator.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      backgroundColor: red,
-      content: Text("ເຮັດໂອທີບໍ່ສຳເລັດ"),
-      duration: Duration(seconds: 2),
-    ));
-     provider.setCheckButtonOT(false);
+
+    // provider.setCheckButtonOT(false);
   }
 
   Future<void> stopOT(context, String? checklatlng) async {
@@ -125,7 +124,7 @@ class WorkTypeService {
     final token = user;
     String url = AppAPI.stopOT;
     Object body = jsonEncode({
-      "checkin_lat_lng": checklatlng,
+      "checkout_lat_lng": checklatlng,
     });
     final res = await http.post(
       Uri.parse(url),
@@ -136,7 +135,9 @@ class WorkTypeService {
       },
     );
     if (res.statusCode == 200) {
+      print('status==${res.statusCode}');
       time.stopTimerOT(context);
+      time.setDurationOT = 0;
 
       Navigator.pop(context);
     }

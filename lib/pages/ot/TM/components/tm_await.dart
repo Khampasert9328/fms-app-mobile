@@ -120,7 +120,7 @@ class _TMAwaitCompoState extends State<TMAwaitCompo> {
                                         // newmodelhr.selectAllCheckBox(value.hrApproved?.data ?? []);
                                         if (checkedIds.isEmpty) {
                                           for (var i in value.leaveFriends!.data!) {
-                                            if (i.levelId != 3 ||
+                                            if (i.levelId == 3 ||
                                                 (i.lStatusId == 1 ||
                                                         i.lStatusId == -1 ||
                                                         i.lStatusId == 2 ||

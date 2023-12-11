@@ -194,7 +194,8 @@ class _NotiPageState extends State<NotiPage> {
 
     return Scaffold(
         appBar: AppBar(
-          systemOverlayStyle: SystemUiOverlayStyle.light,
+          centerTitle: true,
+         systemOverlayStyle: SystemUiOverlayStyle.light,
           title: Center(
               child: Text(providerService.langs == 'la' ? "ແຈ້ງເຕືອນ" : "Notification",
                   textAlign: TextAlign.center, style: const TextStyle(color: Colors.white))),

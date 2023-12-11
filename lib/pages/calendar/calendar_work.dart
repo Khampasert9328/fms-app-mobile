@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fms_mobile_app/pages/calendar/provider/calenda_provicer.dart';
 import 'package:fms_mobile_app/pages/calendar/screen/add_time_sheets.dart';
+import 'package:fms_mobile_app/pages/timesheets/timesheet_list.dart';
 import 'package:fms_mobile_app/theme/color.dart';
 import 'package:fms_mobile_app/utils/set/set_status.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_widget.dart';
@@ -30,12 +31,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _loadCalendarData() async {
-  print("Loading calendar data...");
-  final calendarVm = Provider.of<CalendarProvider>(context, listen: false);
-  await calendarVm.initAllCalenda(context);
-  print("Calendar data loaded!");
-}
-
+    print("Loading calendar data...");
+    final calendarVm = Provider.of<CalendarProvider>(context, listen: false);
+    await calendarVm.initAllCalenda(context);
+    print("Calendar data loaded!");
+  }
 
   // void _loadCalendarData() async {
   //   final calendarVm = Provider.of<CalendarProvider>(context, listen: false);
@@ -74,17 +74,27 @@ class _CalendarScreenState extends State<CalendarScreen> {
             provider.getAllTimeSheets(context);
             provider.getAllcalendasetup(context);
             await provider.getAllAttendance(context);
-           
           }
         },
         dataSource: _getCalendarDataSource(context),
         onTap: (CalendarTapDetails details) {
-          Navigator.push(
+          for (var i in provider.attendance!.data!) {
+            if (i.date != null) {
+              if (formatDate.format(details.date!) == formatDate.format(i.date!)) {
+                print("hiiii");
+                Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => AddTimeSheet(dateTime: _selectedDate!),
+              builder: (_) => TimeSheetList(),
             ),
           );
+                break;
+              } else {
+                print("no");
+              }
+            }
+          }
+          
 
           setState(() {
             _selectedDate = details.date;
@@ -99,7 +109,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        backgroundColor: primary,
+         backgroundColor: primary,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -156,7 +166,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       if (provider.attendance?.data != []) {
         for (var i in provider.attendance!.data!) {
           if (i.date != null) {
-           
             final Appointment arrived = Appointment(
                 subject: "ມາວຽກ",
                 startTime: i.date!,

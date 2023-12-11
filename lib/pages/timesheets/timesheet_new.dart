@@ -378,7 +378,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                                   ),
                                   fillColor: const Color(0xfff3f3f4),
                                   filled: true,
-                                  hintText: "${timer.duration.inHours}: ${timer.duration.inMinutes.remainder(60)}"),
+                                  hintText: "${timer.duration.inHours}: ${timer.duration.inMinutes.remainder(60)}: ${timer.duration.inSeconds.remainder(60)}"),
                               controller: _timeTotal,
                             ),
                           )

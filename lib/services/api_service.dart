@@ -56,8 +56,10 @@ import 'package:fms_mobile_app/pages/ot/models/overtimeexecultive/overtimeexecul
 import 'package:fms_mobile_app/pages/ot/models/overtimeproject/overtime_count.dart';
 import 'package:fms_mobile_app/pages/ot/models/overtimeproject/overtimeproject_models.dart';
 import 'package:fms_mobile_app/pages/ot/ot_by_id.dart';
+import 'package:fms_mobile_app/pages/timesheets/timesheet_list.dart';
 import 'package:fms_mobile_app/shared/mydata.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_add_timesheet.dart';
+import 'package:fms_mobile_app/widgets/loading/loading_success.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -389,6 +391,17 @@ class APIService {
 
     if (response.statusCode == 200) {
       timer.stopTimer(context);
+      showDialog(
+        context: context,
+        builder: (context) => LoadingDialog(
+          title: "ເລີກວຽກສຳເລັດ",
+          onTap: () async {
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const TimeSheetList()));
+          },
+        ),
+      );
+
       return true;
     } else {
       return false;

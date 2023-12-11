@@ -64,6 +64,7 @@ class _HomePagesState extends State<HomePages> {
   int? checkingStartOt;
   Duration myDuration = const Duration();
   Duration myDurationOT = const Duration();
+  late final DateTime? dateTime;
 
   final _gradient = const LinearGradient(
     colors: [primary, Colors.purple],
@@ -98,7 +99,7 @@ class _HomePagesState extends State<HomePages> {
   }
 
   _fuctionNewTap(BuildContext context) async {
-    String refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => const TimeSheetNew()));
+    String refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) =>  TimeSheetList()));
 
     if (refresh == "true") {
       final providerService = Provider.of<ProviderService>(context, listen: false);
@@ -504,7 +505,8 @@ class _HomePagesState extends State<HomePages> {
 
     //final CheckingOT = providerService.checkingStartOt!.data;
     //print(CheckingOT![0].endTime);
-    return Consumer<ProviderService>(builder: (context, value, child) {
+    return Consumer2<ProviderService, TimerProvider>(builder: (context, value, time, child) {
+      // print("statusOT==${time.checkbuttonot}");
       return Padding(
         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 10, right: 10),
         child: AnimatedContainer(
@@ -560,43 +562,33 @@ class _HomePagesState extends State<HomePages> {
                         ),
                         // CheckingOT[0].checkinTime == null && CheckingOT[0].checkoutTime == null
                         //?
-                        value.checkbuttonot == false
+                        time.checkbuttonot == false
                             ? MyElevatedButtonPrimary(
                                 width: double.infinity,
                                 onPressed: () async {
-                                  value.setCheckButtonOT(true);
-
-                                  if (providerService.checkbuttonot == true) {
-                                    providerService.setCheckButtonOT(false);
-
-                                    providerService.setBtStartLoading(true);
-                                    if (providerService.btnStartisLoading == true) {
-                                      await providerService.setLocation();
-
-                                      if (Geolocator.checkPermission == LocationPermission.denied) {
-                                        providerService.setLocation();
-                                      } else {
-                                        await providerService.SetCheckFieldLocations(
-                                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
-                                        if (providerService.checkFieldLocations?.data.code == 1) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => OverTimeOT(
-                                                latitude: '${providerService.userLocation?.latitude}',
-                                                longitude: '${providerService.userLocation?.longitude}',
-                                              ),
-                                            ),
-                                          );
-                                         
-                                        } else {
-                                          providerService.setBtStartLoading(false);
-                                          providerService.setCheckButtonOT(true);
-                                          _showMyDialog();
-                                        }
-                                      }
+                                  if (Geolocator.checkPermission == LocationPermission.denied) {
+                                    providerService.setLocation();
+                                  } else {
+                                    await providerService.SetCheckFieldLocations(
+                                        "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                                    if (providerService.checkFieldLocations?.data.code == 1) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => OverTimeOT(
+                                            latitude: '${providerService.userLocation?.latitude}',
+                                            longitude: '${providerService.userLocation?.longitude}',
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      // providerService.setBtStartLoading(false);
+                                      // providerService.setCheckButtonOT(true);
+                                      _showMyDialog();
                                     }
                                   }
+                                  // }
+                                  // }
                                 },
                                 borderRadius: BorderRadius.circular(24),
                                 child: const Text(
@@ -607,14 +599,23 @@ class _HomePagesState extends State<HomePages> {
                                   ),
                                 ),
                               )
-                            : MyElevatedButtonPrimary(
+                            : MyElevatedButtonSecondary(
                                 width: double.infinity,
+                                borderRadius: BorderRadius.circular(24.r),
                                 onPressed: () async {
-                                  WorkTypeService().stopOT(context,
-                                      '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}');
-                                  providerService.setCheckButtonOT(false);
+                                  if (Geolocator.checkPermission == LocationPermission.denied) {
+                                    providerService.setLocation();
+                                  } else {
+                                    await providerService.SetCheckFieldLocations(
+                                        "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}");
+                                    if (providerService.checkFieldLocations?.data.code == 1) {
+                                      WorkTypeService().stopOT(context,
+                                          '${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}');
+                                    } else {
+                                      _showMyDialog();
+                                    }
+                                  }
                                 },
-                                borderRadius: BorderRadius.circular(24),
                                 child: const Text(
                                   "ເຊົາເຮັດ OT",
                                   style: TextStyle(
@@ -1138,24 +1139,11 @@ class _HomePagesState extends State<HomePages> {
 
                                         await providerService.SetStdTimesheet(1);
                                         await providerService.SetTimeSheetItem(DateTime(now.year, now.month, now.day));
-                                        final res = await providerService.checkOutNew(
+                                     await providerService.checkOutNew(
                                             "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
                                             context);
-                                        if (res == true) {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => LoadingDialog(
-                                              title: "ເລີກວຽກສຳເລັດ",
-                                              onTap: () async {
-                                                Navigator.pop(context);
-                                                await _fuctionNewTap(context);
-                                              },
-                                            ),
-                                          );
-                                        }
+                                      
                                       } else {
-                                        setState(() => _btnEndisLoading = false);
-                                        setState(() => stdbtnEnd = true);
                                         _showMyDialog();
                                       }
                                     }

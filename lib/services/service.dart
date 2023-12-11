@@ -15,7 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class ServiceAuth {
   final auth.FirebaseAuth _firebaseAuth = auth.FirebaseAuth.instance;
-  UserInfo? _userFromFirebase(auth.User? user) {
+  User? _userFromFirebase(auth.User? user) {
     if (user == null) {
       return null;
     }
@@ -23,7 +23,7 @@ class ServiceAuth {
     FMSUserInfo(uid: user.uid, email: user.email);
   }
 
-  Stream<UserInfo?> get user {
+  Stream<User?> get user {
     return _firebaseAuth.authStateChanges().map(_userFromFirebase);
   }
 
@@ -50,7 +50,8 @@ class ServiceAuth {
       auth.stdLoginInlogin(1);
 
       if (res.user != null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Wrapper()));
+       // Navigator.pushReplacement(context, );
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => Wrapper()), (route) => false);
       }
       _userFromFirebase(res.user);
     } on FirebaseAuthException catch (e) {

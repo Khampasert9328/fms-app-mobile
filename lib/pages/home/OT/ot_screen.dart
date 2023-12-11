@@ -40,12 +40,13 @@ class _OverTimeOTState extends State<OverTimeOT> {
   final TextEditingController _remark = TextEditingController();
   TextEditingController DateStartNow = TextEditingController();
 
+  List<dynamic> WorkTypeItem = [];
   List<dynamic> WorkCodeItem = [];
   List<dynamic> WorkAllItemAll = [];
 
-  String? projectId;
-  String? workCodeId;
-  String? workType;
+  String workCodeId = "";
+  String workTypeId = "";
+  String projectId = "";
 
   final int _processIndex = 0;
 
@@ -156,8 +157,14 @@ class _OverTimeOTState extends State<OverTimeOT> {
     DateStartNow.text = dateNows;
 
     await providerService.setTimesheet();
-
+    final workType = providerService.workType;
     final workCode = providerService.workcode;
+    for (var i = 0; i < workType.length; i++) {
+      //  print(1);
+      WorkTypeItem.add(
+        {"work_type_id": workType[i].workTypeId, "name": workType[i].name, "code": workType[i].code},
+      );
+    }
 
     for (var i = 0; i < workCode.length; i++) {
       // print(2);
@@ -169,8 +176,6 @@ class _OverTimeOTState extends State<OverTimeOT> {
           "work_type_id": workCode[i].workTypeId,
         },
       );
-
-      WorkAllItemAll = WorkCodeItem.where((element) => element["work_type_id"].toString() == "1").toList();
     }
 
     setState(() {
@@ -249,303 +254,111 @@ class _OverTimeOTState extends State<OverTimeOT> {
               child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 80,
-                      padding: const EdgeInsets.only(),
-                      decoration: BoxDecoration(
-                          color: appBgColor,
-                          //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0, 0.1),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0, -0.1),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(-0.1, 0),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0.1, 0),
-                            ),
-                          ]),
-                      child: Timeline.tileBuilder(
-                        theme: TimelineThemeData(
-                          direction: Axis.horizontal,
-                          connectorTheme: const ConnectorThemeData(
-                            space: 30.0,
-                            thickness: 5.0,
-                          ),
-                        ),
-                        builder: TimelineTileBuilder.connected(
-                          connectionDirection: ConnectionDirection.before,
-                          itemExtentBuilder: (_, __) => MediaQuery.of(context).size.width / _processes.length,
-                          contentsBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 2.0),
-                              child: Text(
-                                _processes[index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: getColor(index),
-                                ),
-                              ),
-                            );
-                          },
-                          indicatorBuilder: (_, index) {
-                            Color color;
-                            Widget? child;
-                            if (index == _processIndex) {
-                              color = primary;
-                              child = const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3.0,
-                                  valueColor: AlwaysStoppedAnimation(Colors.white),
-                                ),
-                              );
-                            } else if (index < _processIndex) {
-                              color = primary;
-                              child = const Icon(
-                                Icons.check,
-                                color: Colors.white,
-                                size: 24.0,
-                              );
-                            } else {
-                              color = todoColor;
-                            }
+                    FormHelper.dropDownWidgetWithLabel(
+                      context,
+                      providerService.langs == 'la' ? "ປະເພດວຽກ" : " Work Type ",
+                      providerService.langs == 'la' ? "ເລືອກປະເພດວຽກ" : " Select Work Type ",
+                      workTypeId,
+                      WorkTypeItem,
+                      (onChangedVal) {
+                        setState(() {
+                          workTypeId = onChangedVal.toString();
 
-                            if (index <= _processIndex) {
-                              return Stack(
-                                children: [
-                                  CustomPaint(
-                                    size: const Size(2.0, 2.0),
-                                    painter: _BezierPainter(
-                                      color: color,
-                                      drawStart: index > 0,
-                                      drawEnd: index < _processIndex,
-                                    ),
-                                  ),
-                                  DotIndicator(
-                                    size: 30.0,
-                                    color: color,
-                                    child: child,
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Stack(
-                                children: [
-                                  CustomPaint(
-                                    size: const Size(15.0, 15.0),
-                                    painter: _BezierPainter(
-                                      color: color,
-                                      drawEnd: index < _processes.length - 1,
-                                    ),
-                                  ),
-                                  OutlinedDotIndicator(
-                                    borderWidth: 4.0,
-                                    color: color,
-                                  ),
-                                ],
-                              );
-                            }
-                          },
-                          connectorBuilder: (_, index, type) {
-                            if (index > 0) {
-                              if (index == _processIndex) {
-                                final prevColor = getColor(index - 1);
-                                final color = getColor(index);
-                                List<Color> gradientColors;
-                                if (type == ConnectorType.start) {
-                                  gradientColors = [Color.lerp(prevColor, color, 0.5)!, color];
-                                } else {
-                                  gradientColors = [prevColor, Color.lerp(prevColor, color, 0.5)!];
-                                }
-                                return DecoratedLineConnector(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: gradientColors,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return SolidLineConnector(
-                                  color: getColor(index),
-                                );
-                              }
-                            } else {
-                              return null;
-                            }
-                          },
-                          itemCount: _processes.length,
-                        ),
-                      ),
+                          WorkAllItemAll = WorkCodeItem.where(
+                              (element) => element["work_type_id"].toString() == onChangedVal.toString()).toList();
+                        });
+                      },
+                      (onValidate) {
+                        return null;
+                      },
+                      borderColor: primary,
+                      borderFocusColor: primary,
+                      optionLabel: "name",
+                      optionValue: "work_type_id",
+                      paddingLeft: 0,
+                      paddingRight: 0,
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      labelFontSize: 15,
+                      borderRadius: 20,
                     ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 10),
-                      decoration: BoxDecoration(
-                          color: appBgColor,
-                          //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0, 0.1),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0, -0.1),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(-0.1, 0),
-                            ),
-                            BoxShadow(
-                              color: Colors.grey.shade200,
-                              spreadRadius: 1,
-                              blurRadius: 1,
-                              offset: const Offset(0.1, 0),
-                            ),
-                          ]),
-                      child: Column(children: [
-                        const SizedBox(height: 10),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+
+                    workTypeId == "1"
+                        ? Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                             child: Text(
-                              "ປະເພດວຽກ",
+                              providerService.langs == 'la' ? "ໂຄງການ" : " Project",
+                              // ignore: prefer_const_constructors
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
-                          child: DropdownSearch<DataModels>(
-                            popupProps: const PopupProps.modalBottomSheet(
-                              showSearchBox: true,
-                            ),
-                            filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-                            //  selectedItem: "Brazil",
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-
-                                //border: OutlineInputBorder(),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(
-                                    color: const Color(0xff1C9A7F).withOpacity(0.50),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                fillColor: const Color(0xfff3f3f4),
-                                filled: true,
-                                labelText: 'ເລືອກປະເພດວຽກ',
+                          )
+                        : Container(),
+                    workTypeId == "1"
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
+                            child: DropdownSearch<ProjectAll>(
+                              popupProps: const PopupProps.modalBottomSheet(
+                                showSearchBox: true,
                               ),
-                            ),
-
-                            asyncItems: (String filter) async {
-                              return providerService.workType;
-                            },
-                            itemAsString: (DataModels u) => u.name.toString(),
-                            onChanged: (DataModels? data) {
-                              print(data?.code.toString());
-                              workType = data?.workTypeId.toString();
-                            },
-                            items: providerService.workType,
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "ໂຄງການ",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
-                          child: DropdownSearch<ProjectAll>(
-                            popupProps: const PopupProps.modalBottomSheet(
-                              showSearchBox: true,
-                            ),
-                            filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-                            //  selectedItem: "Brazil",
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-
-                                //border: OutlineInputBorder(),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  borderSide: BorderSide(
-                                    color: const Color(0xff1C9A7F).withOpacity(0.50),
-                                    width: 2.0,
+                              filterFn: (user, filter) => user.userFilterByCreationDate(filter),
+                              //  selectedItem: "Brazil",
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
                                   ),
-                                ),
-                                fillColor: const Color(0xfff3f3f4),
-                                filled: true,
-                                labelText: 'ເລືອກໂຄງການ',
-                              ),
-                            ),
 
-                            asyncItems: (String filter) async {
-                              providerService.setProject(filter);
-                              return providerService.projectAll;
-                            },
-                            itemAsString: (ProjectAll u) => u.projectName.toString(),
-                            onChanged: (ProjectAll? data) {
-                              print(data?.projectId.toString());
-                              projectId = data?.projectId.toString() ?? "";
-                            },
-                            items: providerService.projectAll,
-                          ),
-                        ),
-                        FormHelper.dropDownWidgetWithLabel(
-                            context, "ລະຫັດໜ້າວຽກ", "ເລືອກລະຫັດໜ້າວຽກ", workCodeId, WorkAllItemAll, (onChangedVal) {
-                          setState(() {
-                            workCodeId = onChangedVal.toString();
-                          });
-                        }, (onValidate) {
-                          return null;
-                        },
+                                  //border: OutlineInputBorder(),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    borderSide: BorderSide(
+                                      color: const Color(0xff1C9A7F).withOpacity(0.50),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  fillColor: const Color(0xfff3f3f4),
+                                  filled: true,
+                                  labelText: providerService.langs == 'la' ? 'ເລືອກໂຄງການ' : "Select Project",
+                                ),
+                              ),
+
+                              asyncItems: (String filter) async {
+                                providerService.setProject(filter);
+                                return providerService.projectAll;
+                              },
+                              itemAsString: (ProjectAll u) => u.projectName.toString(),
+                              onChanged: (ProjectAll? data) {
+                                projectId = data?.projectId.toString() ?? "";
+                              },
+                              items: providerService.projectAll,
+                            ),
+                          )
+                        : Container(),
+
+                    // ignore: prefer_const_constructors
+                    workTypeId != ""
+                        ? FormHelper.dropDownWidgetWithLabel(
+                            context,
+                            providerService.langs == 'la' ? "ລະຫັດໜ້າວຽກ" : "Work Code",
+                            providerService.langs == 'la' ? "ເລືອກໜ້າວຽກ" : "Select Work Code",
+                            workCodeId,
+                            WorkAllItemAll, (onChangedVal) {
+                            setState(() {
+                              workCodeId = onChangedVal.toString();
+                            });
+                          }, (onValidate) {
+                            return null;
+                          },
                             borderColor: primary,
                             borderFocusColor: primary,
                             optionLabel: "workcode",
@@ -555,41 +368,417 @@ class _OverTimeOTState extends State<OverTimeOT> {
                             paddingTop: 0,
                             paddingBottom: 0,
                             labelFontSize: 15,
-                            borderRadius: 20),
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: MyElevatedButtonPrimary(
-                                  onPressed: () async {
-                                    print("${widget.latitude} ${widget.longitude}");
-                                    await WorkTypeService().startOT(context, workType, projectId, workCodeId,
-                                        "${widget.latitude},${widget.longitude}", _remark.text);
-                                  },
-                                  borderRadius: BorderRadius.circular(24),
-                                  child: const Text(
-                                    'ເພີ່ມ',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
+                            borderRadius: 20)
+                        : Container(),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                      child: Text(
+                        providerService.langs == 'la' ? "ໝາຍເຫດ" : "Remark",
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                    ),
+
+                    Container(
+                      margin: const EdgeInsets.only(
+                        right: 10,
+                        left: 10,
+                      ),
+                      child: TextField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        controller: _remark,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
                           ),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: const Color(0xff1C9A7F).withOpacity(0.50),
+                              width: 2.0,
+                            ),
+                          ),
+                          fillColor: const Color(0xfff3f3f4),
+                          filled: true,
+                          hintText: "ພິມຂໍ້ຄວາມ",
                         ),
-                      ]),
-                    )
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 10,
+                        left: 10,
+                        top: 15,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: MyElevatedButtonPrimary(
+                                onPressed: () async {
+                                  await WorkTypeService().startOT(context, workTypeId, projectId, workCodeId,
+                                      "${widget.latitude},${widget.longitude}", _remark.text);
+                                },
+                                borderRadius: BorderRadius.circular(24),
+                                child: const Text(
+                                  'ບັນທຶກຂໍ້ມູນ',
+                                  style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                                )),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
+
+      // SingleChildScrollView(
+      //     child: Container(
+      //       padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 10),
+      //       child: Column(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           Container(
+      //             height: 80,
+      //             padding: const EdgeInsets.only(),
+      //             decoration: BoxDecoration(
+      //                 color: appBgColor,
+      //                 //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
+      //                 borderRadius: BorderRadius.circular(20),
+      //                 boxShadow: [
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(0, 0.1),
+      //                   ),
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(0, -0.1),
+      //                   ),
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(-0.1, 0),
+      //                   ),
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(0.1, 0),
+      //                   ),
+      //                 ]),
+      //             child: Timeline.tileBuilder(
+      //               theme: TimelineThemeData(
+      //                 direction: Axis.horizontal,
+      //                 connectorTheme: const ConnectorThemeData(
+      //                   space: 30.0,
+      //                   thickness: 5.0,
+      //                 ),
+      //               ),
+      //               builder: TimelineTileBuilder.connected(
+      //                 connectionDirection: ConnectionDirection.before,
+      //                 itemExtentBuilder: (_, __) => MediaQuery.of(context).size.width / _processes.length,
+      //                 contentsBuilder: (context, index) {
+      //                   return Padding(
+      //                     padding: const EdgeInsets.only(top: 2.0),
+      //                     child: Text(
+      //                       _processes[index],
+      //                       style: TextStyle(
+      //                         fontWeight: FontWeight.bold,
+      //                         color: getColor(index),
+      //                       ),
+      //                     ),
+      //                   );
+      //                 },
+      //                 indicatorBuilder: (_, index) {
+      //                   Color color;
+      //                   Widget? child;
+      //                   if (index == _processIndex) {
+      //                     color = primary;
+      //                     child = const Padding(
+      //                       padding: EdgeInsets.all(8.0),
+      //                       child: CircularProgressIndicator(
+      //                         strokeWidth: 3.0,
+      //                         valueColor: AlwaysStoppedAnimation(Colors.white),
+      //                       ),
+      //                     );
+      //                   } else if (index < _processIndex) {
+      //                     color = primary;
+      //                     child = const Icon(
+      //                       Icons.check,
+      //                       color: Colors.white,
+      //                       size: 24.0,
+      //                     );
+      //                   } else {
+      //                     color = todoColor;
+      //                   }
+
+      //                   if (index <= _processIndex) {
+      //                     return Stack(
+      //                       children: [
+      //                         CustomPaint(
+      //                           size: const Size(2.0, 2.0),
+      //                           painter: _BezierPainter(
+      //                             color: color,
+      //                             drawStart: index > 0,
+      //                             drawEnd: index < _processIndex,
+      //                           ),
+      //                         ),
+      //                         DotIndicator(
+      //                           size: 30.0,
+      //                           color: color,
+      //                           child: child,
+      //                         ),
+      //                       ],
+      //                     );
+      //                   } else {
+      //                     return Stack(
+      //                       children: [
+      //                         CustomPaint(
+      //                           size: const Size(15.0, 15.0),
+      //                           painter: _BezierPainter(
+      //                             color: color,
+      //                             drawEnd: index < _processes.length - 1,
+      //                           ),
+      //                         ),
+      //                         OutlinedDotIndicator(
+      //                           borderWidth: 4.0,
+      //                           color: color,
+      //                         ),
+      //                       ],
+      //                     );
+      //                   }
+      //                 },
+      //                 connectorBuilder: (_, index, type) {
+      //                   if (index > 0) {
+      //                     if (index == _processIndex) {
+      //                       final prevColor = getColor(index - 1);
+      //                       final color = getColor(index);
+      //                       List<Color> gradientColors;
+      //                       if (type == ConnectorType.start) {
+      //                         gradientColors = [Color.lerp(prevColor, color, 0.5)!, color];
+      //                       } else {
+      //                         gradientColors = [prevColor, Color.lerp(prevColor, color, 0.5)!];
+      //                       }
+      //                       return DecoratedLineConnector(
+      //                         decoration: BoxDecoration(
+      //                           gradient: LinearGradient(
+      //                             colors: gradientColors,
+      //                           ),
+      //                         ),
+      //                       );
+      //                     } else {
+      //                       return SolidLineConnector(
+      //                         color: getColor(index),
+      //                       );
+      //                     }
+      //                   } else {
+      //                     return null;
+      //                   }
+      //                 },
+      //                 itemCount: _processes.length,
+      //               ),
+      //             ),
+      //           ),
+      //           const SizedBox(height: 20),
+      //           Container(
+      //             padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 10),
+      //             decoration: BoxDecoration(
+      //                 color: appBgColor,
+      //                 //color: providerService.mode== ThemeMode.light ? appBgColor : appBgColordark ,
+      //                 borderRadius: BorderRadius.circular(20),
+      //                 boxShadow: [
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(0, 0.1),
+      //                   ),
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(0, -0.1),
+      //                   ),
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(-0.1, 0),
+      //                   ),
+      //                   BoxShadow(
+      //                     color: Colors.grey.shade200,
+      //                     spreadRadius: 1,
+      //                     blurRadius: 1,
+      //                     offset: const Offset(0.1, 0),
+      //                   ),
+      //                 ]),
+      //             child: Column(children: [
+      //               const SizedBox(height: 10),
+      //               const Padding(
+      //                 padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
+      //                 child: Align(
+      //                   alignment: Alignment.centerLeft,
+      //                   child: Text(
+      //                     "ປະເພດວຽກ",
+      //                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+      //                   ),
+      //                 ),
+      //               ),
+      //               const SizedBox(height: 5),
+      //               Padding(
+      //                 padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
+      //                 child: DropdownSearch<DataModels>(
+      //                   popupProps: const PopupProps.modalBottomSheet(
+      //                     showSearchBox: true,
+      //                   ),
+      //                   filterFn: (user, filter) => user.userFilterByCreationDate(filter),
+      //                   //  selectedItem: "Brazil",
+      //                   dropdownDecoratorProps: DropDownDecoratorProps(
+      //                     dropdownSearchDecoration: InputDecoration(
+      //                       border: OutlineInputBorder(
+      //                         borderRadius: BorderRadius.circular(30.0),
+      //                       ),
+
+      //                       //border: OutlineInputBorder(),
+      //                       contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      //                       enabledBorder: OutlineInputBorder(
+      //                         borderRadius: BorderRadius.circular(25.0),
+      //                         borderSide: BorderSide(
+      //                           color: const Color(0xff1C9A7F).withOpacity(0.50),
+      //                           width: 2.0,
+      //                         ),
+      //                       ),
+      //                       fillColor: const Color(0xfff3f3f4),
+      //                       filled: true,
+      //                       labelText: 'ເລືອກປະເພດວຽກ',
+      //                     ),
+      //                   ),
+
+      //                   asyncItems: (String filter) async {
+      //                     return providerService.workType;
+      //                   },
+      //                   itemAsString: (DataModels u) => u.name.toString(),
+      //                   onChanged: (DataModels? data) {
+      //                     print(data?.code.toString());
+      //                     workType = data?.workTypeId.toString();
+      //                   },
+      //                   items: providerService.workType,
+      //                 ),
+      //               ),
+      //               const Padding(
+      //                 padding: EdgeInsets.only(left: 10, right: 10, bottom: 5),
+      //                 child: Align(
+      //                   alignment: Alignment.centerLeft,
+      //                   child: Text(
+      //                     "ໂຄງການ",
+      //                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+      //                   ),
+      //                 ),
+      //               ),
+      //               const SizedBox(height: 5),
+      //               Padding(
+      //                 padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
+      //                 child: DropdownSearch<ProjectAll>(
+      //                   popupProps: const PopupProps.modalBottomSheet(
+      //                     showSearchBox: true,
+      //                   ),
+      //                   filterFn: (user, filter) => user.userFilterByCreationDate(filter),
+      //                   //  selectedItem: "Brazil",
+      //                   dropdownDecoratorProps: DropDownDecoratorProps(
+      //                     dropdownSearchDecoration: InputDecoration(
+      //                       border: OutlineInputBorder(
+      //                         borderRadius: BorderRadius.circular(30.0),
+      //                       ),
+
+      //                       //border: OutlineInputBorder(),
+      //                       contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      //                       enabledBorder: OutlineInputBorder(
+      //                         borderRadius: BorderRadius.circular(25.0),
+      //                         borderSide: BorderSide(
+      //                           color: const Color(0xff1C9A7F).withOpacity(0.50),
+      //                           width: 2.0,
+      //                         ),
+      //                       ),
+      //                       fillColor: const Color(0xfff3f3f4),
+      //                       filled: true,
+      //                       labelText: 'ເລືອກໂຄງການ',
+      //                     ),
+      //                   ),
+
+      //                   asyncItems: (String filter) async {
+      //                     providerService.setProject(filter);
+      //                     return providerService.projectAll;
+      //                   },
+      //                   itemAsString: (ProjectAll u) => u.projectName.toString(),
+      //                   onChanged: (ProjectAll? data) {
+      //                     print(data?.projectId.toString());
+      //                     projectId = data?.projectId.toString() ?? "";
+      //                   },
+      //                   items: providerService.projectAll,
+      //                 ),
+      //               ),
+      //               FormHelper.dropDownWidgetWithLabel(
+      //                   context, "ລະຫັດໜ້າວຽກ", "ເລືອກລະຫັດໜ້າວຽກ", workCodeId, WorkAllItemAll, (onChangedVal) {
+      //                 setState(() {
+      //                   workCodeId = onChangedVal.toString();
+      //                 });
+      //               }, (onValidate) {
+      //                 return null;
+      //               },
+      //                   borderColor: primary,
+      //                   borderFocusColor: primary,
+      //                   optionLabel: "workcode",
+      //                   optionValue: "workcode_id",
+      //                   paddingLeft: 0,
+      //                   paddingRight: 0,
+      //                   paddingTop: 0,
+      //                   paddingBottom: 0,
+      //                   labelFontSize: 15,
+      //                   borderRadius: 20),
+      //               const SizedBox(height: 10),
+      //               Padding(
+      //                 padding: const EdgeInsets.all(10),
+      //                 child: Row(
+      //                   crossAxisAlignment: CrossAxisAlignment.center,
+      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                   children: [
+      //                     Expanded(
+      //                       child: MyElevatedButtonPrimary(
+      //                         onPressed: () async {
+      //                           print("${widget.latitude} ${widget.longitude}");
+      //                           await WorkTypeService().startOT(context, workType, projectId, workCodeId,
+      //                               "${widget.latitude},${widget.longitude}", _remark.text);
+      //                         },
+      //                         borderRadius: BorderRadius.circular(24),
+      //                         child: const Text(
+      //                           'ເພີ່ມ',
+      //                           style: TextStyle(
+      //                             color: Colors.white,
+      //                             fontSize: 15,
+      //                             fontWeight: FontWeight.bold,
+      //                           ),
+      //                         ),
+      //                       ),
+      //                     )
+      //                   ],
+      //                 ),
+      //               ),
+      //             ]),
+      //           )
+      //         ],
+      //       ),
+      //     ),
+      //   ),
     );
   }
 
