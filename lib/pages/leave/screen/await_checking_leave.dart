@@ -30,7 +30,7 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
         height: MediaQuery.of(context).size.height - 250,
         child: Consumer<ProviderService>(
           builder: (context, model, child) {
-            return model.leave?.data.leaves == null
+            return model.leave?.data?.leaves == null
                 ? Center(
                     // ignore: prefer_const_constructors
                     child: SizedBox(
@@ -61,9 +61,9 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                     ),
                   )
                 : ListView.builder(
-                    itemCount: model.leave?.data.leaves.length,
+                    itemCount: model.leave?.data?.leaves?.length,
                     itemBuilder: (context, index) {
-                      final item = model.leave?.data.leaves[index];
+                      final item = model.leave?.data?.leaves?[index];
 
                       DateTime? startDate = item?.startDate;
                       DateTime? endDate = item?.endDate;
@@ -135,7 +135,7 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                       children: [
                                         const SizedBox(height: 5),
                                         Text(
-                                          providerService.langs == 'la' ? 'ມື້ຂໍລາພັກ : ' : 'Date of Leave ',
+                                          providerService.langs == 'la' ? 'ປະເພດລາພັກ : ' : 'Leave Type',
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
                                         ),
@@ -148,18 +148,17 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                         children: <Widget>[
                                           const SizedBox(height: 5),
                                           Text(
-                                            dateStart,
+                                            item?.leaveTypeName ?? "",
                                             style: TextStyle(
-                                                fontSize: 10.sp,
-                                               ),
+                                              fontSize: 10.sp,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-                                
-                                 Row(
+                                Row(
                                   children: [
                                     Text(
                                       providerService.langs == 'la' ? "ເຫດຜົນຂໍລາພັກ:" : 'ເຫດຜົນຂໍລາພັກ',
@@ -167,15 +166,15 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                         fontSize: 12.sp,
                                         color: black,
                                         fontWeight: FontWeight.bold,
-
                                       ),
                                     ),
-                                      SizedBox(width: 5.w),
+                                    SizedBox(width: 5.w),
                                     Text(
-                                    "${item?.details}",
-                                    style: TextStyle(fontSize: 12.sp,),
-                                  ),
-
+                                      "${item?.details}",
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 Row(
@@ -201,21 +200,21 @@ class _AwaitCheckingLeaveState extends State<AwaitCheckingLeave> {
                                           Text(
                                             '${item?.lStatusName}',
                                             style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: item?.isApproved == -1
-                                                    ? const Color.fromRGBO(244, 67, 54, 1)
-                                                    : item?.isApproved == 1
-                                                        ? const Color.fromRGBO(76, 175, 79, 1)
-                                                        : item?.isApproved == 0
-                                                            ? const Color.fromRGBO(255, 153, 0, 1)
-                                                            : primary),
+                                              fontSize: 10.sp,
+                                              color: item?.approvedBy == -1
+                                                  ? const Color.fromRGBO(244, 67, 54, 1)
+                                                  : item?.approvedBy == 1
+                                                      ? const Color.fromRGBO(76, 175, 79, 1)
+                                                      : item?.approvedBy == 0
+                                                          ? const Color.fromRGBO(255, 153, 0, 1)
+                                                          : primary,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-                               
                               ]),
                             ],
                           ),

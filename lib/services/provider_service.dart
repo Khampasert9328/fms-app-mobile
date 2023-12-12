@@ -65,6 +65,7 @@ import 'package:fms_mobile_app/pages/ot/DR/models/dr_success_models.dart';
 import 'package:fms_mobile_app/pages/ot/DR/service/dr_service.dart';
 import 'package:fms_mobile_app/pages/leave/models/leave_models.dart';
 import 'package:fms_mobile_app/pages/leave/models/leave_type_models.dart';
+import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 import 'package:fms_mobile_app/pages/ot/PM/models/pm_await_models.dart';
 import 'package:fms_mobile_app/pages/ot/PM/models/pm_success_models.dart';
 import 'package:fms_mobile_app/pages/ot/PM/service/pm_service.dart';
@@ -81,6 +82,8 @@ import 'package:fms_mobile_app/pages/ot/HR/service/hr_approved.dart';
 import 'package:fms_mobile_app/pages/ot/service/get_hr_approved.dart';
 import 'package:fms_mobile_app/pages/overtime/models/GetMyOverTime.dart';
 import 'package:fms_mobile_app/pages/overtime/service/ot_service.dart';
+import 'package:fms_mobile_app/pages/timesheets/models/time_attendance.dart';
+import 'package:fms_mobile_app/pages/timesheets/service/time_attendance.dart';
 import 'package:fms_mobile_app/services/api_service.dart';
 import 'package:fms_mobile_app/shared/mydata.dart';
 import 'package:geolocator/geolocator.dart' as location;
@@ -89,8 +92,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
 
-class ProviderService extends ChangeNotifier {
+import 'package:provider/provider.dart';
 
+class ProviderService extends ChangeNotifier {
   bool _btnStartisLoading = false;
   bool get btnStartisLoading => _btnStartisLoading;
 
@@ -243,9 +247,7 @@ class ProviderService extends ChangeNotifier {
   location.Position? _userLocation;
   location.Position? get userLocation => _userLocation;
 
-int StdEndworkThisDay = 0;
-
-
+  int StdEndworkThisDay = 0;
 
   setBtStartLoading(bool val) {
     _btnStartisLoading = val;
@@ -710,26 +712,37 @@ int StdEndworkThisDay = 0;
     notifyListeners();
   }
 
-  setTimesheetListDetial() async {
+  setTimesheetListDetial(context) async {
     final user = FirebaseAuth.instance.currentUser!;
     final idTokens = await user.getIdToken();
 
-    if (idTokens!.isNotEmpty && idTokens != "") {
-      int Nday = timeSheetList!.day;
-      int Nmonth = timeSheetList!.month;
-      int Nyear = timeSheetList!.year;
-      // print(_remark.text);
-      //  Nmonth >= 10 ? Nmonth : "0${Nmonth}"
-      String date = "${Nyear}-${Nmonth >= 10 ? Nmonth : "0${Nmonth}"}-${Nday >= 10 ? Nday : "0${Nday}"}";
+    // if (idTokens!.isNotEmpty && idTokens != "") {
+    // int Nday = timeSheetList!.day;
+    // int Nmonth = timeSheetList!.month;
+    // int Nyear = timeSheetList!.year;
+    // print(_remark.text);
+    //  Nmonth >= 10 ? Nmonth : "0${Nmonth}"
+    //String date = "${Nyear}-${Nmonth >= 10 ? Nmonth : "0${Nmonth}"}-${Nday >= 10 ? Nday : "0${Nday}"}";
+    _isloading = true;
 
-      final resTimesheetListDetial = await APIService().getTimesheetListDetial(idTokens, date);
-      final resTimesheetDateDetial = await APIService().getTimesheetDateDetial(idTokens, date);
+    final resTimesheetListDetial = await APIService().getTimesheetListDetial(context);
+    final resTimesheetDateDetial = await APIService().getTimesheetDateDetial(context);
 
-      timesheetListDetial = resTimesheetListDetial;
-      timesheetDateDetial = resTimesheetDateDetial;
+    timesheetListDetial = resTimesheetListDetial;
+    timesheetDateDetial = resTimesheetDateDetial;
+    _isloading = false;
 
-      notifyListeners();
-    }
+    notifyListeners();
+    //}
+  }
+
+  GetTimeAttendanceModels? _timeattendance;
+  GetTimeAttendanceModels? get timeattendance => _timeattendance;
+  Future<void> getTimeAttendance(context) async {
+    _isloading = true;
+    _timeattendance = await TimeAttendance().getTimeAttendance(context);
+    _isloading = false;
+    notifyListeners();
   }
 
   DateTime? AdmintimeSheetList;
@@ -1070,14 +1083,14 @@ int StdEndworkThisDay = 0;
   }
 
   Future<bool> AddTimesheeSelect(
-      String date, String projectId, String workType, String workcode, String workHour, String remark, context) async {
+      String projectId, String workType, String workcode, String workHour, String remark, context) async {
     final user = FirebaseAuth.instance.currentUser!;
     String? idTokens = await user.getIdToken();
 
     String? tokenMsg = await FirebaseMessaging.instance.getToken();
 
     final isSuccess =
-        await APIService().AddTimeSheet(idTokens!, date, projectId, workType, workcode, workHour, remark, context);
+        await APIService().AddTimeSheet(idTokens!, projectId, workType, workcode, workHour, remark, context);
 
     if (isSuccess == true) {
       return true;

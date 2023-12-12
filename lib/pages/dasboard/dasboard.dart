@@ -22,6 +22,8 @@ class _DasBoardState extends State<DasBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final providerService = Provider.of<ProviderService>(context, listen: false);
+
     return Container(
         height: 300.h,
         margin: const EdgeInsets.only(left: 10, right: 10),
@@ -58,9 +60,9 @@ class _DasBoardState extends State<DasBoard> {
             ]),
         child: Column(
           children: [
-            const SingleChildScrollView(
+             SingleChildScrollView(
               child: Text(
-                "ສຳລັບພະນັກງານບໍ່ປ້ອນ TimeSheets",
+               providerService.langs == 'la' ? "ສຳລັບພະນັກງານບໍ່ປ້ອນ TimeSheets" : "For input staff",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -87,15 +89,15 @@ class _DasBoardState extends State<DasBoard> {
                       radius: Radius.circular(10.r),
                       child: SingleChildScrollView(
                         child: DataTable(
-                          columns: const [
+                          columns:  [
                             DataColumn(
-                              label: Text("ລຳດັບ"),
+                              label: Text(providerService.langs == 'la' ? "ລະດັບ" : "Lavel",),
                             ),
                             DataColumn(
-                              label: Text("ຊື່"),
+                              label: Text(providerService.langs == 'la' ? "ຊື່" : "Name",),
                             ),
                             DataColumn(
-                              label: Text("ຈຳນວນບໍ່ໄດ້ປ້ອນ TimeSheets"),
+                              label: Text(providerService.langs == 'la' ? "ຈຳນວນບໍ່ປ້ອນ TimeSheets" : "Number not input TimeSheets",),
                             )
                           ],
                           rows: List.generate(value.timeSheetPanding!.data!.length, (index) {

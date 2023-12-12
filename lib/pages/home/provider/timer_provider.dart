@@ -1,9 +1,11 @@
 // ignore_for_file: unused_field
 
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fms_mobile_app/pages/home/OT/models/check_ot_model.dart';
 import 'package:fms_mobile_app/pages/home/OT/service/worktype_service.dart';
+import 'package:fms_mobile_app/services/api_service.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:ntp/ntp.dart';
 import 'package:provider/provider.dart';
@@ -130,13 +132,15 @@ class TimerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void stopTimer(context) {
+  void stopTimer(context) async {
+    final user = FirebaseAuth.instance.currentUser!;
+    String? idTokens = await user.getIdToken();
     final provider = Provider.of<ProviderService>(context, listen: false);
-    provider.setCheckAttend();
-    print("dura===${_duration.inMinutes}");
+    // provider.setCheckAttend();
     timer?.cancel();
+    final res = await APIService().getCheckAttend(idTokens!);
+    provider.checkAttend = res;
 
-     print("after dura===${_duration.inMinutes}");
     //_duration = Duration(seconds: 0);
     notifyListeners();
   }

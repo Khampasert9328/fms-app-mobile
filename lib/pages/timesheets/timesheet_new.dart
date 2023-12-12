@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fms_mobile_app/model/projectall.dart';
 import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
+import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 
 import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:fms_mobile_app/theme/color.dart';
@@ -24,6 +25,7 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
   String workCodeId = "";
   String workTypeId = "";
   String projectId = "";
+  String ShowHM = "";
 
   List<dynamic> WorkTypeItem = [];
   List<dynamic> WorkCodeItem = [];
@@ -158,303 +160,319 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
   @override
   void initState() {
     setData();
+    context.read<ProviderService>().getTimeAttendance(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final providerService = Provider.of<ProviderService>(context, listen: false);
-    final timer = Provider.of<TimerProvider>(context, listen: false);
+
+    int Sumhour = 0;
+    int Summinute = 0;
+    final Sumtotal =
+        new DateTime(0, 0, 0, 0, providerService.timesheetListDetial?.ioList?.toList()[0].sumTotalMinutes ?? 0);
+    Sumhour = int.parse(Sumtotal.hour.toString());
+    Summinute = int.parse(Sumtotal.minute.toString());
+    ShowHM = providerService.langs == 'la'
+        ? "${Sumhour >= 10 ? Sumhour : "0${Sumhour}"}:${Summinute >= 10 ? Summinute : "0${Summinute}"} "
+        : "${Sumhour >= 10 ? Sumhour : "0${Sumhour}"}:${Summinute >= 10 ? Summinute : "0${Summinute}"}  ";
+
     //final workType = providerService.workType;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 10,
-        // systemOverlayStyle: SystemUiOverlayStyle.dark,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: black,
+        appBar: AppBar(
+          elevation: 10,
+          // systemOverlayStyle: SystemUiOverlayStyle.dark,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: black,
+            ),
+            onPressed: () {
+              Navigator.pop(
+                context,
+                // MYHomePage is another page for showcase
+                // replace it with your page name
+              );
+            },
           ),
-          onPressed: () {
-            Navigator.pop(
-              context,
-              // MYHomePage is another page for showcase
-              // replace it with your page name
-            );
-          },
-        ),
-        title: Text(
-          providerService.langs == 'la' ? "ການປ້ອນ Timesheet" : " Timesheet ",
-          style: TextStyle(
-              fontSize: 16.sp,
-              // fontWeight: FontWeight.bold,
-              color: black),
-        ),
-        centerTitle: true,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              color: appBgColor,
+          title: Text(
+            providerService.langs == 'la' ? "ການປ້ອນ Timesheet" : " Timesheet ",
+            style: TextStyle(
+                fontSize: 16.sp,
+                // fontWeight: FontWeight.bold,
+                color: black),
+          ),
+          centerTitle: true,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                color: appBgColor,
 
-              // borderRadius: BorderRadius.circular(13),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade200,
-                  spreadRadius: 2,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2),
-                ),
-                BoxShadow(
-                  color: Colors.grey.shade200,
-                  spreadRadius: 2,
-                  blurRadius: 2,
-                  offset: const Offset(0, -2),
-                ),
-                BoxShadow(
-                  color: Colors.grey.shade200,
-                  spreadRadius: 2,
-                  blurRadius: 2,
-                  offset: const Offset(-2, 0),
-                ),
-                BoxShadow(
-                  color: Colors.grey.shade200,
-                  spreadRadius: 2,
-                  blurRadius: 2,
-                  offset: const Offset(2, 0),
-                ),
-              ]),
+                // borderRadius: BorderRadius.circular(13),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade200,
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    offset: const Offset(0, 2),
+                  ),
+                  BoxShadow(
+                    color: Colors.grey.shade200,
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    offset: const Offset(0, -2),
+                  ),
+                  BoxShadow(
+                    color: Colors.grey.shade200,
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    offset: const Offset(-2, 0),
+                  ),
+                  BoxShadow(
+                    color: Colors.grey.shade200,
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    offset: const Offset(2, 0),
+                  ),
+                ]),
+          ),
         ),
-      ),
-      body: _loding == true
-          ? const Center(
+        body: Consumer<ProviderService>(builder: (context, providerService, children) {
+          print("timeatt${providerService.timeattendance?.data}");
+          if (providerService.timeattendance == null) {
+            return const Center(
               child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FormHelper.dropDownWidgetWithLabel(
-                        context,
-                        providerService.langs == 'la' ? "ປະເພດວຽກ" : " Work Type ",
-                        providerService.langs == 'la' ? "ເລືອກປະເພດວຽກ" : " Select Work Type ",
-                        workTypeId,
-                        WorkTypeItem, (onChangedVal) {
-                      setState(() {
-                        workTypeId = onChangedVal.toString();
+            );
+          }
+          return SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FormHelper.dropDownWidgetWithLabel(
+                      context,
+                      providerService.langs == 'la' ? "ປະເພດວຽກ" : " Work Type ",
+                      providerService.langs == 'la' ? "ເລືອກປະເພດວຽກ" : " Select Work Type ",
+                      workTypeId,
+                      WorkTypeItem, (onChangedVal) {
+                    setState(() {
+                      workTypeId = onChangedVal.toString();
 
-                        WorkAllItemAll = WorkCodeItem.where(
-                            (element) => element["work_type_id"].toString() == onChangedVal.toString()).toList();
-                      });
-                    }, (onValidate) {
-                      return null;
-                    },
-                        borderColor: primary,
-                        borderFocusColor: primary,
-                        optionLabel: "name",
-                        optionValue: "work_type_id",
-                        paddingLeft: 0,
-                        paddingRight: 0,
-                        paddingTop: 0,
-                        paddingBottom: 0,
-                        labelFontSize: 15,
-                        borderRadius: 20),
+                      WorkAllItemAll =
+                          WorkCodeItem.where((element) => element["work_type_id"].toString() == onChangedVal.toString())
+                              .toList();
+                    });
+                  }, (onValidate) {
+                    return null;
+                  },
+                      borderColor: primary,
+                      borderFocusColor: primary,
+                      optionLabel: "name",
+                      optionValue: "work_type_id",
+                      paddingLeft: 0,
+                      paddingRight: 0,
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                      labelFontSize: 15,
+                      borderRadius: 20),
 
-                    const SizedBox(
-                      height: 10.0,
-                    ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
 
-                    workTypeId == "1"
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                            child: Text(
-                              providerService.langs == 'la' ? "ໂຄງການ" : " Project",
-                              // ignore: prefer_const_constructors
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  workTypeId == "1"
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                          child: Text(
+                            providerService.langs == 'la' ? "ໂຄງການ" : " Project",
+                            // ignore: prefer_const_constructors
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        )
+                      : Container(),
+                  workTypeId == "1"
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
+                          child: DropdownSearch<ProjectAll>(
+                            popupProps: const PopupProps.modalBottomSheet(
+                              showSearchBox: true,
                             ),
-                          )
-                        : Container(),
-                    workTypeId == "1"
-                        ? Padding(
-                            padding: const EdgeInsets.only(right: 8, left: 8, top: 3, bottom: 2),
-                            child: DropdownSearch<ProjectAll>(
-                              popupProps: const PopupProps.modalBottomSheet(
-                                showSearchBox: true,
-                              ),
-                              filterFn: (user, filter) => user.userFilterByCreationDate(filter),
-                              //  selectedItem: "Brazil",
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
+                            filterFn: (user, filter) => user.userFilterByCreationDate(filter),
+                            //  selectedItem: "Brazil",
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
 
-                                  //border: OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    borderSide: BorderSide(
-                                      color: const Color(0xff1C9A7F).withOpacity(0.50),
-                                      width: 2.0,
-                                    ),
+                                //border: OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  borderSide: BorderSide(
+                                    color: const Color(0xff1C9A7F).withOpacity(0.50),
+                                    width: 2.0,
                                   ),
-                                  fillColor: const Color(0xfff3f3f4),
-                                  filled: true,
-                                  labelText: providerService.langs == 'la' ? 'ເລືອກໂຄງການ' : "Select Project",
+                                ),
+                                fillColor: const Color(0xfff3f3f4),
+                                filled: true,
+                                labelText: providerService.langs == 'la' ? 'ເລືອກໂຄງການ' : "Select Project",
+                              ),
+                            ),
+
+                            asyncItems: (String filter) async {
+                              providerService.setProject(filter);
+                              return providerService.projectAll;
+                            },
+                            itemAsString: (ProjectAll u) => u.projectName.toString(),
+                            onChanged: (ProjectAll? data) {
+                              projectId = data?.projectId.toString() ?? "";
+                            },
+                            items: providerService.projectAll,
+                          ),
+                        )
+                      : Container(),
+
+                  // ignore: prefer_const_constructors
+                  workTypeId != ""
+                      ? FormHelper.dropDownWidgetWithLabel(
+                          context,
+                          providerService.langs == 'la' ? "ລະຫັດໜ້າວຽກ" : "Work Code",
+                          providerService.langs == 'la' ? "ເລືອກໜ້າວຽກ" : "Select Work Code",
+                          workCodeId,
+                          WorkAllItemAll, (onChangedVal) {
+                          setState(() {
+                            workCodeId = onChangedVal.toString();
+                          });
+                        }, (onValidate) {
+                          return null;
+                        },
+                          borderColor: primary,
+                          borderFocusColor: primary,
+                          optionLabel: "workcode",
+                          optionValue: "workcode_id",
+                          paddingLeft: 0,
+                          paddingRight: 0,
+                          paddingTop: 0,
+                          paddingBottom: 0,
+                          labelFontSize: 15,
+                          borderRadius: 20)
+                      : Container(),
+
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  workTypeId != "3" && workTypeId != ""
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                          child: Text(
+                            providerService.langs == 'la' ? "ຊົ່ວໂມງເຮັດວຽກ" : "Total",
+                            // ignore: prefer_const_constructors
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        )
+                      : Container(),
+
+                  const SizedBox(height: 10),
+                  workTypeId != "3" && workTypeId != ""
+                      ? SizedBox(
+                          height: 50,
+                          child: TextField(
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                  color: const Color(0xff1C9A7F).withOpacity(0.50),
+                                  width: 2.0,
                                 ),
                               ),
-
-                              asyncItems: (String filter) async {
-                                providerService.setProject(filter);
-                                return providerService.projectAll;
-                              },
-                              itemAsString: (ProjectAll u) => u.projectName.toString(),
-                              onChanged: (ProjectAll? data) {
-                                projectId = data?.projectId.toString() ?? "";
-                              },
-                              items: providerService.projectAll,
+                              fillColor: const Color(0xfff3f3f4),
+                              filled: true,
+                              hintText: "${providerService.timeattendance?.data} ຊົ່ວໂມງ",
                             ),
-                          )
-                        : Container(),
-
-                    // ignore: prefer_const_constructors
-                    workTypeId != ""
-                        ? FormHelper.dropDownWidgetWithLabel(
-                            context,
-                            providerService.langs == 'la' ? "ລະຫັດໜ້າວຽກ" : "Work Code",
-                            providerService.langs == 'la' ? "ເລືອກໜ້າວຽກ" : "Select Work Code",
-                            workCodeId,
-                            WorkAllItemAll, (onChangedVal) {
-                            setState(() {
-                              workCodeId = onChangedVal.toString();
-                            });
-                          }, (onValidate) {
-                            return null;
-                          },
-                            borderColor: primary,
-                            borderFocusColor: primary,
-                            optionLabel: "workcode",
-                            optionValue: "workcode_id",
-                            paddingLeft: 0,
-                            paddingRight: 0,
-                            paddingTop: 0,
-                            paddingBottom: 0,
-                            labelFontSize: 15,
-                            borderRadius: 20)
-                        : Container(),
-
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    workTypeId != "3" && workTypeId != ""
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                            child: Text(
-                              providerService.langs == 'la' ? "ຊົ່ວໂມງເຮັດວຽກ" : "Total",
-                              // ignore: prefer_const_constructors
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
-                          )
-                        : Container(),
-
-                    const SizedBox(height: 10),
-                    workTypeId != "3" && workTypeId != ""
-                        ? SizedBox(
-                            height: 50,
-                            child: TextField(
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    borderSide: BorderSide(
-                                      color: const Color(0xff1C9A7F).withOpacity(0.50),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  fillColor: const Color(0xfff3f3f4),
-                                  filled: true,
-                                  hintText: "${timer.duration.inHours}: ${timer.duration.inMinutes.remainder(60)}: ${timer.duration.inSeconds.remainder(60)}"),
-                              controller: _timeTotal,
-                            ),
-                          )
-                        : Container(),
-
-                    workTypeId != "3" && workTypeId != ""
-                        ? const SizedBox(
-                            height: 20.0,
-                          )
-                        : Container(),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                      child: Text(
-                        providerService.langs == 'la' ? "ໝາຍເຫດ" : "Remark",
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                    ),
-
-                    TextField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 4,
-                      controller: _remark,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
+                            controller: _timeTotal,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: const Color(0xff1C9A7F).withOpacity(0.50),
-                              width: 2.0,
-                            ),
-                          ),
-                          fillColor: const Color(0xfff3f3f4),
-                          filled: true,
-                          hintText: "ພິມຂໍ້ຄວາມ"),
-                    ),
+                        )
+                      : Container(),
 
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: MyElevatedButtonPrimary(
-                                onPressed: () {
-                                  if (workTypeId != "") {
-                                    if (workTypeId == '1' && projectId != "" && workCodeId != "") {
-                                      _showSuccus();
-                                    } else if (workTypeId == '2' && workCodeId != "" ) {
-                                      _showSuccus();
-                                    } else if (workTypeId == '3' && workCodeId != "") {
-                                      _showSuccus();
-                                    } else {
-                                      _showDialogUnsuccus();
-                                    }
+                  workTypeId != "3" && workTypeId != ""
+                      ? const SizedBox(
+                          height: 20.0,
+                        )
+                      : Container(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                    child: Text(
+                      providerService.langs == 'la' ? "ໝາຍເຫດ" : "Remark",
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                  ),
+
+                  TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 4,
+                    controller: _remark,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: const Color(0xff1C9A7F).withOpacity(0.50),
+                            width: 2.0,
+                          ),
+                        ),
+                        fillColor: const Color(0xfff3f3f4),
+                        filled: true,
+                        hintText: "ພິມຂໍ້ຄວາມ"),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: MyElevatedButtonPrimary(
+                              onPressed: () {
+                                if (workTypeId != "") {
+                                  if (workTypeId == '1' && projectId != "" && workCodeId != "") {
+                                    _showSuccus();
+                                  } else if (workTypeId == '2' && workCodeId != "") {
+                                    _showSuccus();
+                                  } else if (workTypeId == '3' && workCodeId != "") {
+                                    _showSuccus();
                                   } else {
                                     _showDialogUnsuccus();
                                   }
-                                },
-                                borderRadius: BorderRadius.circular(24),
-                                child: const Text(
-                                  'ເພີ່ມ',
-                                  style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                                )),
-                          )
-                        ],
-                      ),
+                                } else {
+                                  _showDialogUnsuccus();
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(24),
+                              child: const Text(
+                                'ເພີ່ມ',
+                                style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                              )),
+                        )
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-    );
+          );
+        }));
   }
 
   Future<void> _showSuccus() async {
@@ -504,29 +522,21 @@ class _TimeSheetNewState extends State<TimeSheetNew> {
                 child: MyElevatedButtonPrimary(
                     height: 30,
                     onPressed: () async {
-                       final timer = Provider.of<TimerProvider>(context, listen: false);
-                      // setState(() {
-
-                      // //  _loding = true;
-
-                      // });
-                      _showDialogLoding();
                       final providerService = Provider.of<ProviderService>(context, listen: false);
 
-                      int Nday = providerService.timeSheetList!.day;
-                      int Nmonth = providerService.timeSheetList!.month;
-                      int Nyear = providerService.timeSheetList!.year;
+                      // int Nday = providerService.timeSheetList!.day;
+                      // int Nmonth = providerService.timeSheetList!.month;
+                      // int Nyear = providerService.timeSheetList!.year;
 
-                      String date = "${Nyear}-$Nmonth-$Nday";
+                      //String date = "${Nyear}-$Nmonth-$Nday";
                       String remark = _remark.text;
                       String work_type = workTypeId;
                       String workcode = workCodeId;
                       String work_hour = work_type == '3' ? "0.0" : totalh.toString();
                       String project_id = work_type == '1' ? projectId : "";
 
-
-                      final AddTimesheeSelect = await providerService.AddTimesheeSelect(
-                          date, project_id, work_type, workcode, '${timer.duration.inHours}.${timer.duration.inMinutes.remainder(60)}', remark, context);
+                      final AddTimesheeSelect = await providerService.AddTimesheeSelect(project_id, work_type, workcode,
+                          providerService.timeattendance!.data.toString(), remark, context);
 
                       // await Future.delayed(const Duration(seconds: 3));
 

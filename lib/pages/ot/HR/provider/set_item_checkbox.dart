@@ -24,11 +24,22 @@ class SetItmem extends ChangeNotifier {
   int? _employeid;
   int? get employeeid => _employeid;
 
-  // void setYears(int val) async {
-  //   final res = await YearService().getYearsAll();
-  //   _setyear = res?.data?[0].pureYear;
-  //   notifyListeners();
-  // }
+  String? _dateCalenda = '';
+  String? get dateCalenda => _dateCalenda;
+
+  int? _sumtotalhours;
+  int? get sumtotalhours => _sumtotalhours;
+
+  void setSumtotalHours(int? sum) {
+    _sumtotalhours = sum;
+    notifyListeners();
+  }
+
+
+  void setDateCalenda(String? date) {
+    _dateCalenda = date;
+    notifyListeners();
+  }
 
   void setEmployeid(int val) {
     _employeid = val;

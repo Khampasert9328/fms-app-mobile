@@ -95,7 +95,6 @@ class WorkTypeService {
     );
     if (res.statusCode == 200) {
       await time.startTimerOT(context);
-
       Navigator.of(context);
       showDialog(
         context: context,
@@ -135,11 +134,18 @@ class WorkTypeService {
       },
     );
     if (res.statusCode == 200) {
-      print('status==${res.statusCode}');
       time.stopTimerOT(context);
       time.setDurationOT = 0;
-
       Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) => LoadingDialog(
+          title: "ເຊົາເຮັດໂອທີສຳເລັດ",
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
     }
   }
 

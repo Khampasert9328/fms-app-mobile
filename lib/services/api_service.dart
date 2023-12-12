@@ -48,19 +48,23 @@ import 'package:fms_mobile_app/model/user_detail_by_id.dart';
 import 'package:fms_mobile_app/model/user_image_list.dart';
 import 'package:fms_mobile_app/model/workcode.dart';
 import 'package:fms_mobile_app/model/worktype.dart';
+import 'package:fms_mobile_app/pages/calendar/provider/calenda_provicer.dart';
 import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
 import 'package:fms_mobile_app/pages/leave/models/leave_models.dart';
 import 'package:fms_mobile_app/pages/leave/models/leave_type_models.dart';
+import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 import 'package:fms_mobile_app/pages/ot/models/overtimeexecultive/overtimeexecultive_models.dart';
 import 'package:fms_mobile_app/pages/ot/models/overtimeexecultive/overtimeexecultivecount_models.dart';
 import 'package:fms_mobile_app/pages/ot/models/overtimeproject/overtime_count.dart';
 import 'package:fms_mobile_app/pages/ot/models/overtimeproject/overtimeproject_models.dart';
 import 'package:fms_mobile_app/pages/ot/ot_by_id.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_list.dart';
+import 'package:fms_mobile_app/pages/timesheets/timesheet_new.dart';
 import 'package:fms_mobile_app/shared/mydata.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_add_timesheet.dart';
 import 'package:fms_mobile_app/widgets/loading/loading_success.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class APIService {
@@ -542,9 +546,10 @@ class APIService {
     }
   }
 
-  Future<bool> AddTimeSheet(String token, String date, String projectid, String worktype, String workcode,
-      String workhour, String remark, context) async {
-    print("hours===$workhour");
+  Future<bool> AddTimeSheet(
+      String token, String projectid, String worktype, String workcode, String workhour, String remark, context) async {
+    final date = Provider.of<SetItmem>(context, listen: false);
+
     LoadingAddTimeSheets().showDialogSuccess(context);
     final http.Response response = await http.post(Uri.parse('${apiPath.toString()}/timesheets/submit/request'),
         headers: <String, String>{
@@ -552,7 +557,7 @@ class APIService {
           'Authorization': 'Bearer ${token}',
         },
         body: jsonEncode(<String, String>{
-          'date': date,
+          'date': date.dateCalenda.toString(),
           'project_id': projectid,
           'work_type': worktype,
           'workcode': workcode,
@@ -562,18 +567,28 @@ class APIService {
 
     if (response.statusCode == 200) {
       Navigator.pop(context);
+      final calendarVm = Provider.of<CalendarProvider>(context, listen: false);
+      await calendarVm.initAllCalenda(context);
       return true;
     } else {
       return false;
     }
   }
 
-  Future<TimesheetListDetial> getTimesheetListDetial(String idToken, String date) async {
-    final http.Response response =
-        await http.get(Uri.parse('${apiPath.toString()}/attendance/list?date=${date}'), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer ${idToken}',
-    });
+  Future<TimesheetListDetial> getTimesheetListDetial(context) async {
+    final date = Provider.of<SetItmem>(context, listen: false);
+    final user = FirebaseAuth.instance.currentUser!;
+    DateTime datenow = DateTime.now();
+    // String monthnow = DateFormat('MM').format(datenow);
+    String yearnow = DateFormat('yyyy-MM-dd').format(datenow);
+    String? idTokens = await user.getIdToken();
+
+    final http.Response response = await http.get(
+        Uri.parse('${apiPath.toString()}/attendance/list?date=${date.dateCalenda ?? yearnow}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $idTokens',
+        });
 
     if (response.statusCode == 200) {
       return TimesheetListDetial.fromJson(jsonDecode(response.body));
@@ -597,17 +612,28 @@ class APIService {
     }
   }
 
-  Future<TimesheetDateDetial> getTimesheetDateDetial(String idToken, String date) async {
-    final http.Response response =
-        await http.get(Uri.parse('${apiPath.toString()}/timesheets/date?date=${date}'), headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer ${idToken}',
-    });
-
-    if (response.statusCode == 200) {
-      return TimesheetDateDetial.fromJson(jsonDecode(response.body));
+  Future<TimesheetDateDetial> getTimesheetDateDetial(context) async {
+    DateTime datenow = DateTime.now();
+    // String monthnow = DateFormat('MM').format(datenow);
+    String yearnow = DateFormat('yyyy-MM-dd').format(datenow);
+    final date = Provider.of<SetItmem>(context, listen: false);
+    final user = FirebaseAuth.instance.currentUser!;
+    if (user != null) {
+      String? idTokens = await user.getIdToken();
+      final http.Response response = await http.get(
+          Uri.parse('${AppAPI.apiPath}/timesheets/date?date=${date.dateCalenda ?? yearnow}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $idTokens',
+          });
+      print("timesheetsdatedetail${response.statusCode}");
+      if (response.statusCode == 200) {
+        return TimesheetDateDetial.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception('Failed to fetch timesheet details');
+      }
     } else {
-      throw Exception('Failed to UserToken');
+      throw Exception('User not authenticated');
     }
   }
 

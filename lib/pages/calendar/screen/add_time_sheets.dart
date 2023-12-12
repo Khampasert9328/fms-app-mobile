@@ -171,7 +171,6 @@ class _AddTimeSheetState extends State<AddTimeSheet> {
                                     onPressed: () {
                                       APIService().AddTimeSheet(
                                           token!,
-                                          DateTime.parse(_format.format(widget.dateTime)).toString(),
                                           tProvider.project.toString(),
                                           tProvider.workType.toString(),
                                           tProvider.workCode.toString(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fms_mobile_app/pages/calendar/provider/calenda_provicer.dart';
 import 'package:fms_mobile_app/pages/calendar/screen/add_time_sheets.dart';
+import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_list.dart';
 import 'package:fms_mobile_app/theme/color.dart';
 import 'package:fms_mobile_app/utils/set/set_status.dart';
@@ -64,9 +65,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
         view: CalendarView.month,
         onViewChanged: (ViewChangedDetails details) async {
           if (details.visibleDates.isNotEmpty) {
+            
             DateTime visibleDate = details.visibleDates[0];
-            String formatMonth = DateFormat('MM').format(visibleDate);
-            String formatYears = DateFormat('yyyy').format(visibleDate);
+            String? formatMonth = DateFormat('MM').format(visibleDate);
+            String? formatYears = DateFormat('yyyy').format(visibleDate);
 
             provider.setDataMonthCalendar(formatMonth);
             provider.setDataYearsCalendar(formatYears);
@@ -81,20 +83,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
           for (var i in provider.attendance!.data!) {
             if (i.date != null) {
               if (formatDate.format(details.date!) == formatDate.format(i.date!)) {
-                print("hiiii");
+                String date = DateFormat('yyyy-MM-dd').format(details.date!);
+
+                context.read<SetItmem>().setDateCalenda(date);
+
                 Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => TimeSheetList(),
-            ),
-          );
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => TimeSheetList(),
+                  ),
+                );
                 break;
               } else {
                 print("no");
               }
             }
           }
-          
 
           setState(() {
             _selectedDate = details.date;
@@ -109,7 +113,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-         backgroundColor: primary,
+        backgroundColor: primary,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);

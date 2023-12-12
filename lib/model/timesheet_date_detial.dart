@@ -9,13 +9,13 @@ TimesheetDateDetial timesheetDateDetialFromJson(String str) => TimesheetDateDeti
 String timesheetDateDetialToJson(TimesheetDateDetial data) => json.encode(data.toJson());
 
 class TimesheetDateDetial {
+    int? status;
+    List<Datum>? data;
+
     TimesheetDateDetial({
         this.status,
         this.data,
     });
-
-    int? status;
-    List<Datum>? data;
 
     factory TimesheetDateDetial.fromJson(Map<String, dynamic> json) => TimesheetDateDetial(
         status: json["status"],
@@ -29,6 +29,15 @@ class TimesheetDateDetial {
 }
 
 class Datum {
+    int? eTimesheetId;
+    String? projectCode;
+    String? workType;
+    String? workcode;
+    int? workcodeId;
+    double? workHour;
+    String? remark;
+    dynamic filename;
+
     Datum({
         this.eTimesheetId,
         this.projectCode,
@@ -40,22 +49,13 @@ class Datum {
         this.filename,
     });
 
-    int? eTimesheetId;
-    String? projectCode;
-    String? workType;
-    String? workcode;
-    int? workcodeId;
-    String? workHour;
-    String? remark;
-    dynamic filename;
-
     factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         eTimesheetId: json["e_timesheet_id"],
         projectCode: json["project_code"],
         workType: json["work_type"],
         workcode: json["workcode"],
         workcodeId: json["workcode_id"],
-        workHour: json["work_hour"].toString(),
+        workHour: json["work_hour"]?.toDouble(),
         remark: json["remark"],
         filename: json["filename"],
     );

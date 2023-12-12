@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fms_mobile_app/pages/home/provider/timer_provider.dart';
+import 'package:fms_mobile_app/pages/ot/HR/provider/set_item_checkbox.dart';
 import 'package:fms_mobile_app/pages/timesheets/timesheet_new.dart';
 import 'package:fms_mobile_app/services/provider_service.dart';
 import 'package:fms_mobile_app/theme/color.dart';
@@ -28,19 +29,16 @@ class _TimeSheetListState extends State<TimeSheetList> {
       _loding = true;
     });
 
-    final providerService =
-        Provider.of<ProviderService>(context, listen: false);
-
-    await providerService.setTimesheetListDetial();
+    final providerService = Provider.of<ProviderService>(context, listen: false);
 
     //  print("HomeStart123");
-    print(providerService.StdEndworkThisDay);
+    // print("std=====${providerService.StdEndworkThisDay}");
+    // print("tsd=====${providerService.timesheetDateDetial?.data?.length}");
 
-    if (providerService.StdEndworkThisDay == 1) {
-      if (providerService.StdEndworkThisDay == 1 &&
-          providerService.timesheetDateDetial?.data?.length == 0) {
-        _FuctionNewTap(context);
-      }
+    if (providerService.StdEndworkThisDay == 1 &&
+        providerService.timesheetDateDetial!.data != null &&
+        providerService.timesheetDateDetial?.data?.length == 0) {
+      _FuctionNewTap(context);
     }
 
     setState(() {
@@ -63,21 +61,20 @@ class _TimeSheetListState extends State<TimeSheetList> {
   @override
   void initState() {
     setData();
-
+    context.read<ProviderService>().setTimesheetListDetial(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final providerService = Provider.of<ProviderService>(context, listen: false);
-    final timesheetListDetial = providerService.timesheetListDetial?.ioList;
 
     return Scaffold(
       appBar: AppBar(
         elevation: 10,
         // systemOverlayStyle: SystemUiOverlayStyle.dark,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: black,
           ),
@@ -143,32 +140,33 @@ class _TimeSheetListState extends State<TimeSheetList> {
               : Container()
         ],
       ),
-      floatingActionButton:
-          providerService.StdEndworkThisDay == 1 && providerService.timesheetDateDetial?.data?.length != 0
-              ? Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: MyElevatedButtonPrimary(
-                      width: MediaQuery.of(context).size.width,
-                      onPressed: () async {
-                        final provitime = Provider.of<TimerProvider>(context, listen: false);
-                        final res = await providerService.checkOutNew(
-                            "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
-                            context);
+      // floatingActionButton:
+      //     providerService.StdEndworkThisDay == 1 && providerService.timesheetDateDetial?.data?.length != 0
+      //         ? Padding(
+      //             padding: const EdgeInsets.all(10),
+      //             child: MyElevatedButtonPrimary(
+      //                 width: MediaQuery.of(context).size.width,
+      //                 onPressed: () async {
+      //                   final provitime = Provider.of<TimerProvider>(context, listen: false);
+      //                   final res = await providerService.checkOutNew(
+      //                       "${providerService.userLocation?.latitude},${providerService.userLocation?.longitude}",
+      //                       context);
+      //                   print(res);
 
-                        if (res == true) {
-                          provitime.stopTimer(context);
+      //                   if (res == true) {
+      //                     provitime.stopTimer(context);
 
-                          Navigator.pop(context, "CheckOut");
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(24),
-                      child: const Text(
-                        'ຢືນຢັນການເລິກວຽກ',
-                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                      )),
-                )
-              : Container(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      //                     Navigator.pop(context, "CheckOut");
+      //                   }
+      //                 },
+      //                 borderRadius: BorderRadius.circular(24),
+      //                 child: const Text(
+      //                   'ຢືນຢັນການເລິກວຽກ',
+      //                   style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+      //                 )),
+      //           )
+      //         : Container(),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: _loding == true
           ? const Center(
               child: CircularProgressIndicator(),
@@ -355,8 +353,8 @@ class _TimeSheetListState extends State<TimeSheetList> {
                                   SizedBox(height: 5),
                                   Text(
                                     providerService.langs == 'la'
-                                        ? '${item?.workHour}  ຊົ້ວໂມງ'
-                                        : '${item?.workHour}  h',
+                                        ? '${item?.workHour ?? ""}  ຊົ້ວໂມງ'
+                                        : '${item?.workHour ?? ""}  h',
                                     style: TextStyle(fontSize: 10.sp, color: black),
                                   ),
                                   SizedBox(height: 5),
@@ -419,9 +417,9 @@ class _TimeSheetListState extends State<TimeSheetList> {
 
     String ShowHM = "";
 
-    int Nday = providerService.timeSheetList!.day;
-    int Nmonth = providerService.timeSheetList!.month;
-    int Nyear = providerService.timeSheetList!.year;
+    // int Nday = providerService.timeSheetList!.day;
+    // int Nmonth = providerService.timeSheetList!.month;
+    // int Nyear = providerService.timeSheetList!.year;
 
     String Status = "";
 
@@ -459,76 +457,80 @@ class _TimeSheetListState extends State<TimeSheetList> {
     // TimeOfDay _startTime = TimeOfDay(hour:int.parse(start![0].toString()),minute: int.parse(start[1].toString()));
     // print(_startTime);
     return SizedBox(
-      height: 120,
-      child: ListView.builder(
-          itemCount: 1,
-          itemBuilder: (context, index) {
-            return Container(
-              // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              margin: const EdgeInsets.only(right: 30, left: 30, top: 20, bottom: 20),
-              child: SizedBox(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        height: 120,
+        child: Consumer<ProviderService>(builder: (context, providerService, child) {
+          return ListView.builder(
+              itemCount: providerService.timesheetListDetial?.ioList?.length,
+              itemBuilder: (context, index) {
+                final data = providerService.timesheetListDetial?.ioList?[0];
+                final setData = Provider.of<SetItmem>(context, listen: false);
+                setData.setSumtotalHours(data?.sumTotalMinutes);
+                return Container(
+                  // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  margin: const EdgeInsets.only(right: 30, left: 30, top: 20, bottom: 20),
+                  child: SizedBox(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            providerService.langs == 'la' ? 'ວັນເດືອນປີ :' : "Date",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                providerService.langs == 'la' ? 'ວັນເດືອນປີ :' : "Date",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                              ),
+                              Text(
+                                providerService.timesheetListDetial!.date ?? "",
+                                style: TextStyle(fontSize: 12.sp, color: black),
+                              ),
+                              Text(
+                                providerService.langs == 'la' ? 'ລວມເວລາ:' : 'Total :',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                              ),
+                              Text(
+                                ShowHM,
+                                style: TextStyle(fontSize: 12.sp, color: black),
+                              ),
+                            ],
                           ),
-                          Text(
-                            '${Nday >= 10 ? Nday : "0${Nday}"}/${Nmonth >= 10 ? Nmonth : "0${Nmonth}"}/${Nyear}',
-                            style: TextStyle(fontSize: 12.sp, color: black),
-                          ),
-                          Text(
-                            providerService.langs == 'la' ? 'ລວມເວລາ:' : 'Total :',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
-                          ),
-                          Text(
-                            '${ShowHM}',
-                            style: TextStyle(fontSize: 12.sp, color: black),
-                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                providerService.langs == 'la' ? 'ເວລາ:' : 'Time :',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                              ),
+                              Text(
+                                '${SumInout}',
+                                style: TextStyle(fontSize: 12.sp, color: black),
+                              ),
+                              Text(
+                                providerService.langs == 'la' ? 'ສະຖານະ: ' : 'Stutas :',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
+                              ),
+                              Text(
+                                '${Status}',
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    color: timesheetApproved == "-1"
+                                        ? Color.fromRGBO(255, 153, 0, 1)
+                                        : timesheetApproved == "1"
+                                            ? Color.fromRGBO(76, 175, 79, 1)
+                                            : Color.fromRGBO(244, 67, 54, 1)),
+                              ),
+                            ],
+                          )
                         ],
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            providerService.langs == 'la' ? 'ເວລາ:' : 'Time :',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
-                          ),
-                          Text(
-                            '${SumInout}',
-                            style: TextStyle(fontSize: 12.sp, color: black),
-                          ),
-                          Text(
-                            providerService.langs == 'la' ? 'ສະຖານະ: ' : 'Stutas :',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp, color: black),
-                          ),
-                          Text(
-                            '${Status}',
-                            style: TextStyle(
-                                fontSize: 12.sp,
-                                color: timesheetApproved == "-1"
-                                    ? Color.fromRGBO(255, 153, 0, 1)
-                                    : timesheetApproved == "1"
-                                        ? Color.fromRGBO(76, 175, 79, 1)
-                                        : Color.fromRGBO(244, 67, 54, 1)),
-                          ),
-                        ],
-                      )
-                    ],
+                      const SizedBox(
+                        width: 20.0,
+                      ),
+                    ]),
                   ),
-                  const SizedBox(
-                    width: 20.0,
-                  ),
-                ]),
-              ),
-            );
-          }),
-    );
+                );
+              });
+        }));
   }
 
   Future<void> _showSuccus() async {

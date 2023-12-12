@@ -6,22 +6,26 @@ import 'package:fms_mobile_app/pages/calendar/models/hoursattendance/hoursattend
 import 'package:fms_mobile_app/pages/calendar/models/leavecalenda/leavecalenda_models.dart';
 import 'package:fms_mobile_app/pages/calendar/models/timesheetscalenda/timesheetscalenda_models.dart';
 import 'package:fms_mobile_app/pages/calendar/provider/calenda_provicer.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class CalenDaService {
   Future<TimeSheetsCalendaModels?> getTimeSheetsCalenda(context) async {
+    DateTime datenow = DateTime.now();
+    String monthnow = DateFormat('MM').format(datenow);
+    String yearnow = DateFormat('yyyy').format(datenow);
     final provider = Provider.of<CalendarProvider>(context, listen: false);
     final user = await FirebaseAuth.instance.currentUser?.getIdToken();
     final token = user;
-    String url = '${AppAPI.apiPath}/timesheets/month?month=7&year=2023';
+    String url =
+        '${AppAPI.apiPath}/timesheets/month?month=${provider.setmonthcalenda ?? monthnow}&year=${provider.setyearcalenda ?? yearnow}';
     final res = await http.get(
       Uri.parse(url),
       headers: {
         'Authorization': 'Bearer $token',
       },
     );
-    print(provider.setmonthcalenda);
 
     if (res.statusCode == 200) {
       return timeSheetsCalendaModelsFromJson(res.body);
@@ -84,6 +88,4 @@ class CalenDaService {
     }
     return null;
   }
-
-  
 }

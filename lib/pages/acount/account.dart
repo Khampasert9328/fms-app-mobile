@@ -333,7 +333,7 @@ class _AccountPageState extends State<AccountPage> {
                 },
               ),
               SettingItem(
-                title: providerService.langs == 'la' ? "ກົດລະບຽບຂອງບໍລິສັດ" : "ChangePassword",
+                title: providerService.langs == 'la' ? "ກົດລະບຽບຂອງບໍລິສັດ" : "Company Rules",
                 leadingIcon: Icons.picture_as_pdf,
                 bgIconColor: Colors.black87,
                 onTap: () {

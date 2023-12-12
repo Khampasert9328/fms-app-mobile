@@ -591,8 +591,8 @@ class _HomePagesState extends State<HomePages> {
                                   // }
                                 },
                                 borderRadius: BorderRadius.circular(24),
-                                child: const Text(
-                                  "ເລີ່ມເຮັດ OT",
+                                child:  Text(
+                                  providerService.langs == 'la' ? " ເລີ່ມເຮັດ OT " : "Start OT",
                                   style: TextStyle(
                                     color: white,
                                     fontWeight: FontWeight.bold,
@@ -616,9 +616,9 @@ class _HomePagesState extends State<HomePages> {
                                     }
                                   }
                                 },
-                                child: const Text(
-                                  "ເຊົາເຮັດ OT",
-                                  style: TextStyle(
+                                child:  Text(
+                                   providerService.langs == 'la' ? " ເຊົາເຮັດ OT " : "Stop OT",
+                                  style: const TextStyle(
                                     color: white,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -877,7 +877,7 @@ class _HomePagesState extends State<HomePages> {
                         height: 35,
                         width: 35,
                       ),
-                      title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve OT",
+                      title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve Leave",
                       cout: MyData.countOvertime > 99 ? "99+" : "${MyData.countOvertime}",
                       onPressed: () {
                         Navigator.push(
@@ -942,7 +942,7 @@ class _HomePagesState extends State<HomePages> {
                             height: 35,
                             width: 35,
                           ),
-                          title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve OT",
+                          title: providerService.langs == 'la' ? "ອະນຸມັດລາພັກ" : "Approve Leave",
                           cout: MyData.Overtimexecount > 99 ? "99+" : "${MyData.countHR}",
                           onPressed: () {
                             Navigator.push(
@@ -982,7 +982,7 @@ class _HomePagesState extends State<HomePages> {
                       height: 35,
                       width: 35,
                     ),
-                    title: providerService.langs == 'la' ? "ອະນຸມັດໜ້າວຽກ" : "Approve OT",
+                    title: providerService.langs == 'la' ? "ອະນຸມັດໜ້າວຽກ" : "Approve Work",
                     cout: "0",
                     onPressed: () {
                       Navigator.push(
@@ -1172,7 +1172,7 @@ class _HomePagesState extends State<HomePages> {
                                     onPressed: () async {},
                                     borderRadius: BorderRadius.circular(24),
                                     child: Text(
-                                      providerService.langs == 'la' ? 'ເຮັດວຽກແລ້ວ' : ' Worked ',
+                                      providerService.langs == 'la' ? 'ເຮັດວຽກແລ້ວ' : ' Work done ',
                                       style: const TextStyle(
                                           color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                                     ))
@@ -1206,17 +1206,17 @@ class _HomePagesState extends State<HomePages> {
 
                                                 await startWorkAll();
 
-                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                ScaffoldMessenger.of(context).showSnackBar( SnackBar(
                                                   backgroundColor: primary,
-                                                  content: Text("ເລິ່ມວຽກສຳເລັດ"),
+                                                  content: Text(providerService.langs == 'la' ? 'ເລີ່ມວຽກສຳເລັດ' : 'Start Work done ',),
                                                   duration: Duration(seconds: 2),
                                                 ));
                                                 setState(() => _btnStartisLoading = false);
                                                 setState(() => stdbtnStart = true);
                                               } else {
-                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                ScaffoldMessenger.of(context).showSnackBar( SnackBar(
                                                   backgroundColor: red,
-                                                  content: Text("ເລິ່ມວຽກບໍ່ສຳເລັດ"),
+                                                  content: Text(providerService.langs == 'la' ? 'ເລີ່ມວຽກບໍ່ສຳເລັດ' : 'Fail to Start Work done ',),
                                                   duration: Duration(seconds: 2),
                                                 ));
                                                 providerService.setFileForUpload(null);
@@ -1371,7 +1371,7 @@ class _HomePagesState extends State<HomePages> {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('ຂໍ້ຄວາມ'),
+        title: Text(providerService.langs == 'la' ? 'ຂໍ້ຄວາມ' : 'Masseg',),
         content: Text(providerService.checkFieldLocations!.data.status),
         actions: <Widget>[
           TextButton(
